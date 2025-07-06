@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.xlsx
+.env
+.env.*
+!.env.example
+auth.json
+*.DS_Store
+*.pytest_cache/
+**/raw
