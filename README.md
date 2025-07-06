@@ -14,9 +14,9 @@ Git Commands:
 - git pull origin
 
 # Client
-npm i
-npm run dev
+- npm i
+- npm run dev
 
 # Server
-python -m app.main
+- python -m app.main
 - view apis for now using localhost:8000/docs
