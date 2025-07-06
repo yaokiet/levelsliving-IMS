@@ -1,3 +1,5 @@
+import "./globals.css"; // Adjust path accordingly
+
 export default function RootLayout({
   children,
 }: {
