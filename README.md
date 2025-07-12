@@ -41,7 +41,7 @@ npm run dev
 - Python >= 3.11.13 installed
 For macOS (requires brew):
 ```bash
-brew install python@3.11.13
+brew install python@3.11
 ```
 OR for windows or macOS without brew installed: download and install directly from python website
 
@@ -55,8 +55,10 @@ source venv/bin/activate
 ```
 
 2. Select python interpreter in venv
+
 For mac:
 Press `cmd + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.11.13 (venv) ./venv/bin/python`
+
 For windows:
 Press `Ctrl + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.11.13 (venv) .\venv\Scripts\python.exe`
 
