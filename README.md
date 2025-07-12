@@ -14,9 +14,73 @@ Git Commands:
 - git pull origin
 
 # Client
-- npm i
-- npm run dev
+## Pre-requisites
+- Node.js installed
+For macOS (requires brew):
+```bash
+brew install node
+```
+OR for windows or macOS without brew installed: download and install directly from Node.js website
+
+## Set up
+In client folder:
+
+```bash
+npm i
+```
+
+## To Run
+In client folder:
+
+```bash
+npm run dev
+```
 
 # Server
-- python -m app.main
-- view apis for now using localhost:8000/docs
+## Pre-requisites
+- Python >= 3.11.13 installed
+For macOS (requires brew):
+```bash
+brew install python@3.11.13
+```
+OR for windows or macOS without brew installed: download and install directly from python website
+
+## Set up
+1. Create virtual environment
+In the root folder:
+
+```bash
+python3.11 -m venv venv 
+source venv/bin/activate
+```
+
+2. Select python interpreter in venv
+For mac:
+Press `cmd + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.11.13 (venv) ./venv/bin/python`
+For windows:
+Press `Ctrl + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.11.13 (venv) .\venv\Scripts\python.exe`
+
+In the terminal run and ensure it displays `Python 3.11.13`:
+
+```bash
+python --version
+```
+
+3. Install dependencies
+
+```bash
+cd server              
+pip install -r requirements.txt
+```
+
+## To Run
+In the server folder
+
+```bash
+python -m app.main
+```
+
+To view api docs:
+```bash
+localhost:8000/docs
+```
