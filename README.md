@@ -87,6 +87,8 @@ OR set up the environment manually by:
 Press `cmd + shift + p`, search and click `Python: Select Interpreter` > `+ Create Virtual Environment` > `Venv` > `Python 3.9.12` > check `server/requirements.txt` > `OK`
 
 ## To Run
+Ensure that .venv is activated
+
 In the server folder
 
 ```bash
