@@ -38,31 +38,38 @@ npm run dev
 
 # Server
 ## Pre-requisites
-- Python >= 3.11.13 installed
+- Python >= 3.9.12 installed
+
 For macOS (requires brew):
 ```bash
-brew install python@3.11
+brew install pyenv
+pyenv install 3.9.12
 ```
+Press `cmd + shift + p`, search and click `Python: Select Interpreter`, select `Python 3.9.12 (3.9.12) ~/.pyenv/versions/3.9.12/bin/python` and restart your terminal
+
 OR for windows or macOS without brew installed: download and install directly from python website
 
 ## Set up
+Ensure you're using python 3.9.12
+
 1. Create virtual environment
+
 In the root folder:
 
 ```bash
-python3.11 -m venv venv 
-source venv/bin/activate
+python -m venv .venv 
+source .venv/bin/activate
 ```
 
 2. Select python interpreter in venv
 
 For mac:
-Press `cmd + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.11.13 (venv) ./venv/bin/python`
+Press `cmd + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.9.12 (venv) ./venv/bin/python`
 
 For windows:
-Press `Ctrl + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.11.13 (venv) .\venv\Scripts\python.exe`
+Press `Ctrl + shift + p`, search and click `Python: Select Interpreter` and select `Python 3.9.12 (venv) .\venv\Scripts\python.exe`
 
-In the terminal run and ensure it displays `Python 3.11.13`:
+In the terminal run and ensure it displays `Python 3.9.12`:
 
 ```bash
 python --version
@@ -74,6 +81,10 @@ python --version
 cd server              
 pip install -r requirements.txt
 ```
+
+OR set up the environment manually by:
+
+Press `cmd + shift + p`, search and click `Python: Select Interpreter` > `+ Create Virtual Environment` > `Venv` > `Python 3.9.12` > check `server/requirements.txt` > `OK`
 
 ## To Run
 In the server folder
