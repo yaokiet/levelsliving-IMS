@@ -27,7 +27,7 @@ export function NavInventory({
           <SidebarMenuItem
             key={item.name}
           >
-            <SidebarMenuButton asChild className="px-4 py-6 text-lg">
+            <SidebarMenuButton asChild className="px-4 py-6 text-lg font-light">
               <a href={item.url}>
                 <item.icon className="!size-5" />
                 <span>{item.name}</span>
