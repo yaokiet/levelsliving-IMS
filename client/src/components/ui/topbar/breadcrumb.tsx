@@ -3,11 +3,11 @@
 import {
     Breadcrumb,
     BreadcrumbItem,
+    BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function AppBreadcrumb() {
@@ -26,9 +26,9 @@ export function AppBreadcrumb() {
             <BreadcrumbList>
                 {/* Home Link */}
                 <BreadcrumbItem>
-                    <Link href="/" className="text-sm text-gray-600 hover:text-gray-800">
+                    <BreadcrumbLink href="/" >
                         Home
-                    </Link>
+                    </BreadcrumbLink>
                 </BreadcrumbItem>
                 {breadcrumbItems.length > 0 && <BreadcrumbSeparator />}
                 {/* Dynamic Breadcrumb Links */}
@@ -37,12 +37,11 @@ export function AppBreadcrumb() {
                         {index === breadcrumbItems.length - 1 ? (
                             <BreadcrumbPage>{item.name}</BreadcrumbPage>
                         ) : (
-                            <Link
+                            <BreadcrumbLink
                                 href={item.href}
-                                className="text-sm text-gray-600 hover:text-gray-800"
                             >
                                 {item.name}
-                            </Link>
+                            </BreadcrumbLink>
                         )}
                         {index < breadcrumbItems.length - 1 && <BreadcrumbSeparator />}
                     </BreadcrumbItem>
