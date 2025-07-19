@@ -34,27 +34,27 @@ const data = {
   inventoryMenuItems: [
     {
       name: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: Gauge,
     },
     {
       name: "Inventory",
-      url: "#",
+      url: "/inventory",
       icon: Warehouse,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "/reports",
       icon: Files,
     },
     {
       name: "Suppliers",
-      url: "#",
+      url: "/suppliers",
       icon: Container,
     },
     {
       name: "Orders",
-      url: "#",
+      url: "/orders",
       icon: Truck,
     },
   ],
