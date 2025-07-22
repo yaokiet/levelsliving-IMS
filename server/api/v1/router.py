@@ -1,12 +1,11 @@
 
 from .routes.test_route import router as test_router
+from .routes.user_route import router as user_router
 from fastapi import APIRouter
-
 
 router = APIRouter(prefix="/levelsliving/app/api/v1")
 router.include_router(test_router)
-
-
+router.include_router(user_router)
 
 @router.get("/test")
 def test():
