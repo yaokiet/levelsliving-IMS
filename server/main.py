@@ -23,6 +23,11 @@ if DATABASE_URL is None:
     # If you want it to fail if not set, uncomment the next line:
     # raise ValueError("DATABASE_URL environment variable not set. Please check your .env file or docker-compose.yml.")
 
+from app.database.database import Base, engine
+from app.models.models import Item  # or all models
+
+# Create tables on startup
+Base.metadata.create_all(bind=engine)
 
 print(f"Connecting to database at: {DATABASE_URL}") # Helps for debugging
 
