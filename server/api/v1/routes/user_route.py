@@ -1,14 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
-from typing import Optional, List
-from app.database.schemas import UserOut
-from app.database.services import user_service
-
+from database.database import get_db
+from database.services import get_all_users
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.get("/", response_model=List[UserOut])
+@router.get("/")
 def get_users(db: Session = Depends(get_db)):
-    return user_service.get_all_users(db)
+    return get_all_users(db)
 

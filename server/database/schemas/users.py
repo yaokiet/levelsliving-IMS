@@ -1,7 +1,8 @@
 from pydantic import BaseModel
-from typing import Literal
+from typing import Literal, Optional, List
+from datetime import datetime, date
 
-class UserOut(BaseModel):
+class UserRead(BaseModel):
     id: int
     name: str
     role: Literal['admin', 'user']
