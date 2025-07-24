@@ -9,13 +9,6 @@ CREATE TABLE "user" (
     password_hash VARCHAR(255) NOT NULL
 );
 
-INSERT INTO user (name, role, email, password_hash) VALUES
-('Alice Johnson', 'admin', 'alice@example.com', 'hashedpassword1'),
-('Bob Smith', 'user', 'bob@example.com', 'hashedpassword2'),
-('Charlie Brown', 'user', 'charlie@example.com', 'hashedpassword3'),
-('Dana White', 'admin', 'dana@example.com', 'hashedpassword4'),
-('Eva Green', 'user', 'eva@example.com', 'hashedpassword5');
-
 -- =======================
 -- SUPPLIERS
 -- =======================

@@ -1,10 +1,16 @@
 from sqlalchemy import Column, Integer, String
-# from database import Base
 from database.database import Base
 
 class Item(Base):
-    __tablename__ = "items"
+    __tablename__ = "item"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    description = Column(String, nullable=True)
+    sku = Column(String(32), unique=True, nullable=False, index=True)
+    type = Column(String(32), nullable=False)
+    item_name = Column(String(64), nullable=False)
+    variant = Column(String(64))
+    qty = Column(Integer, nullable=False)
+    threshold_qty = Column(Integer, nullable=False)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
