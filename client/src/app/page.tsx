@@ -1,5 +1,5 @@
 import { SectionCards } from "@/components/sample/section-cards"
-import { MainPageTable } from "@/components/table/main-page-table";
+import TableSection from "./table-section";
 
 export default function Page() {
   return (
@@ -13,11 +13,10 @@ export default function Page() {
             <SectionCards />
           </div>
           <div>
-            <MainPageTable />
+            <TableSection />
           </div>
         </div>
       </div>
     </div>
-
   )
 }

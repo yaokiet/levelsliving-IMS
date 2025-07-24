@@ -1,36 +1,58 @@
-'use client';
+'use client'
 
-import React, { useState } from "react";
-import type { ColDef } from "ag-grid-community";
-import { DataTable } from "./table-component";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { useState, useEffect } from 'react'
+import { columns, Inventory } from "./main-page-columns"
+import { ReusableTable } from "@/components/table/reusable-table"
+import { DataTable } from "./data-table"
 
-const CellActionsButton = (props: any) => (
-  <Button
-    className={buttonVariants({ variant: "default" })}
-    onClick={() => alert(`Action for ${props.data.make} ${props.data.model} clicked!`)}
-  >
-    Click Me
-  </Button>
-);
-
-export function MainPageTable() {
-  const [rowData] = useState([
-    { make: "Toyota", model: "Celica", price: 35000, electric: false },
-    { make: "Ford", model: "Mondeo", price: 32000, electric: false },
-    { make: "Porsche", model: "Boxster", price: 72000, electric: true },
-  ]);
-
-  const columnDefs: ColDef[] = [
-    { field: "make" },
-    { field: "model" },
+function getData(): Promise<Inventory[]> {
+  // Fetch data from your API here.
+  return Promise.resolve([
     {
-      field: "price",
-      valueFormatter: (params) => `$${params.value.toLocaleString()}`,
+      id: "728ed52f",
+      amount: 100,
+      status: "pending",
+      email: "m@example.com",
     },
-    { field: "electric", headerName: "Electric Vehicle" },
-    { field: "actions", cellRenderer: CellActionsButton },
-  ];
+    {
+      id: "728ed53g",
+      amount: 200,
+      status: "success",
+      email: "john@example.com",
+    },
+  ])
+}
 
-  return <DataTable rowData={rowData} columnDefs={columnDefs} />;
+export default function MainPageTable() {
+  const [data, setData] = useState<Inventory[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getData()
+      .then(result => {
+        setData(result)
+        setLoading(false)
+      })
+      .catch(error => {
+        console.error("Failed to fetch data:", error)
+        setLoading(false)
+      })
+  }, [])
+
+  return (
+      <div className="container mx-auto py-10">
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <ReusableTable 
+            columns={columns} 
+            data={data} 
+            searchKey="email" 
+            searchPlaceholder="Filter emails... test" 
+            showViewOptions={true}
+            showPagination={true}
+          />
+        )}
+      </div>
+  )
 }
