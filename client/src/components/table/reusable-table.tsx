@@ -89,6 +89,7 @@ export function ReusableTable<TData, TValue>({
       {/* Table */}
       <div className="overflow-hidden rounded-md border">
         <Table>
+          {/* Render the table headers e.g. column names */}
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -105,6 +106,7 @@ export function ReusableTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+          {/* Render the table rows e.g. data for each row */}
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -112,14 +114,19 @@ export function ReusableTable<TData, TValue>({
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
+                  {/* Render the cells in each row */}
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
+              // If no rows, display a message
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
@@ -129,7 +136,6 @@ export function ReusableTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-
       {/* Pagination */}
       {showPagination && (
         <div className="py-4">

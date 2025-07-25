@@ -4,19 +4,17 @@ import React from "react"
 import { Input } from "@/components/ui/input"
 import { Table } from "@tanstack/react-table"
 
-interface TableSearchProps<TData> {
+interface DataTableSearchProps<TData> {
   table: Table<TData>
   searchKey: string
   placeholder?: string
-  className?: string
 }
 
 export function DataTableSearch<TData>({
   table,
   searchKey,
-  placeholder = "Search...", // Placeholder text, only used if not provided
-  className = "max-w-sm"
-}: TableSearchProps<TData>) {
+  placeholder = "Search..."
+}: DataTableSearchProps<TData>) {
   return (
     <Input
       placeholder={placeholder}
@@ -24,7 +22,7 @@ export function DataTableSearch<TData>({
       onChange={(event) => 
         table.getColumn(searchKey)?.setFilterValue(event.target.value)
       }
-      className={className}
+      className="max-w-sm"
     />
   )
 }
