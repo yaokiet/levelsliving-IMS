@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'react'
 import { ColumnDef } from "@tanstack/react-table"
-import { ReusableTable } from "../table/reusable-table"
+import { ReusableTable } from "../reusable/reusable-table"
 
 // Define the type for user data
 type User = {
@@ -61,7 +61,7 @@ export default function UsersTable() {
   }, [])
 
   return (
-    <div className="container mx-auto py-10">
+    <>
       <h2 className="text-2xl font-bold mb-4">Users</h2>
       {loading ? (
         <div>Loading users...</div>
@@ -74,6 +74,6 @@ export default function UsersTable() {
           showViewOptions={true}
         />
       )}
-    </div>
+    </>
   )
 }

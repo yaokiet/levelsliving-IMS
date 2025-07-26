@@ -2,8 +2,7 @@
 // This file defines the columns for the main page table.
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, ArrowUpDown } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { MoreHorizontal } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,10 +13,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DataTable } from "./data-table"
 
 // Importing of Data Table Components (For easier reuse)
-import { DataTableColumnHeader } from "./data-table-column-header"
+import { DataTableColumnHeader } from "../reusable/data-table-column-header"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.

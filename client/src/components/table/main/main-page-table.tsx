@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { columns, Inventory } from "./main-page-columns"
-import { ReusableTable } from "@/components/table/reusable-table"
-import { DataTable } from "./data-table"
+import { ReusableTable } from "@/components/table/reusable/reusable-table"
 
 function getData(): Promise<Inventory[]> {
   // Fetch data from your API here.
@@ -40,7 +39,7 @@ export default function MainPageTable() {
   }, [])
 
   return (
-      <div className="container mx-auto py-10">
+      <>
         {loading ? (
           <div>Loading...</div>
         ) : (
@@ -53,6 +52,6 @@ export default function MainPageTable() {
             showPagination={true}
           />
         )}
-      </div>
+      </>
   )
 }
