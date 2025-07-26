@@ -106,3 +106,13 @@ CREATE TABLE order_item (
     PRIMARY KEY (order_id, item_id)
 );
 
+-- =======================
+-- USER SESSIONS
+-- =======================
+CREATE TABLE user_session (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE,
+  refresh_token TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  expires_at TIMESTAMP NOT NULL
+);
