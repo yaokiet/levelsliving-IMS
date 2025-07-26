@@ -3,7 +3,7 @@ import UsersTable from "@/components/table/users/users-table";
 
 export default function TableSection() {
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto py-10 px-6">
       <div>
         <MainPageTable />
       </div>
