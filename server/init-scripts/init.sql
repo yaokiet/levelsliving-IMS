@@ -105,3 +105,4 @@ CREATE TABLE order_item (
     value DECIMAL(10,2) NOT NULL,
     PRIMARY KEY (order_id, item_id)
 );
+
