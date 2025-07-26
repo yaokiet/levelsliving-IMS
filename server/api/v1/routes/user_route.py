@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, HTTPException
 from sqlalchemy.orm import Session
 from database.database import get_db
 from database.schemas.user import UserCreate, UserUpdate, UserRead
-from database.services.user import (
-    get_user, get_all_users, create_user, update_user, delete_user
-)
+from database.services.user import get_user, get_all_users, create_user, update_user, delete_user
 
 router = APIRouter(prefix="/user", tags=["User"])
 
@@ -21,7 +19,10 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=UserRead)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
-    return create_user(db, user)
+    new_user = create_user(db, user)
+    if new_user is None:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return new_user
 
 @router.put("/{user_id}", response_model=UserRead)
 def update_existing_user(user_id: int, user: UserUpdate, db: Session = Depends(get_db)):
@@ -36,4 +37,3 @@ def delete_existing_user(user_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="User not found")
     return deleted
-
