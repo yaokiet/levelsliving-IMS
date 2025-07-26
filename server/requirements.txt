@@ -5,4 +5,6 @@ sqlalchemy
 alembic
 python-dotenv
 itsdangerous
+python-jose 
+passlib[bcrypt]
 pydantic[email]
