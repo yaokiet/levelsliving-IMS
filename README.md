@@ -173,20 +173,30 @@ You should now see the `levelsliving` database and any tables created by the ini
 - To run SQL queries, right-click the `levelsliving` database and select **Query Tool**.  
   Example:
   ```sql
-  SELECT * FROM users;
+  SELECT * FROM user;
   ```
 
 ---
 
 ### 5. Resetting the Database (if needed)
 
-If you need to re-run the initialization scripts (e.g., after changing them), you must remove the database volume so the scripts run again:
+Initial run (give execution permission to the migration scripts):
 
+In the `server/init-scripts` directory:
 ```bash
-docker-compose down -v
-docker-compose up
+chmod +x migrateup.sh migratedown.sh
 ```
 
-**Warning:** This will delete all data in your database!
+Subsequent runs:
+
+To drop all tables:
+```bash
+./migratedown.sh
+```
+
+To create tables and seed db:
+```bash
+./migrateup.sh
+```
 
 ---
