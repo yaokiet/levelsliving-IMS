@@ -1,6 +1,8 @@
-from sqlalchemy.orm import Session
-from database.models.user import User
 from database.schemas.user import UserCreate, UserUpdate
+from database.schemas.auth import LoginRequest
+from database.models.user import User
+from sqlalchemy.orm import Session
+from passlib.hash import bcrypt
 
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
@@ -12,12 +14,16 @@ def get_all_users(db: Session):
     return db.query(User).all()
 
 def create_user(db: Session, user: UserCreate):
+    if db.query(User).filter(User.email == user.email).first():
+        return None
+
     db_user = User(
         name=user.name,
         role=user.role,
         email=user.email,
-        password_hash=user.password  # TODO: Hash password before storing
+        password_hash=bcrypt.hash(user.password) 
     )
+
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -42,8 +48,8 @@ def delete_user(db: Session, user_id: int):
         db.commit()
     return db_user
 
-# TODO: Add password hashing later
-# from passlib.context import CryptContext
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-# def verify_password(plain_password: str, hashed_password: str):
-#     return pwd_context.verify(plain_password, hashed_password)
+def verify_user(db: Session, login_request: LoginRequest):
+    db_user = db.query(User).filter(User.email == login_request.email).first()
+    if not db_user or not bcrypt.verify(login_request.password, db_user.password_hash):
+        return None
+    return db_user
