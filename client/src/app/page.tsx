@@ -1,4 +1,5 @@
 import { SectionCards } from "@/components/sample/section-cards"
+import TableSection from "../components/table/table-section";
 
 export default function Page() {
   return (
@@ -11,9 +12,11 @@ export default function Page() {
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <SectionCards />
           </div>
+          <div>
+            <TableSection />
+          </div>
         </div>
       </div>
     </div>
-
   )
 }
