@@ -1,5 +1,5 @@
 import { SectionCards } from "@/components/sample/section-cards"
-import TableSection from "../components/table/table-section";
+import TableSection from "../../components/table/table-section";
 
 export default function Page() {
   return (

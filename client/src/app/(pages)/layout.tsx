@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../globals.css";
 import { AppSidebar } from "@/components/ui/sidebar/app-sidebar";
 import {
   SidebarInset,
