@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi import Request
 from jose import jwt, JWTError
 
+# Paths that do not require authentication
 EXEMPT_PATHS = [
     "/levelsliving/app/api/v1/login",
     "/levelsliving/app/api/v1/refresh",
