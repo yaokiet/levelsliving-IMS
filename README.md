@@ -192,7 +192,7 @@ For Mac:
 brew install postgresql
 ```
 
-For windows install from postgres website
+For windows install from postgres website and add to path
 
 Initial run (give execution permission to the migration scripts):
 
