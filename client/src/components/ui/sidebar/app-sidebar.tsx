@@ -23,14 +23,10 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { RootState } from "@/app/_store/redux-store";
+import { useSelector } from "react-redux"
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   inventoryMenuItems: [
     {
       name: "Dashboard",
@@ -61,6 +57,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useSelector((state: RootState) => state.auth.user);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -83,8 +81,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavInventory inventoryMenuItems={data.inventoryMenuItems} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+      <SidebarFooter >
+        <NavUser user={user ?? { name: "user", email: "user@example.com" }} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
