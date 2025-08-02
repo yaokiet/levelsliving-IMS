@@ -62,10 +62,10 @@ export const columns: ColumnDef<Item>[] = [
       return (
         <div 
           className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
-          onClick={() => window.location.href = `/inventory/item/${id}`}
+          onClick={() => window.location.href = `/item-details/${id}`} // Placeholder for navigation
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              window.location.href = `/inventory/item/${id}`
+              window.location.href = `/item-details/${id}` // Placeholder for navigation
             }
           }}
           tabIndex={0}
