@@ -137,6 +137,10 @@ This will start:
 - **PostgreSQL** database (service name: `db`)
 - **pgAdmin 4** web UI (service name: `pgadmin`)
 
+
+If you encounter an error e.g. **Error response from daemon: Ports are not available: exposing port TCP 0.0.0.0:5432 -> 0.0.0.0:0: listen** then you need to go to **Terminal as an admin** 
+- net stop winnat
+Before you docker-compose up
 ---
 
 ### 2. Access pgAdmin 4 Web UI
