@@ -2,9 +2,10 @@
 // This file defines the columns for the main page table.
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, AlertCircle } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,19 +20,22 @@ import { DataTableColumnHeader } from "../reusable/data-table-column-header"
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Inventory = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
+export type Item = {
+  id: number
+  sku: string
+  type: string
+  item_name: string
+  variant: string | null
+  qty: number
+  threshold_qty: number
 }
 
 // This is the main page table columns definition.
 // It defines the columns that will be displayed in the table.
-export const columns: ColumnDef<Inventory>[] = [
-    // This column is for selecting rows.
-    // It allows users to select multiple rows for bulk actions.
-    {
+export const columns: ColumnDef<Item>[] = [
+  // This column is for selecting rows.
+  // It allows users to select multiple rows for bulk actions.
+  {
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -53,50 +57,105 @@ export const columns: ColumnDef<Inventory>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // SKU column
   {
-    accessorKey: "status",
-    header: () => <div>Status</div>,
+    accessorKey: "sku",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="SKU"
+      />
+    ),
     cell: ({ row }) => {
-      const status = row.getValue("status")
-      // Return a div with the status, styled as a badge
-      // This is useful for displaying the status in a consistent style.
-      return <div className={`badge badge-${status}`}>{String(status)}</div>
-    },
-    
-  },
-  // This column displays the email address of the user.
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
+      const sku = row.getValue("sku") as string
+      const id = row.original.id
+        
       return (
-        <DataTableColumnHeader
-          column={column}
-          title="Email"
-        />
+        <div 
+          className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
+          onClick={() => window.location.href = `/inventory/item/${id}`}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              window.location.href = `/inventory/item/${id}`
+            }
+          }}
+          tabIndex={0}
+          role="link"
+          aria-label={`View details for ${sku}`}
+        >
+          {sku}
+        </div>
       )
     },
   },
-    // This column formats the amount as currency.
-    // You can customize the formatting as needed.
-  { 
-    accessorKey: "amount",
-    header: () => <div>Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="font-medium">{formatted}</div>
+    // Item Type column
+  {
+    accessorKey: "type",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Type"
+      />
+    ),
+    cell: ({ row }) => <div>{row.getValue("type")}</div>,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
     },
   },
-  // This column is for actions, such as viewing details or copying the ID.
+  // Variant column
+  {
+    accessorKey: "variant",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Variant"
+      />
+    ),
+    cell: ({ row }) => <div>{row.getValue("variant") || "-"}</div>,
+  },
+  // Quantity column
+  {
+    accessorKey: "qty",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Quantity"
+      />
+    ),
+    cell: ({ row }) => {
+      const qty = row.getValue("qty") as number
+      const threshold = row.original.threshold_qty
+      const isLow = qty <= threshold
+
+      return (
+        <div className="flex items-center">
+          <span className="font-medium">{qty}</span>
+          {isLow && (
+            <AlertCircle 
+              className="ml-2 h-4 w-4 text-amber-500" 
+              aria-label={`Below threshold (${threshold})`}
+            />
+          )}
+        </div>
+      )
+    },
+  },
+  // Threshold Quantity column
+  {
+    accessorKey: "threshold_qty",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Threshold"
+      />
+    ),
+  },
+  // Actions column
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original
- 
+      const item = row.original
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -108,13 +167,14 @@ export const columns: ColumnDef<Inventory>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(item.sku)}
             >
-              Copy payment ID
+              Copy SKU
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View details</DropdownMenuItem>
+            <DropdownMenuItem>Edit item</DropdownMenuItem>
+            <DropdownMenuItem className="text-red-600">Delete item</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
