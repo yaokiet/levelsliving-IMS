@@ -14,21 +14,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Item } from "@/types/item"
 
 // Importing of Data Table Components (For easier reuse)
 import { DataTableColumnHeader } from "../reusable/data-table-column-header"
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Item = {
-  id: number
-  sku: string
-  type: string
-  item_name: string
-  variant: string | null
-  qty: number
-  threshold_qty: number
-}
 
 // This is the main page table columns definition.
 // It defines the columns that will be displayed in the table.
