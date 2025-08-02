@@ -89,7 +89,7 @@ export default function MainPageTable() {
             columns={columns} 
             data={data} 
             searchKey="email" 
-            searchPlaceholder="Filter emails... test" 
+            searchPlaceholder="Filter items by SKU" 
             showViewOptions={true}
             showPagination={true}
           />
