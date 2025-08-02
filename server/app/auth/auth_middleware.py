@@ -9,7 +9,6 @@ EXEMPT_PATHS = [
     "/levelsliving/app/api/v1/login",
     "/levelsliving/app/api/v1/refresh",
     "/levelsliving/app/api/v1/logout",
-    "/levelsliving/app/api/v1/user",
     "/docs",
     "/openapi.json",
     "/redoc"
