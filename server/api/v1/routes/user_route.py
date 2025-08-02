@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, HTTPException, Request
 from sqlalchemy.orm import Session
 from database.database import get_db
 from database.schemas.user import UserCreate, UserUpdate, UserRead
@@ -9,6 +9,16 @@ router = APIRouter(prefix="/user", tags=["User"])
 @router.get("/", response_model=list[UserRead])
 def read_users(db: Session = Depends(get_db)):
     return get_all_users(db)
+
+@router.get("/me", response_model=UserRead)
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    user_payload = getattr(request.state, "user", None)
+    if not user_payload:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    user = get_user(db, user_payload["user_id"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 @router.get("/{user_id}", response_model=UserRead)
 def read_user(user_id: int, db: Session = Depends(get_db)):
