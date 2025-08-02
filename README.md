@@ -184,6 +184,16 @@ You should now see the `levelsliving` database and any tables created by the ini
 
 ### 5. Resetting the Database (if needed)
 
+Prerequisite:
+- psql installed
+
+For Mac:
+```bash
+brew install postgresql
+```
+
+For windows install from postgres website
+
 Initial run (give execution permission to the migration scripts):
 
 In the `server/init-scripts` directory:
