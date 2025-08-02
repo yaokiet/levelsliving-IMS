@@ -191,6 +191,8 @@ In the `server/init-scripts` directory:
 chmod +x migrateup.sh migratedown.sh
 ```
 
+If you are using windows you have to use Git Bash instead. chmod will **not** work
+
 Subsequent runs:
 
 To drop all tables:
