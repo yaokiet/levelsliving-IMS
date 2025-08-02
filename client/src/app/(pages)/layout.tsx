@@ -18,14 +18,19 @@ export default function PagesLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const { isAuthenticated, initialized } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (initialized && !isAuthenticated) {
       router.replace("/login");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, initialized, router]);
+
+  if (!initialized) {
+    // Optionally show a loading spinner
+    return <div>Loading...</div>; // or <LoadingSpinner />
+  }
 
   if (!isAuthenticated) return null; // Or a spinner
 
