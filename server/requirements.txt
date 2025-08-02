@@ -7,4 +7,5 @@ python-dotenv
 itsdangerous
 python-jose 
 passlib[bcrypt]
+bcrypt<4.0.0
 pydantic[email]
