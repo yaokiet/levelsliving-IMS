@@ -14,7 +14,7 @@ router.include_router(auth_router)
 @router.get("/test")
 def test():
     """
-    Test endpoint to check if the server is running.
+    Test endpoint to check if the server is running. Docker check
     """
     return {"message": "Server is running!"}
 
