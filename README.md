@@ -137,6 +137,10 @@ This will start:
 - **PostgreSQL** database (service name: `db`)
 - **pgAdmin 4** web UI (service name: `pgadmin`)
 
+
+If you encounter an error e.g. **Error response from daemon: Ports are not available: exposing port TCP 0.0.0.0:5432 -> 0.0.0.0:0: listen** then you need to go to **Terminal as an admin** 
+- net stop winnat
+Before you docker-compose up
 ---
 
 ### 2. Access pgAdmin 4 Web UI
@@ -180,12 +184,24 @@ You should now see the `levelsliving` database and any tables created by the ini
 
 ### 5. Resetting the Database (if needed)
 
+Prerequisite:
+- psql installed
+
+For Mac:
+```bash
+brew install postgresql
+```
+
+For windows install from postgres website and add to path
+
 Initial run (give execution permission to the migration scripts):
 
 In the `server/init-scripts` directory:
 ```bash
 chmod +x migrateup.sh migratedown.sh
 ```
+
+If you are using windows you have to use Git Bash instead. chmod will **not** work
 
 Subsequent runs:
 

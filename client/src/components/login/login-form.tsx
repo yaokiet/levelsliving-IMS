@@ -16,8 +16,8 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
   const dispatch = useDispatch()
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState("admin@admin.com") // Default email for testing
+  const [password, setPassword] = useState("password") // Default password for testing
   const [error, setError] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {

@@ -1,43 +1,29 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { columns, Inventory } from "./main-page-columns"
+import { Item } from "@/types/item"
+import { columns } from "./main-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
-
-function getData(): Promise<Inventory[]> {
-  // Fetch data from your API here.
-  return Promise.resolve([
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed53g",
-      amount: 200,
-      status: "success",
-      email: "john@example.com",
-    },
-  ])
-}
+import { getAllItems } from "@/lib/api/itemsApi"
 
 export default function MainPageTable() {
-  const [data, setData] = useState<Inventory[]>([])
+  const [data, setData] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getData()
-      .then(result => {
-        setData(result)
-        setLoading(false)
-      })
-      .catch(error => {
-        console.error("Failed to fetch data:", error)
-        setLoading(false)
-      })
-  }, [])
+      try {
+        getAllItems().then(items => {
+          console.log("Fetched items:", items)
+          setData(items)
+          setLoading(false)
+        })
+      }
+      catch (error) {
+        console.error("Error fetching items:", error)
+      }
 
+    }, []);
+  
   return (
       <>
         {loading ? (
@@ -47,7 +33,7 @@ export default function MainPageTable() {
             columns={columns} 
             data={data} 
             searchKey="email" 
-            searchPlaceholder="Filter emails... test" 
+            searchPlaceholder="Filter items by SKU" 
             showViewOptions={true}
             showPagination={true}
           />
