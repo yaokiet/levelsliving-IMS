@@ -4,7 +4,7 @@ from api.v1.router import router as v1_router
 from app.auth.auth_middleware import AuthMiddleware 
 import os
 from dotenv import load_dotenv
-from database.schemas import Base, engine
+from database.database import Base, engine
 
 load_dotenv()
 frontend_origin = os.getenv("FRONTEND_ORIGIN")
