@@ -21,6 +21,6 @@ def test():
 @router.get("/test2")
 def test2():
     """
-    Test endpoint to check if the server is running. Double check at this point. Joel here.
+    This is a second Test endpoint to check if the server is running. Double check at this point. Joel here.
     """
     return {"message": "Server is running!"}
