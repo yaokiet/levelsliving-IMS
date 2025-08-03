@@ -58,14 +58,15 @@ export const columns: ColumnDef<Item>[] = [
     cell: ({ row }) => {
       const sku = row.getValue("sku") as string
       const id = row.original.id
-        
+      const router = useRouter();
+
       return (
         <div 
           className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
-          onClick={() => window.location.href = `/item-details/${id}`} // Placeholder for navigation
+          onClick={() => router.push(`/item-details/${id}`)} // Placeholder for navigation
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              window.location.href = `/item-details/${id}` // Placeholder for navigation
+              router.push(`/item-details/${id}`) // Placeholder for navigation
             }
           }}
           tabIndex={0}
