@@ -164,7 +164,7 @@ After logging in to pgAdmin:
    - Port: `5432`
    - Username: `postgres`
    - Password: `password`
-   - Maintenance database: `levelsliving` (or leave as `postgres` to see all DBs)
+   - Maintenance database: `levelsliving`
 4. Click **Save**.
 
 You should now see the `levelsliving` database and any tables created by the initialization scripts.
