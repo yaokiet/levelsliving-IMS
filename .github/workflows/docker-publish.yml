@@ -24,3 +24,6 @@ jobs:
           context: ./server
           push: true
           tags: joelsngzw/levelslivingserver:latest
+      - name: Notify webhook server to deploy
+        run: |
+          curl -X POST http://178.128.84.21:9000/
