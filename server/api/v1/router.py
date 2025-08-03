@@ -17,10 +17,3 @@ def test():
     Test endpoint to check if the server is running.
     """
     return {"message": "Server is running!"}
-
-@router.get("/test2")
-def test2():
-    """
-    This is a second Test endpoint to check if the server is running. Standard Jopel.
-    """
-    return {"message": "Server is running!"}
