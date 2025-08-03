@@ -49,11 +49,11 @@ export function ItemInfoCard({
           </div>
         </div>
       </div>
-      <div className="flex-shrink-0 mt-8 md:mt-0 md:ml-8">
+      <div className="flex-shrink-0 mt-8 md:mt-0 md:ml-8 px-3 py-3 border rounded-lg bg-white dark:bg-gray-300">
         <img
-          src={""}
+          src="/item-icon.png" // Placeholder image for now
           alt={name}
-          className="w-40 h-40 object-contain rounded bg-gray-100 dark:bg-gray-800"
+          className="w-40 h-40 object-contain rounded bg-white dark:bg-gray-300"
         />
       </div>
     </div>
