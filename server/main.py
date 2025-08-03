@@ -26,7 +26,3 @@ app.include_router(v1_router)
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to FastAPI! (Running via Docker Compose)"}
-
-@app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
