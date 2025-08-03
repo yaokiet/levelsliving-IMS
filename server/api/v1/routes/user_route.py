@@ -6,6 +6,10 @@ from database.services.user import get_user, get_all_users, create_user, update_
 
 router = APIRouter(prefix="/user", tags=["User"])
 
+@router.get("/test", response_model=list[UserRead])
+def read_users(db: Session = Depends(get_db)):
+    return get_all_users(db)
+
 @router.get("/", response_model=list[UserRead])
 def read_users(db: Session = Depends(get_db)):
     return get_all_users(db)
