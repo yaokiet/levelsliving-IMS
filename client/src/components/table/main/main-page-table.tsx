@@ -32,7 +32,7 @@ export default function MainPageTable() {
           <ReusableTable 
             columns={columns} 
             data={data} 
-            searchKey="email" 
+            searchKey="sku" 
             searchPlaceholder="Filter items by SKU" 
             showViewOptions={true}
             showPagination={true}
