@@ -4,6 +4,7 @@ from api.v1.router import router as v1_router
 from app.auth.auth_middleware import AuthMiddleware 
 import os
 from dotenv import load_dotenv
+from database.schemas import Base, engine
 
 load_dotenv()
 frontend_origin = os.getenv("FRONTEND_ORIGIN")
@@ -25,3 +26,7 @@ app.include_router(v1_router)
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to FastAPI! (Running via Docker Compose)"}
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
