@@ -30,7 +30,7 @@ const data = {
   inventoryMenuItems: [
     {
       name: "Dashboard",
-      url: "/dashboard",
+      url: "/",
       icon: Gauge,
     },
     {

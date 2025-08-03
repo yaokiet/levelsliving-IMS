@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <div>
       <h2 className="scroll-m-20 border-b pb-2 px-4 text-3xl font-semibold tracking-tight first:mt-0">
-        Main page
+        Dashboard
       </h2>
       <div className="flex flex-1 flex-col">
         <div className="@container/main flex flex-1 flex-col gap-2">
