@@ -12,10 +12,17 @@ services:
     # - ./init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432" # Map host port 5432 to container port 5432 (optional for FastAPI, useful for PGAdmin4)
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
 
   # FastAPI Application Service
   server: # Changed service name from 'web' to 'server' as per your original request
     build: . # Build the image from the Dockerfile in the current directory
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8000:8000" # Map host port 8000 to container port 8000
     environment:
