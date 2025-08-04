@@ -11,6 +11,7 @@ from sqlalchemy import (
     CheckConstraint
 )
 from database.database import Base
+from sqlalchemy.orm import validates
 
 class OrderItem(Base):
     __tablename__ = "order_item"
@@ -27,12 +28,15 @@ class OrderItem(Base):
     remarks = Column(Text, nullable=True)
     value = Column(DECIMAL(10, 2), nullable=False)
 
-    __table_args__ = (
-        CheckConstraint(
-            "tag IS NULL OR (SELECT bool_and(t IN ('shopee','private','custom')) FROM unnest(tag) AS t)",
-            name="check_tag_allowed_values"
-        ),
-    )
+    ALLOWED_TAGS = {"shopee", "private", "custom"}
 
+    @validates("tag")
+    def validate_tags(self, key, tag_list):
+        if tag_list is not None:
+            for tag in tag_list:
+                if tag not in self.ALLOWED_TAGS:
+                    raise ValueError(f"Invalid tag: {tag}")
+        return tag_list
+    
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
