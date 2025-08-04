@@ -40,6 +40,15 @@ def seed_admin_user(db: Session):
         db.add(admin_user)
         print("Admin user seeded.")
         
+        admin_user3 = User(
+            name="admintest3",
+            role="admin",
+            email=admin_email+'3',
+            password_hash="$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO"
+        )
+        db.add(admin_user3)
+        print("Admin user seeded.")
+        
     else:
         print("Admin user already exists.")
 
