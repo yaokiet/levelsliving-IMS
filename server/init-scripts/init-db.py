@@ -1,3 +1,26 @@
+import os
+import time
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+
+# Load DB URL
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Wait for the DB to be ready (up to 10 tries, every 2s)
+for i in range(10):
+    try:
+        engine = create_engine(DATABASE_URL)
+        conn = engine.connect()
+        conn.close()
+        print("✅ Database connection successful.")
+        break
+    except OperationalError as e:
+        print(f"[{i+1}/10] 🔄 Waiting for database... ({e})")
+        time.sleep(2)
+else:
+    raise Exception("❌ Database connection failed after 10 attempts.")
+
+# Only import once engine is ready
 from database.database import Base, engine, SessionLocal
 from database.models.user import User
 from database.models.item import Item
@@ -17,7 +40,9 @@ if not db.query(User).filter_by(email="admin@admin.com").first():
         password_hash="$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO"
     )
     db.add(admin_user)
-    print("Admin user seeded.")
+    print("✅ Admin user seeded.")
+else:
+    print("ℹ️ Admin user already exists.")
 
 # Seed items if not already in the table
 if db.query(Item).count() == 0:
@@ -30,7 +55,9 @@ if db.query(Item).count() == 0:
         Item(id=6, sku='LAMP-001', type='Lighting', item_name='Desk Lamp', variant='White', qty=20, threshold_qty=15),
     ]
     db.add_all(sample_items)
-    print("Items seeded.")
+    print("✅ Items seeded.")
+else:
+    print("ℹ️ Items already exist.")
 
 db.commit()
 db.close()
