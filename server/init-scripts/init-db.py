@@ -22,9 +22,9 @@ from database.models.item import Item
 def create_tables():
     try:
         Base.metadata.create_all(bind=engine)
-        print("✅ Tables created (if not already present).")
+        print("Tables created (if not already present).")
     except Exception as e:
-        print(f"❌ Error creating tables: {e}")
+        print(f"Error creating tables: {e}")
         raise
 
 

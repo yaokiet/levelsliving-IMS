@@ -26,4 +26,5 @@ jobs:
           tags: joelsngzw/levelslivingserver:latest
       - name: Notify webhook server to deploy
         run: |
-          curl -X POST http://178.128.84.21:9000/
+          curl -X POST http://178.128.84.21:9000/ \
+              -H "Authorization: Bearer ${{ secrets.WEBHOOK_TOKEN }}"
