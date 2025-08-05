@@ -1,6 +1,7 @@
 import { SectionCards } from "@/components/sample/section-cards";
 import TableSection from "../../components/table/table-section";
 import LowQuantityStock, { LowStockItem } from "@/components/sample/low-quantity-stock";
+import SalesPurchaseChart from "@/components/chart/sales-purchase-chart";
 
 export default function Page() {
   const lowStockItems: LowStockItem[] = [
@@ -22,9 +23,17 @@ export default function Page() {
           <div>
             <TableSection />
           </div>
-          {/* LowQuantityStock at bottom left below the table */}
-          <div className="flex justify-start mt-8">
-            <LowQuantityStock items={lowStockItems} />
+          {/* Center SalesPurchaseChart and align LowQuantityStock to the left with reduced gap */}
+          <div className="flex flex-row justify-between items-center mt-8 gap-4">
+            <div className="flex justify-start mr-4">
+              <LowQuantityStock items={lowStockItems} />
+            </div>
+            <div className="flex justify-center p-2 w-full">
+              <SalesPurchaseChart />
+            </div>
+            <div className="flex justify-start mr-4">
+              <LowQuantityStock items={lowStockItems} />
+            </div>
           </div>
         </div>
       </div>
