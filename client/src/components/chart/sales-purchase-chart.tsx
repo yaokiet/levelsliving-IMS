@@ -1,6 +1,6 @@
 import React from "react";
 
-const SalesPurchaseChart: React.FC = () => {
+export function SalesPurchaseChart() {
   const barData = [
     { label: "Jan", height: 190, color: "bg-blue-500" },
     { label: "Feb", height: 170, color: "bg-green-500" },
@@ -23,6 +23,4 @@ const SalesPurchaseChart: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default SalesPurchaseChart;
+}

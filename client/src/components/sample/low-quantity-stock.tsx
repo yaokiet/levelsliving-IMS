@@ -19,7 +19,7 @@ const statusVariant: Record<"Low" | "Medium" | "High", "destructive" | "secondar
   High: "default",
 };
 
-export const LowQuantityStock: React.FC<LowQuantityStockProps> = ({ items }) => {
+export function LowQuantityStock({ items }: LowQuantityStockProps) {
   return (
     <div className="bg-background rounded-lg border p-6 w-full max-w-lg mt-8 mb-6 ml-6">
       <h2 className="text-lg font-semibold mb-4 text-center">Low Quantity Stock</h2>

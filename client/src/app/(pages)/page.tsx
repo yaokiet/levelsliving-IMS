@@ -1,7 +1,7 @@
 import { SectionCards } from "@/components/sample/section-cards";
 import TableSection from "../../components/table/table-section";
 import LowQuantityStock, { LowStockItem } from "@/components/sample/low-quantity-stock";
-import SalesPurchaseChart from "@/components/chart/sales-purchase-chart";
+import { SalesPurchaseChart } from "@/components/chart/sales-purchase-chart";
 
 export default function Page() {
   const lowStockItems: LowStockItem[] = [
