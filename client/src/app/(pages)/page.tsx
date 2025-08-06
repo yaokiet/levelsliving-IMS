@@ -20,10 +20,6 @@ export default function Page() {
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <SectionCards />
           </div>
-          <div>
-            <TableSection />
-          </div>
-          {/* Center SalesPurchaseChart and align LowQuantityStock to the left with reduced gap */}
           <div className="flex flex-row justify-between items-center mt-8 gap-4">
             <div className="flex justify-start mr-4">
               <LowQuantityStock items={lowStockItems} />
@@ -35,6 +31,11 @@ export default function Page() {
               <LowQuantityStock items={lowStockItems} />
             </div>
           </div>
+          <div>
+            <TableSection />
+          </div>
+          {/* Center SalesPurchaseChart and align LowQuantityStock to the left with reduced gap */}
+          
         </div>
       </div>
     </div>
