@@ -9,8 +9,8 @@ services:
       POSTGRES_DB: levelsliving
       POSTGRES_PASSWORD: password
     volumes:
-      - pg_data:/var/lib/postgresql/data
-    # - ./init-scripts:/docker-entrypoint-initdb.d
+      # - pg_data:/var/lib/postgresql/data
+    - ./init-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432" # Map host port 5432 to container port 5432 (optional for FastAPI, useful for PGAdmin4)
     healthcheck:
