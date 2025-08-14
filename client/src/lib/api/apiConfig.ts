@@ -7,5 +7,6 @@ export const API_PATHS = {
     refresh: `${API_PREFIX}/refresh`,
     user: `${API_PREFIX}/user`,
     item: `${API_PREFIX}/item`,
+    item_details: `${API_PREFIX}/item/details`
     // Add more as needed
 };

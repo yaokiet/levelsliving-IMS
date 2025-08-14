@@ -7,3 +7,11 @@ export interface Item {
     qty: number,
     threshold_qty: number
 }
+
+export interface ComponentDetail extends Item {
+  qty_required: number;
+}
+
+export interface ItemWithComponents extends Item {
+  components: ComponentDetail[];
+}

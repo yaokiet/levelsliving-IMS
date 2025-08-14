@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   Warehouse,
   GalleryVerticalEnd,
   Truck,
   Container,
   Gauge,
-  Files
-} from "lucide-react"
+  Files,
+} from "lucide-react";
 
-import { NavInventory } from "@/components/ui/sidebar/nav-inventory"
-import { NavUser } from "@/components/ui/sidebar/nav-user"
+import { NavInventory } from "@/components/ui/sidebar/nav-inventory";
+import { NavUser } from "@/components/ui/sidebar/nav-user";
 
 import {
   Sidebar,
@@ -22,9 +22,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { RootState } from "@/app/_store/redux-store";
-import { useSelector } from "react-redux"
+import { useSelector } from "react-redux";
 
 const data = {
   inventoryMenuItems: [
@@ -35,7 +35,7 @@ const data = {
     },
     {
       name: "Inventory",
-      url: "/inventory",
+      url: "/item-details",
       icon: Warehouse,
     },
     {
@@ -54,7 +54,7 @@ const data = {
       icon: Truck,
     },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -81,10 +81,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavInventory inventoryMenuItems={data.inventoryMenuItems} />
       </SidebarContent>
-      <SidebarFooter >
+      <SidebarFooter>
         <NavUser user={user ?? { name: "user", email: "user@example.com" }} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

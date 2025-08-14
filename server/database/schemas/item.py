@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 class ItemBase(BaseModel):
     sku: str
@@ -25,3 +25,17 @@ class ItemRead(ItemBase):
 
     class Config:
         orm_mode = True
+        
+class ItemComponentRead(BaseModel):
+    parent_id: int
+    child_id: int
+    qty_required: int
+
+    class Config:
+        from_attributes = True
+    
+class ComponentDetail(ItemRead):
+    qty_required: int
+
+class ItemWithComponents(ItemRead):
+    components: List[ComponentDetail] = []

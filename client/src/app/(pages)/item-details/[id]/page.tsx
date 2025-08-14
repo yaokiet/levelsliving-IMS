@@ -1,42 +1,48 @@
-"use client"
+"use client";
 
-import React, { useEffect } from "react"
-import { ItemInfoCard } from "@/components/ui/item/item-info-card"
-import TableSection from "@/components/table/table-section"
-import { getAllItems } from "@/lib/api/itemsApi"
+import React from "react";
+import { ItemProvider, useItem } from "@/context/ItemContext";
+import { ItemInfoCard } from "@/components/ui/item/item-info-card";
+import ItemComponentsTable from "@/components/table/main/item-components-table";
 
-export default function ItemDetailsPage() {
-  // Example item data
-  const item = {
-    name: "Sample Item",
-    sku: "SKU12345",
-    category: "Electronics",
-    type: "Gadget",
-    quantity: 42,
+// This is the inner component that will have access to the context
+function ItemDetailsContent() {
+  const { item, loading, error } = useItem();
+
+  if (loading) {
+    return <div className="container mx-auto py-10 px-6">Loading...</div>;
   }
 
-  useEffect(() => {
-    try {
-      getAllItems().then(items => {
-        console.log("Fetched items:", items)
-      })
-    }
-    catch (error) {
-      console.error("Error fetching items:", error)
-    }
+  if (error) {
+    return (
+      <div className="container mx-auto py-10 px-6 text-red-500">{error}</div>
+    );
+  }
 
-  }, []);
+  if (!item) {
+    return null; // Or a "Not Found" message
+  }
 
   return (
     <div className="container mx-auto py-10 px-6">
       <ItemInfoCard
-        name={item.name}
+        name={item.item_name}
         sku={item.sku}
-        category={item.category}
-        type={item.type}
-        quantity={item.quantity}
+        category={item.type}
+        type={item.variant || "N/A"}
+        quantity={item.qty}
       />
-      <TableSection />
+
+      <ItemComponentsTable />
     </div>
-  )
+  );
+}
+
+// This is the main page export
+export default function ItemDetailsPage() {
+  return (
+    <ItemProvider>
+      <ItemDetailsContent />
+    </ItemProvider>
+  );
 }
