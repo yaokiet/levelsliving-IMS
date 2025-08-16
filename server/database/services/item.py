@@ -39,22 +39,31 @@ def get_all_item_components(db: Session, item_id: int):
 
 def get_item_with_components(db: Session, item_id: int):
     """
-    Retrieves an item and attaches the full details of each of its components.
+    Retrieves an item and attaches the full details of each of its components
+    using an efficient JOIN query.
     """
+    # 1. Retrieve the parent item, same as before.
     item = get_item(db, item_id)
     if not item:
         return None
 
-    component_relations = get_all_item_components(db, item_id)
+    # 2. Perform a single JOIN query to get all child items and their quantities.
+    component_results = (
+        db.query(Item, ItemComponent.qty_required)
+        .join(ItemComponent, Item.id == ItemComponent.child_id)
+        .filter(ItemComponent.parent_id == item_id)
+        .all()
+    )
 
+    # 3. The query returns a list of tuples, like: [(<Item_A>, 5), (<Item_B>, 2)]
     detailed_components = []
-    for relation in component_relations:
+    for component_item, qty in component_results:
+        component_item.qty_required = qty
+        detailed_components.append(component_item)
 
-        component_item = get_item(db, relation.child_id)
-        if component_item:
-            component_item.qty_required = relation.qty_required
-            detailed_components.append(component_item)
-
+    # 4. Attach the fully detailed list of components to the parent item.
     item.components = detailed_components
     return item
+
+
     
