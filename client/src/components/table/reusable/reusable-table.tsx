@@ -12,6 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
   VisibilityState,
+  getExpandedRowModel, // For expanding rows
 } from "@tanstack/react-table"
 
 import {
@@ -66,6 +67,7 @@ export function ReusableTable<TData, TValue>({
       columnVisibility,
       rowSelection,
     },
+    getExpandedRowModel: getExpandedRowModel(), // For expanding rows
   })
 
   return (

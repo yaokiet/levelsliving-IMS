@@ -1,5 +1,7 @@
 'use client'
 
+// This file defines the columns for the main page table.
+
 import { useState, useEffect } from 'react'
 import { Item } from "@/types/item"
 import { columns } from "./main-page-columns"
@@ -10,6 +12,7 @@ export default function MainPageTable() {
   const [data, setData] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Fetch items when the component mounts
   useEffect(() => {
       try {
         getAllItems().then(items => {

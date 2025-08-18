@@ -1,4 +1,5 @@
 "use client"
+
 // This file defines the columns for the main page table.
 
 import { ColumnDef } from "@tanstack/react-table"
