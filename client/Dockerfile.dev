@@ -1,0 +1,52 @@
+# # Stage 1: Base dependencies
+# # Get the base node image and install all dependencies
+# FROM public.ecr.aws/docker/library/node:22-alpine AS deps
+# # WORKDIR /app
+# # COPY package.json package-lock.json ./
+# # RUN npm install
+
+# # # Stage 2: Builder
+# # # Build the Next.js application for production
+# # FROM public.ecr.aws/docker/library/node:22-alpine AS builder
+# # WORKDIR /app
+# # # Copy dependencies from the 'deps' stage
+# # COPY --from=deps /app/node_modules ./node_modules
+# # COPY . .
+
+# # # Copy the .env file for build-time variables.
+
+# # RUN npm run build
+
+# # # Stage 3: Production Runner
+# # # Create the final, small production image
+# # FROM public.ecr.aws/docker/library/node:22-alpine AS runner
+# # WORKDIR /app
+
+# # # Copy the standalone output from the builder stage
+# # COPY --from=builder /app/.next .next
+# # COPY --from=builder /app/public public
+# # COPY --from=builder /app/node_modules ./node_modules
+# # COPY --from=builder /app/package.json ./
+# # COPY --from=builder /app/next.config.ts ./next.config.ts
+
+# # EXPOSE 3000
+# # # This command starts the Next.js server
+# # CMD ["npm", "run", "dev"]
+
+# # Set working directory
+# WORKDIR /app
+
+# COPY package.json package-lock.json ./
+
+# # Install pnpm globally and install all dependencies (dev & prod)
+# RUN npm install
+# RUN npm run build
+
+# # Copy all source code
+# COPY . .
+
+# # Expose port for development
+# EXPOSE 3000
+
+# # Command to run in development mode with hot-reload
+# CMD ["npm", "run", "dev"]

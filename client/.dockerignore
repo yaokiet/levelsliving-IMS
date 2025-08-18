@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Dependencies
+node_modules
+
+# Build artifacts
+.next
+dist
+build
+
+# Env files (we handle these explicitly or at runtime)
+.env
+.env.local
+.env.production
+.env.development
+
+# Other
+README.md
