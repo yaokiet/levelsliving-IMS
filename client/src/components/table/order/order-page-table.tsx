@@ -44,6 +44,8 @@ export default function OrderPageTable() {
             showViewOptions={true}
             showPagination={true}
             subRowColumns={orderItemColumns}
+            filterKey="status"
+            filterLabel="Status"
           />
         )}
       </>

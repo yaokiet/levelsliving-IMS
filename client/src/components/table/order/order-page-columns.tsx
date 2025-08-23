@@ -3,17 +3,6 @@
 // This file defines the columns for the main page table.
 
 import { ColumnDef } from "@tanstack/react-table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { OrderItem } from "@/types/order-item"
 
 // Importing of Data Table Components (For easier reuse)
@@ -25,6 +14,9 @@ export const columns: ColumnDef<OrderItem>[] = [
   {
     id: "expand",
     cell: ({ row }) => {
+      console.log("Row", row.id, "can expand?", row.getCanExpand());
+      console.log("Row", row.id, "subRows:", row.original.subRows);
+
       return row.getCanExpand() ?
         <button onClick={row.getToggleExpandedHandler()} className="flex items-center">
           {row.getIsExpanded() ? '👇' : '👉'}
@@ -96,6 +88,11 @@ export const columns: ColumnDef<OrderItem>[] = [
       />
     ),
     cell: ({ row }) => <div>{row.getValue("status")}</div>,
+    filterFn: (row, columnId, filterValue) => {
+      // Show all if filterValue is empty, else filter by status
+      if (!filterValue) return true;
+      return row.getValue(columnId) === filterValue;
+    },
   },
 ]
 

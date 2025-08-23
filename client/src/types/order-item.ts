@@ -7,7 +7,7 @@ export interface OrderItem {
     cust_contact: number,
     order_qty: number,
     subRows: Item[],
-    // Status
+    status: string,
     // order_status: string,
 }
 
@@ -67,6 +67,7 @@ export const mockOrderItems: OrderItem[] = [
         order_date: "2024-08-01",
         cust_contact: 91234567,
         order_qty: 3,
+        status: "Pending",
         subRows: [
             {
                 item_name: "Office Chair", variant: "Black", qty: 1,
@@ -90,6 +91,7 @@ export const mockOrderItems: OrderItem[] = [
         order_date: "2024-08-02",
         cust_contact: 98765432,
         order_qty: 1,
+        status: "Pending",
         subRows: []
     },
     {
@@ -98,6 +100,7 @@ export const mockOrderItems: OrderItem[] = [
         order_date: "2024-08-03",
         cust_contact: 90011223,
         order_qty: 2,
+        status: "Pending",
         subRows: []
     },
     {
@@ -106,6 +109,7 @@ export const mockOrderItems: OrderItem[] = [
         order_date: "2024-08-04",
         cust_contact: 81239876,
         order_qty: 5,
+        status: "Completed",
         subRows: []
     },
     {
@@ -114,6 +118,7 @@ export const mockOrderItems: OrderItem[] = [
         order_date: "2024-08-05",
         cust_contact: 82345678,
         order_qty: 4,
+        status: "Cancelled",
         subRows: []
     }
 ];
