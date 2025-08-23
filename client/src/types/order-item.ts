@@ -19,7 +19,8 @@ const mockItems: Item[] = [
         item_name: "Office Chair",
         variant: "Black",
         qty: 50,
-        threshold_qty: 5
+        threshold_qty: 5,
+        status: "Available"
     },
     {
         id: 2,
@@ -28,7 +29,8 @@ const mockItems: Item[] = [
         item_name: "Standing Desk",
         variant: "White",
         qty: 30,
-        threshold_qty: 5
+        threshold_qty: 5,
+        status: "Available"
     },
     {
         id: 3,
@@ -37,7 +39,8 @@ const mockItems: Item[] = [
         item_name: "Wireless Mouse",
         variant: "Black",
         qty: 100,
-        threshold_qty: 5
+        threshold_qty: 5,
+        status: "Available"
     },
     {
         id: 4,
@@ -46,7 +49,8 @@ const mockItems: Item[] = [
         item_name: "27-inch Monitor",
         variant: "Black",
         qty: 20,
-        threshold_qty: 5
+        threshold_qty: 5,
+        status: "Available"
     },
     {
         id: 5,
@@ -55,7 +59,8 @@ const mockItems: Item[] = [
         item_name: "Desk Lamp",
         variant: "White",
         qty: 15,
-        threshold_qty: 5
+        threshold_qty: 5,
+        status: "Available"
     }
 ];
 
@@ -74,14 +79,16 @@ export const mockOrderItems: OrderItem[] = [
                 id: 5555,
                 sku: "TEST1",
                 type: "",
-                threshold_qty: 0
+                threshold_qty: 0,
+                status: "Pending"
             },
             {
                 item_name: "Standing Desk", variant: "White", qty: 1,
                 id: 6666,
                 sku: "TEST2",
                 type: "",
-                threshold_qty: 0
+                threshold_qty: 0,
+                status: "Pending"
             }
         ]
     },
