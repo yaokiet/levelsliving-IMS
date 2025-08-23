@@ -119,7 +119,6 @@ export const columns: ColumnDef<ComponentDetail>[] = [
               Copy Component SKU
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit component link</DropdownMenuItem>
             <DropdownMenuItem className="text-red-600">
               Remove component
             </DropdownMenuItem>

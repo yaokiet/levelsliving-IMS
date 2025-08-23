@@ -3,7 +3,6 @@
 // This file defines the columns for the main page table.
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, AlertCircle } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
@@ -23,34 +22,14 @@ import { DataTableColumnHeader } from "../reusable/data-table-column-header"
 // Order page columns definition
 // Defines the columns that will be displayed in the table
 export const columns: ColumnDef<OrderItem>[] = [
-    // https://dev.to/yangerrai/expand-tanstack-table-row-to-display-non-uniform-data-39og
-    // To follow up later for making it expandable to show the item_name
-
-
-
-    // This column is for selecting rows.
-    // It allows users to select multiple rows for bulk actions.
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
+    id: "expand",
+    cell: ({ row }) => {
+      return row.getCanExpand() ?
+        <button onClick={row.getToggleExpandedHandler()} className="flex items-center">
+          {row.getIsExpanded() ? '👇' : '👉'}
+        </button> : null
+    }
   },
     // Order ID Column
   {
@@ -61,28 +40,7 @@ export const columns: ColumnDef<OrderItem>[] = [
         title="Order ID"
       />
     ),
-    cell: ({ row }) => {
-      const orderId = row.getValue("id") as number
-      const id = row.original.id
-      const router = useRouter();
-
-      return (
-        <div 
-          className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
-          onClick={() => router.push(`/item-details/${id}`)} // Placeholder for navigation into order item page
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              router.push(`/item-details/${id}`) // Placeholder for navigation
-            }
-          }}
-          tabIndex={0}
-          role="link"
-          aria-label={`View details for ${id}`}
-        >
-          {orderId}
-        </div>
-      )
-    },
+    cell: ({ row }) => <div>{row.getValue("id")}</div>,
   },
     //   Cust name column
   {
@@ -108,25 +66,14 @@ export const columns: ColumnDef<OrderItem>[] = [
   },
     //   Contact Num
   {
-    accessorKey: "contact_num",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Contact Number"
-      />
-    ),
-    cell: ({ row }) => <div>{row.getValue("contact_num")}</div>,
-  },
-    //   Contact Num
-  {
-    accessorKey: "contact_num",
+    accessorKey: "cust_contact",
     header: ({ column }) => (
         <DataTableColumnHeader
             column={column}
             title="Contact Number"
         />
     ),
-    cell: ({ row }) => <div>{row.getValue("contact_num")}</div>,
+    cell: ({ row }) => <div>{row.getValue("cust_contact")}</div>,
   },
     // Order Qty Column
   {
@@ -150,4 +97,9 @@ export const columns: ColumnDef<OrderItem>[] = [
     ),
     cell: ({ row }) => <div>{row.getValue("status")}</div>,
   },
+]
+
+export const orderItemColumns = [
+  { accessorKey: "item_name", header: "Item Name" },
+  { accessorKey: "sku", header: "SKU" },
 ]

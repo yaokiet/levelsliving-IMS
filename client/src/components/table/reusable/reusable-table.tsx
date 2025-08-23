@@ -12,7 +12,8 @@ import {
   getSortedRowModel,
   useReactTable,
   VisibilityState,
-  getExpandedRowModel, // For expanding rows
+  getExpandedRowModel,
+  ExpandedState, // For expanding rows
 } from "@tanstack/react-table"
 
 import {
@@ -28,28 +29,31 @@ import { DataTableSearch } from "./data-table-search"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableViewFilterOptions } from "./data-table-column-visibility"
 
-interface ReusableTableProps<TData, TValue> {
+interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   searchKey?: string
   searchPlaceholder?: string
   showViewOptions?: boolean
   showPagination?: boolean
+  subRowColumns?: { accessorKey: string; header: string }[]
 }
 
-export function ReusableTable<TData, TValue>({
+export function ReusableTable<TData extends Record<string, any>, TValue>({
   columns,
   data,
   searchKey,
   searchPlaceholder = "Search...",
   showViewOptions = true,
   showPagination = true,
+  subRowColumns = [],
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-
+  const [expanded, setExpanded] = React.useState<ExpandedState>({}) // For expanding rows
+  
   const table = useReactTable({
     data,
     columns,
@@ -66,84 +70,113 @@ export function ReusableTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+      expanded,
     },
     getExpandedRowModel: getExpandedRowModel(), // For expanding rows
+    getSubRows: (row) => row.subRows, // For getting sub-rows
+    onExpandedChange: setExpanded,
   })
-
+  
   return (
     <div>
-      {/* Search bar and view options */}
-      {(searchKey || showViewOptions) && (
-        <div className="flex items-center py-4 justify-between">
-          {searchKey && (
-            // DataTableSearch component for searching
-            <DataTableSearch
-              table={table} // Pass the table instance
-              searchKey={searchKey} // Search key for filtering
-              placeholder={searchPlaceholder} // Placeholder text for the search input
-            />
-          )}
-          {!searchKey && <div></div>}
-          {showViewOptions && <DataTableViewFilterOptions table={table} />}
-        </div>
+    {/* Search bar and view options */}
+    {(searchKey || showViewOptions) && (
+      <div className="flex items-center py-4 justify-between">
+      {searchKey && (
+        // DataTableSearch component for searching
+        <DataTableSearch
+        table={table} // Pass the table instance
+        searchKey={searchKey} // Search key for filtering
+        placeholder={searchPlaceholder} // Placeholder text for the search input
+        />
       )}
-
-      {/* Table */}
-      <div className="overflow-hidden rounded-md border">
-        <Table>
-          {/* Render the table headers e.g. column names */}
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+      {!searchKey && <div></div>}
+      {showViewOptions && <DataTableViewFilterOptions table={table} />}
+      </div>
+    )}
+    
+    {/* Table */}
+    <div className="overflow-hidden rounded-md border">
+    <Table>
+    {/* Render the table headers e.g. column names */}
+    <TableHeader>
+    {table.getHeaderGroups().map((headerGroup) => (
+      <TableRow key={headerGroup.id}>
+      {headerGroup.headers.map((header) => (
+        <TableHead key={header.id}>
+        {header.isPlaceholder
+          ? null
+          : flexRender(
+            header.column.columnDef.header,
+            header.getContext()
+          )}
+          </TableHead>
+        ))}
+        </TableRow>
+      ))}
+      </TableHeader>
+      {/* Render the table rows e.g. data for each row */}
+      <TableBody>
+      {table.getRowModel().rows?.length ? (
+        table.getRowModel().rows.map((row) => (
+          <React.Fragment key={row.id}>
+          <TableRow data-state={row.getIsSelected() && "selected"}>
+          {/* Render the cells in each row */}
+          {row.getVisibleCells().map((cell) => (
+            <TableCell key={cell.id}>
+            {flexRender(
+              cell.column.columnDef.cell,
+              cell.getContext()
+            )}
+            </TableCell>
+          ))}
+          </TableRow>
+          {/* Expand Subrows below parent */}
+          {row.getIsExpanded() && row.subRows && row.subRows.length > 0 && (
+            <TableRow>
+            <TableCell colSpan={columns.length}>
+            <Table className="bg-muted">
+            <TableHeader>
+            <TableRow>
+            {subRowColumns.map((col) => (
+              <TableHead key={col.accessorKey}>{col.header}</TableHead>
+            ))}
+            </TableRow>
+            </TableHeader>
+            <TableBody>
+            {row.subRows.map((subRow) => (
+              <TableRow key={subRow.id}>
+              {subRowColumns.map((col) => (
+                <TableCell key={col.accessorKey}>
+                {subRow.original[col.accessorKey]}
+                </TableCell>
+              ))}
               </TableRow>
             ))}
-          </TableHeader>
-          {/* Render the table rows e.g. data for each row */}
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {/* Render the cells in each row */}
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              // If no rows, display a message
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            </TableBody>
+            </Table>
+            </TableCell>
+            </TableRow>
+          )}
+          </React.Fragment>
+        ))
+      ) : (
+        // If no rows, display a message
+        <TableRow>
+        <TableCell colSpan={columns.length} className="h-24 text-center">
+        No results.
+        </TableCell>
+        </TableRow>
+      )}
+      </TableBody>
+      </Table>
       </div>
       {/* Pagination */}
       {showPagination && (
         <div className="py-4">
-          <DataTablePagination table={table} />
+        <DataTablePagination table={table} />
         </div>
       )}
-    </div>
-  )
-}
+      </div>
+    )
+  }
