@@ -9,6 +9,7 @@ import {
   Gauge,
   Files,
 } from "lucide-react";
+import Link from "next/link";
 
 import { NavInventory } from "@/components/ui/sidebar/nav-inventory";
 import { NavUser } from "@/components/ui/sidebar/nav-user";
@@ -65,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/">
+              <Link href="/">
                 <div className="bg-primary text-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <GalleryVerticalEnd className="size-4" />
                 </div>
@@ -73,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="font-medium">Levels Living</span>
                   <span className="">IMS</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
