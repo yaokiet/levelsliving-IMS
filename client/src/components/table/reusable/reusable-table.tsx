@@ -80,7 +80,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onExpandedChange: setExpanded,
-    getExpandedRowModel: getExpandedRowModel(), // For expanding rows
+    // getExpandedRowModel: getExpandedRowModel(), // For expanding rows
     
     // To fix the expand icon from disappearing when filtering
     getRowCanExpand: (row) => 
@@ -93,7 +93,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       expanded,
     },
     getSubRows: (row) => row.subRows, // For getting sub-rows
-    filterFromLeafRows: false,
+    maxLeafRowFilterDepth: 0, // Add this to disable filtering subRows
   });
 
   const computedFilterOptions = React.useMemo(

@@ -6,7 +6,7 @@ export interface Item {
     variant: string | null,
     qty: number,
     threshold_qty: number,
-    status: string
+    // status: string
 }
 
 export interface ComponentDetail extends Item {

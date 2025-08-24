@@ -20,7 +20,6 @@ const mockItems: Item[] = [
         variant: "Black",
         qty: 50,
         threshold_qty: 5,
-        status: "Available"
     },
     {
         id: 2,
@@ -30,7 +29,6 @@ const mockItems: Item[] = [
         variant: "White",
         qty: 30,
         threshold_qty: 5,
-        status: "Available"
     },
     {
         id: 3,
@@ -40,7 +38,6 @@ const mockItems: Item[] = [
         variant: "Black",
         qty: 100,
         threshold_qty: 5,
-        status: "Available"
     },
     {
         id: 4,
@@ -50,7 +47,6 @@ const mockItems: Item[] = [
         variant: "Black",
         qty: 20,
         threshold_qty: 5,
-        status: "Available"
     },
     {
         id: 5,
@@ -60,7 +56,6 @@ const mockItems: Item[] = [
         variant: "White",
         qty: 15,
         threshold_qty: 5,
-        status: "Available"
     }
 ];
 
@@ -80,7 +75,6 @@ export const mockOrderItems: OrderItem[] = [
                 sku: "TEST1",
                 type: "",
                 threshold_qty: 0,
-                status: "Pending"
             },
             {
                 item_name: "Standing Desk", variant: "White", qty: 1,
@@ -88,7 +82,6 @@ export const mockOrderItems: OrderItem[] = [
                 sku: "TEST2",
                 type: "",
                 threshold_qty: 0,
-                status: "Pending"
             }
         ]
     },
