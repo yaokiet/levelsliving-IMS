@@ -37,12 +37,12 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   searchPlaceholder?: string;
   showViewOptions?: boolean;
   showPagination?: boolean;
-  subRowColumns?: { accessorKey: string; header: string }[];
   filterKey?: string;
   filterLabel?: string;
   filterOptions?: string[];
   filterValue?: string;
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
+  className? : string;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -52,23 +52,20 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   searchPlaceholder = "Search...",
   showViewOptions = true,
   showPagination = true,
-  subRowColumns = [],
   filterKey,
   filterLabel,
   filterOptions = [],
+  className = "",
   renderSubRows,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [expanded, setExpanded] = React.useState<ExpandedState>({}); // For expanding rows
   const currentFilterValue = String(
-    columnFilters.find((filter) => filter.id === filterKey)?.value || ""
-  );
+    columnFilters.find((filter) => filter.id === filterKey)?.value || "");
 
   const table = useReactTable({
     data,
@@ -120,7 +117,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   return (
     <div>
       {/* Search bar and view options */}
-      {(searchKey || showViewOptions) && (
+      {(searchKey || showViewOptions ) && (
         <div className="flex items-center py-4 justify-between">
           {searchKey && (
             // DataTableSearch component for searching
@@ -157,7 +154,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
         </div>
       )}
       {/* Table */}
-      <div className="overflow-hidden rounded-md border">
+      <div className={`overflow-hidden rounded-md border ${className}`}>
         <Table>
           {/* Render the table headers e.g. column names */}
           <TableHeader>
@@ -199,7 +196,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                     renderSubRows &&
                     renderSubRows(row, columns.length)
                   }
-                    )}
                 </React.Fragment>
               ))
             ) : (

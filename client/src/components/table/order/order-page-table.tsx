@@ -17,6 +17,14 @@ export default function OrderPageTable() {
     setLoading(false)
   }, [])
 
+  const renderSubRows = (row: any) => (
+    <tr>
+      <td colSpan={columns.length} className="p-0" style={{ padding: 0 }}>
+        <OrderPageSubTable data={row.subRows.map((r: { original: any }) => r.original)} />
+      </td>
+    </tr>
+  )
+
 // Fetch items when the component mounts
 //   useEffect(() => {
 //       try {
@@ -47,13 +55,7 @@ export default function OrderPageTable() {
             // subRowColumns={orderItemColumns}
             filterKey="status"
             filterLabel="Status"
-            renderSubRows = {(row, colSpan) => (
-              <tr>
-                <td colSpan={columns.length} style={{ padding: 0 }}>
-        <OrderPageSubTable data={row.subRows.map(r => r.original)} />
-                </td>
-              </tr>
-            )}
+            renderSubRows={renderSubRows}
           />
         )}
       </>
