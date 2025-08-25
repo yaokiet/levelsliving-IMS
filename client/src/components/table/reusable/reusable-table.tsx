@@ -42,6 +42,7 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   filterLabel?: string;
   filterOptions?: string[];
   filterValue?: string;
+  renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -55,6 +56,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   filterKey,
   filterLabel,
   filterOptions = [],
+  renderSubRows,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -193,33 +195,10 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                   {/* Expand Subrows below parent */}
                   {row.getIsExpanded() &&
                     row.subRows &&
-                    row.subRows.length > 0 && (
-                      <TableRow>
-                        <TableCell colSpan={columns.length}>
-                          <Table className="bg-muted">
-                            <TableHeader>
-                              <TableRow>
-                                {subRowColumns.map((col) => (
-                                  <TableHead key={col.accessorKey}>
-                                    {col.header}
-                                  </TableHead>
-                                ))}
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {row.subRows.map((subRow) => (
-                                <TableRow key={subRow.id}>
-                                  {subRowColumns.map((col) => (
-                                    <TableCell key={col.accessorKey}>
-                                      {subRow.original[col.accessorKey]}
-                                    </TableCell>
-                                  ))}
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableCell>
-                      </TableRow>
+                    row.subRows.length > 0 &&
+                    renderSubRows &&
+                    renderSubRows(row, columns.length)
+                  }
                     )}
                 </React.Fragment>
               ))

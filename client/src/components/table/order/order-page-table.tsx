@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { OrderItem, mockOrderItems } from "@/types/order-item"
 import { columns, orderItemColumns } from "./order-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
+import OrderPageSubTable from './order-page-sub-table';
 
 export default function OrderPageTable() {
   const [data, setData] = useState<OrderItem[]>([])
@@ -43,9 +44,16 @@ export default function OrderPageTable() {
             searchPlaceholder="Filter items by Customer Name"
             showViewOptions={true}
             showPagination={true}
-            subRowColumns={orderItemColumns}
+            // subRowColumns={orderItemColumns}
             filterKey="status"
             filterLabel="Status"
+            renderSubRows = {(row, colSpan) => (
+              <tr>
+                <td colSpan={columns.length} style={{ padding: 0 }}>
+        <OrderPageSubTable data={row.subRows.map(r => r.original)} />
+                </td>
+              </tr>
+            )}
           />
         )}
       </>
