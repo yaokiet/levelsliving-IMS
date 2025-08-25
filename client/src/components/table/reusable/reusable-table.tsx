@@ -43,6 +43,7 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   filterValue?: string;
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
   className? : string;
+  containerClassName?: string;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -56,6 +57,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   filterLabel,
   filterOptions = [],
   className = "",
+  containerClassName = "w-4/5 rounded-xl shadow-xl p-8",
   renderSubRows,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -114,54 +116,66 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   // Debugging
   console.log(table.getRowModel().rows);
 
-  return (
-    <div>
+return (
+  <div className={`justify-center ${className}`}>
+    <div className={`${containerClassName}`}>
       {/* Search bar and view options */}
-      {(searchKey || showViewOptions ) && (
-        <div className="flex items-center py-4 justify-between">
-          {searchKey && (
-            // DataTableSearch component for searching
-            <DataTableSearch
-              table={table} // Pass the table instance
-              searchKey={searchKey} // Search key for filtering
-              placeholder={searchPlaceholder} // Placeholder text for the search input
-            />
-          )}
-          {/* Dropdown filter for table data */}
+      {(searchKey || showViewOptions) && (
+        <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
+          <div className="flex-1 min-w-[220px]">
+            {searchKey && (
+              <DataTableSearch
+                table={table}
+                searchKey={searchKey}
+                placeholder={searchPlaceholder}
+              />
+            )}
+          </div>
           {filterKey && (
-            <DropdownFilterSelect
-              filterKey={filterKey}
-              label={filterLabel}
-              options={computedFilterOptions}
-              value={currentFilterValue || "__all__"}
-              onChange={(value) => {
-                setColumnFilters((prev) => {
-                  if (value === "__all__") {
-                    return prev.filter((f) => f.id !== filterKey);
-                  }
-                  const found = prev.find((f) => f.id === filterKey);
-                  if (found) {
-                    return prev.map((f) =>
-                      f.id === filterKey ? { ...f, value } : f
-                    );
-                  }
-                  return [...prev, { id: filterKey, value }];
-                });
-              }}
-            />
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium" htmlFor={`filter-${filterKey}`}>
+                Filter {filterLabel} column
+              </label>
+              <DropdownFilterSelect
+                filterKey={filterKey}
+                // label={filterLabel}
+                options={computedFilterOptions}
+                value={currentFilterValue || "__all__"}
+                onChange={(value) => {
+                  setColumnFilters((prev) => {
+                    if (value === "__all__") {
+                      return prev.filter((f) => f.id !== filterKey);
+                    }
+                    const found = prev.find((f) => f.id === filterKey);
+                    if (found) {
+                      return prev.map((f) =>
+                        f.id === filterKey ? { ...f, value } : f
+                      );
+                    }
+                    return [...prev, { id: filterKey, value }];
+                  });
+                }}
+              />
+            </div>
           )}
-          {showViewOptions && <DataTableViewFilterOptions table={table} />}
+          {showViewOptions && (
+            <div className="flex-shrink-0">
+              <DataTableViewFilterOptions table={table} />
+            </div>
+          )}
         </div>
       )}
       {/* Table */}
-      <div className={`overflow-hidden rounded-md border ${className}`}>
-        <Table>
-          {/* Render the table headers e.g. column names */}
+      <div className={`overflow-hidden rounded-lg border`}>
+        <Table className="w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="font-semibold border-b px-4 py-3"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -173,15 +187,19 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          {/* Render the table rows e.g. data for each row */}
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <React.Fragment key={row.id}>
-                  <TableRow data-state={row.getIsSelected() && "selected"}>
-                    {/* Render the cells in each row */}
+                  <TableRow
+                    data-state={row.getIsSelected() && "selected"}
+                    className="hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors"
+                  >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell
+                        key={cell.id}
+                        className="border-b px-4 py-2"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -199,7 +217,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                 </React.Fragment>
               ))
             ) : (
-              // If no rows, display a message
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
@@ -214,10 +231,11 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       </div>
       {/* Pagination */}
       {showPagination && (
-        <div className="py-4">
+        <div className="py-4 flex justify-end">
           <DataTablePagination table={table} />
         </div>
       )}
     </div>
-  );
-}
+  </div>
+);
+};

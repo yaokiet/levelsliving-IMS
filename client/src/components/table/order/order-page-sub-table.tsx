@@ -20,7 +20,8 @@ export default function OrderPageSubTable({ data }: { data: OrderItem[] }) {
             showViewOptions={false} 
             showPagination={false}
             // Make changes to the color scheme of sub-table aka Expanded table here
-            className= "rounded-none w-4/5 mx-auto bg-gray-900 text-gray-100 border-gray-700"
+            className= "rounded-none w-4/5 mx-auto"
+            containerClassName=""
           />
         )}
       </>
