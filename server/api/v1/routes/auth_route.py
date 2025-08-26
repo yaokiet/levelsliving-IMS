@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response, Depends, Cookie
+from fastapi import APIRouter, HTTPException, Response, Depends, Cookie, Request
 from app.auth.jwt_utils import create_access_token, create_refresh_token
 from app.core.config import ACCESS_TOKEN_EXPIRE_SECONDS, REFRESH_TOKEN_EXPIRE_SECONDS, SECRET_KEY, ALGORITHM
 from datetime import datetime, timezone
@@ -116,3 +116,5 @@ def logout(response: Response, refresh_token: str = Cookie(None), db: Session = 
     response.delete_cookie("access_token", path="/")
     response.delete_cookie("refresh_token", path="/")
     return {"success": True}
+
+

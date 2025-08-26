@@ -11,7 +11,7 @@ frontend_origin = os.getenv("FRONTEND_ORIGIN")
 
 app = FastAPI()
 
-app.add_middleware(AuthMiddleware)
+# app.add_middleware(AuthMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
