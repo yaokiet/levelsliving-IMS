@@ -1,0 +1,38 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database.database import get_db
+from database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
+from database.services.supplier_item import (
+    get_supplier_item, get_all_supplier_items, create_supplier_item, update_supplier_item, delete_supplier_item
+)
+
+router = APIRouter(prefix="/supplier-item", tags=["supplier-item"])
+
+@router.get("/", response_model=list[SupplierItemRead])
+def read_supplier_items(db: Session = Depends(get_db)):
+    return get_all_supplier_items(db)
+
+@router.get("/{supplier_item_id}", response_model=SupplierItemRead)
+def read_supplier_item(supplier_item_id: int, db: Session = Depends(get_db)):
+    si = get_supplier_item(db, supplier_item_id)
+    if not si:
+        raise HTTPException(status_code=404, detail="SupplierItem not found")
+    return si
+
+@router.post("/", response_model=SupplierItemRead)
+def create_new_supplier_item(supplier_item: SupplierItemCreate, db: Session = Depends(get_db)):
+    return create_supplier_item(db, supplier_item)
+
+@router.put("/{supplier_item_id}", response_model=SupplierItemRead)
+def update_existing_supplier_item(supplier_item_id: int, supplier_item: SupplierItemUpdate, db: Session = Depends(get_db)):
+    updated = update_supplier_item(db, supplier_item_id, supplier_item)
+    if not updated:
+        raise HTTPException(status_code=404, detail="SupplierItem not found or duplicate pair")
+    return updated
+
+@router.delete("/{supplier_item_id}", response_model=SupplierItemRead)
+def delete_existing_supplier_item(supplier_item_id: int, db: Session = Depends(get_db)):
+    deleted = delete_supplier_item(db, supplier_item_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="SupplierItem not found")
+    return deleted
