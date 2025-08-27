@@ -26,11 +26,7 @@ function ItemDetailsContent() {
   return (
     <div className="container mx-auto py-10 px-6">
       <ItemInfoCard
-        name={item.item_name}
-        sku={item.sku}
-        category={item.type}
-        type={item.variant || "N/A"}
-        quantity={item.qty}
+        item={item}
       />
 
       <ItemComponentsTable />
