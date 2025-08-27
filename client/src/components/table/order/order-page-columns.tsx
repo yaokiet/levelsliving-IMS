@@ -34,7 +34,27 @@ export const columns: ColumnDef<OrderItem>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Order ID" />
     ),
-    cell: ({ row }) => <div>{row.getValue("id")}</div>,
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string;
+      const router = useRouter();
+
+      return (
+        <div
+          className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
+          onClick={() => router.push(`/orders/${id}`)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              router.push(`/orders/${id}`);
+            }
+          }}
+          tabIndex={0}
+          role="link"
+          aria-label={`View details for ${id}`}
+        >
+          {id}
+        </div>
+      );
+    },
   },
   //   Cust name column
   {
@@ -84,7 +104,6 @@ export const columns: ColumnDef<OrderItem>[] = [
 ];
 
 export const orderItemColumns: ColumnDef<OrderItem>[] = [
-  { accessorKey: "item_name", header: "Item Name" },
   {
     accessorKey: "sku",
     header: "SKU",
@@ -112,4 +131,5 @@ export const orderItemColumns: ColumnDef<OrderItem>[] = [
       );
     },
   },
+  { accessorKey: "item_name", header: "Item Name" },
 ];
