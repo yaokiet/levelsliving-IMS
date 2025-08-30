@@ -3,6 +3,8 @@
 import {
   type LucideIcon,
 } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import {
   SidebarGroup,
@@ -20,6 +22,8 @@ export function NavInventory({
     icon: LucideIcon
   }[]
 }) {
+  const pathname = usePathname()
+  
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarMenu>
@@ -27,11 +31,15 @@ export function NavInventory({
           <SidebarMenuItem
             key={item.name}
           >
-            <SidebarMenuButton asChild className="px-4 py-6 text-lg font-light">
-              <a href={item.url}>
+            <SidebarMenuButton 
+              asChild 
+              className="px-4 py-6 text-lg font-light"
+              isActive={pathname === item.url || (item.url !== "/" && pathname?.startsWith(item.url))}
+            >
+              <Link href={item.url}>
                 <item.icon className="!size-5" />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

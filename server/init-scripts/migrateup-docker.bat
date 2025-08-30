@@ -5,7 +5,7 @@ REM This uses the PostgreSQL client inside the Docker container
 echo Running migration up script using Docker...
 
 echo Creating database tables from init.sql...
-docker exec -i server-db-1 psql -U postgres -d levelsliving < init.sql
+docker exec -i server-db-1 psql -U postgres -d levelsliving < 1_init.sql
 
 if %errorlevel% neq 0 (
     echo Error: Failed to execute init.sql
@@ -13,7 +13,7 @@ if %errorlevel% neq 0 (
 )
 
 echo Seeding database with initial data from seed.sql...
-docker exec -i server-db-1 psql -U postgres -d levelsliving < seed.sql
+docker exec -i server-db-1 psql -U postgres -d levelsliving < 2_seed.sql
 
 if %errorlevel% neq 0 (
     echo Error: Failed to execute seed.sql
