@@ -11,5 +11,5 @@ if [ -z "$DATABASE_URL" ]; then
   exit 1
 fi
 
-psql "$DATABASE_URL" -f "$(dirname "$0")/init.sql"
-psql "$DATABASE_URL" -f "$(dirname "$0")/seed.sql"
+psql "$DATABASE_URL" -f "$(dirname "$0")/1_init.sql"
+psql "$DATABASE_URL" -f "$(dirname "$0")/2_seed.sql"

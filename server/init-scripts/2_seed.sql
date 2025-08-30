@@ -1,5 +1,6 @@
 INSERT INTO "user" (name, role, email, password_hash) VALUES
-('admintest', 'admin', 'admin@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
+('admintest', 'admin', 'admin@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('usertest', 'user', 'user@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
 
 -- Insert sample inventory items
 INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUES
