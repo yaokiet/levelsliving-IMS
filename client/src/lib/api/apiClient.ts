@@ -13,6 +13,13 @@ export async function apiFetch<T>(
         ...options,
     });
 
+    if (res.status === 403) {
+        if (typeof window !== "undefined") {
+            window.location.href = "/unauthorized";
+        }
+        throw new Error("Forbidden: You do not have permission to access this resource.");
+    }
+
     if (res.status === 401 && path !== API_PATHS.refresh) {
         // Try to refresh token
         const refreshRes = await refresh();
