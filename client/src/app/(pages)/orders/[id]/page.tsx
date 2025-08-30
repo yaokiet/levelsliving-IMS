@@ -62,7 +62,7 @@ function OrderDetailsContent() {
 }
 
 // This is the main page export
-export default function ItemDetailsPage() {
+export default function OrderDetailsPage() {
   return (
     <ItemProvider>
       <OrderDetailsContent />
