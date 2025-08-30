@@ -1,6 +1,6 @@
 import { apiFetch } from "./apiClient";
 import { API_DOMAIN, API_PATHS } from "./apiConfig";
-import { User } from "@/types/auth"
+import { User } from "@/types/user";
 
 export function login(email: string, password: string) {
     return apiFetch<User>(API_PATHS.login, {
