@@ -17,26 +17,26 @@ export function OrderInfoCard({
   return (
     <div className={cn(containerClassName, className)}>
       <div className="flex-1">
-        <h2 className="text-xl font-semibold mb-4">Item Information</h2>
+        <h2 className="text-xl font-semibold mb-4">Order</h2>
         <div className="space-y-2">
           <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Item Name</span>
+            <span className="w-32 text-gray-600 dark:text-gray-300">Order ID</span>
             <span className="font-medium">{orderItem.id}</span>
           </div>
           <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Item SKU</span>
+            <span className="w-32 text-gray-600 dark:text-gray-300">Customer Name</span>
             <span className="font-medium">{orderItem.cust_name}</span>
           </div>
           <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Category</span>
+            <span className="w-32 text-gray-600 dark:text-gray-300">Ordered Date</span>
             <span className="font-medium">{orderItem.order_date}</span>
           </div>
           <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Type</span>
+            <span className="w-32 text-gray-600 dark:text-gray-300">Num of items ordered</span>
             <span className="font-medium">{orderItem.order_qty}</span>
           </div>
           <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Quantity</span>
+            <span className="w-32 text-gray-600 dark:text-gray-300">Status</span>
             <span className="font-medium">{orderItem.status}</span>
           </div>
         </div>
