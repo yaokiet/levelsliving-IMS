@@ -1,9 +1,6 @@
 "use client";
 
 import React from "react";
-import { ItemProvider, useItem } from "@/context/ItemContext";
-import { ItemInfoCard } from "@/components/ui/item/item-info-card";
-import TableSection from "@/components/table/table-section";
 import OrderPageTable from "@/components/table/order/order-page-table";
 
 // This is the main page export

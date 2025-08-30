@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'react'
 import { OrderItem, mockOrderItems } from "@/types/order-item"
-import { columns, orderItemColumns } from "./order-page-columns"
+import { columns } from "./order-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
 import OrderPageSubTable from './order-page-sub-table';
 

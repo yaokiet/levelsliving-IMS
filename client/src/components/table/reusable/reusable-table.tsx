@@ -12,7 +12,6 @@ import {
   getSortedRowModel,
   useReactTable,
   VisibilityState,
-  getExpandedRowModel,
   ExpandedState, // For expanding rows
 } from "@tanstack/react-table";
 
@@ -57,7 +56,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   filterLabel,
   filterOptions = [],
   className = "",
-  containerClassName = "w-4/5 rounded-xl shadow-xl p-8",
+  containerClassName = "w-5/5 rounded-xl shadow-xl p-8",
   renderSubRows,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);

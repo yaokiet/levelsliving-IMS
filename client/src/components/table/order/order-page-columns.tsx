@@ -15,8 +15,6 @@ export const columns: ColumnDef<OrderItem>[] = [
   {
     id: "expand",
     cell: ({ row }) => {
-      console.log("Row", row.id, "can expand?", row.getCanExpand());
-      console.log("Row", row.id, "subRows:", row.original.subRows);
 
       return row.getCanExpand() ? (
         <button
