@@ -6,20 +6,6 @@ export interface Supplier {
     contact_number?: string;
 }
 
-export interface SupplierCreate {
-    name: string;
-    description?: string;
-    email?: string;
-    contact_number?: string;
-}
-
-export interface SupplierUpdate {
-    name?: string;
-    description?: string;
-    email?: string;
-    contact_number?: string;
-}
-
 export const mockSuppliers: Supplier[] = [
     {
         id: 1,
