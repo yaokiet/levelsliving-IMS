@@ -8,6 +8,7 @@ import {
   Container,
   Gauge,
   Files,
+  Users
 } from "lucide-react";
 
 import { NavInventory } from "@/components/ui/sidebar/nav-inventory";
@@ -26,8 +27,10 @@ import {
 import { RootState } from "@/app/_store/redux-store";
 import { useSelector } from "react-redux";
 
-const data = {
-  inventoryMenuItems: [
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const menuItems = [
     {
       name: "Dashboard",
       url: "/",
@@ -53,11 +56,16 @@ const data = {
       url: "/orders",
       icon: Truck,
     },
-  ],
-};
+  ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useSelector((state: RootState) => state.auth.user);
+  // Add admin-only link if user is admin
+  if (user?.role === "admin") {
+    menuItems.push({
+      name: "User Management",
+      url: "/users",
+      icon: Users,
+    });
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -79,7 +87,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavInventory inventoryMenuItems={data.inventoryMenuItems} />
+        <NavInventory inventoryMenuItems={menuItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user ?? { name: "user", email: "user@example.com" }} />
