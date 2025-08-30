@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, HTTPException, Request
+from app.auth.jwt_utils import require_role
 from sqlalchemy.orm import Session
 from database.database import get_db
 from database.schemas.user import UserCreate, UserUpdate, UserRead
@@ -6,7 +7,7 @@ from database.services.user import get_user, get_all_users, create_user, update_
 
 router = APIRouter(prefix="/user", tags=["User"])
 
-@router.get("/", response_model=list[UserRead])
+@router.get("/", response_model=list[UserRead], dependencies=[require_role("admin")])
 def read_users(db: Session = Depends(get_db)):
     return get_all_users(db)
 
