@@ -12,21 +12,35 @@ export default function SupplierPageTable() {
   const [data, setData] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(true)
   
-  // Dialog form state
+  // Dialog form state - matching backend schema
   const [name, setName] = useState("")
-  const [contactNumber, setContactNumber] = useState("")
+  const [description, setDescription] = useState("")
   const [email, setEmail] = useState("")
-  const [product, setProduct] = useState("")
+  const [contact_number, setContact_number] = useState("")
 
   const handleAddSupplier = () => {
+    // Validate required fields
+    if (!name.trim()) {
+      alert("Supplier name is required!")
+      return
+    }
+
+    // Create supplier object matching backend schema
+    const supplierData = {
+      name: name.trim(),
+      description: description.trim() || undefined,
+      email: email.trim() || undefined,
+      contact_number: contact_number.trim() || undefined
+    }
+
     // Handle adding supplier logic here
-    console.log("Adding supplier:", { name, contactNumber, email, product })
+    console.log("Adding supplier:", supplierData)
     
     // Reset form
     setName("")
-    setContactNumber("")
+    setDescription("")
     setEmail("")
-    setProduct("")
+    setContact_number("")
     
     // You can add the supplier to the data array or make an API call
     // For now, just show an alert
@@ -66,13 +80,26 @@ export default function SupplierPageTable() {
         >
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="supplier-name">Name</Label>
+              <Label htmlFor="supplier-name">
+                Name <span className="text-red-500">*</span>
+              </Label>
               <Input 
                 id="supplier-name" 
                 type="text" 
                 value={name} 
                 onChange={e => setName(e.target.value)}
-                placeholder="Enter supplier name"
+                placeholder="Enter supplier name (required)"
+                required
+              />
+            </div>
+            <div className="grid gap-3">
+              <Label htmlFor="supplier-description">Description</Label>
+              <Input 
+                id="supplier-description" 
+                type="text" 
+                value={description} 
+                onChange={e => setDescription(e.target.value)}
+                placeholder="Enter supplier description (optional)"
               />
             </div>
             <div className="grid gap-3">
@@ -80,9 +107,9 @@ export default function SupplierPageTable() {
               <Input 
                 id="supplier-contact" 
                 type="text" 
-                value={contactNumber} 
-                onChange={e => setContactNumber(e.target.value)}
-                placeholder="Enter contact number"
+                value={contact_number} 
+                onChange={e => setContact_number(e.target.value)}
+                placeholder="Enter contact number (optional)"
               />
             </div>
             <div className="grid gap-3">
@@ -92,17 +119,7 @@ export default function SupplierPageTable() {
                 type="email" 
                 value={email} 
                 onChange={e => setEmail(e.target.value)}
-                placeholder="Enter email address"
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="supplier-product">Product</Label>
-              <Input 
-                id="supplier-product" 
-                type="text" 
-                value={product} 
-                onChange={e => setProduct(e.target.value)}
-                placeholder="Enter main product"
+                placeholder="Enter email address (optional)"
               />
             </div>
           </div>
@@ -115,7 +132,7 @@ export default function SupplierPageTable() {
         <ReusableTable 
           columns={columns} 
           data={data} 
-          searchKey="supplierName" 
+          searchKey="name" 
           searchPlaceholder="Filter suppliers by name"
           showViewOptions={true}
           showPagination={true}

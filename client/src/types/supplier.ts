@@ -1,135 +1,94 @@
 export interface Supplier {
     id: number;
-    supplierName: string;
-    product: string;
-    contactNumber: string;
-    email: string;
-    type: string;
-    onTheWay: string | number;
-    address?: string;
-    registrationDate?: string;
-    status?: string;
+    name: string;
+    description?: string;
+    email?: string;
+    contact_number?: string;
+}
+
+export interface SupplierCreate {
+    name: string;
+    description?: string;
+    email?: string;
+    contact_number?: string;
+}
+
+export interface SupplierUpdate {
+    name?: string;
+    description?: string;
+    email?: string;
+    contact_number?: string;
 }
 
 export const mockSuppliers: Supplier[] = [
     {
         id: 1,
-        supplierName: "Richard Martin",
-        product: "Kit Kat",
-        contactNumber: "7687764556",
+        name: "Richard Martin",
+        description: "Confectionery supplier specializing in Kit Kat products",
         email: "richard@gmail.com",
-        type: "Taking Return",
-        onTheWay: "13",
-        address: "123 Supply Street, Singapore 123456",
-        registrationDate: "2024-01-15",
-        status: "Active"
+        contact_number: "7687764556"
     },
     {
         id: 2,
-        supplierName: "Tom Homan",
-        product: "Maaza",
-        contactNumber: "9867545368",
+        name: "Tom Homan",
+        description: "Beverage supplier for Maaza and related products",
         email: "tomhoman@gmail.com",
-        type: "Taking Return",
-        onTheWay: "-",
-        address: "456 Commerce Ave, Singapore 234567",
-        registrationDate: "2024-02-20",
-        status: "Active"
+        contact_number: "9867545368"
     },
     {
         id: 3,
-        supplierName: "Veandir",
-        product: "Dairy Milk",
-        contactNumber: "9867545566",
+        name: "Veandir",
+        description: "Dairy and chocolate products supplier",
         email: "veandier@gmail.com",
-        type: "Not Taking Return",
-        onTheWay: "-",
-        address: "789 Trade Blvd, Singapore 345678",
-        registrationDate: "2024-03-10",
-        status: "Active"
+        contact_number: "9867545566"
     },
     {
         id: 4,
-        supplierName: "Charin",
-        product: "Tomato",
-        contactNumber: "9267545457",
+        name: "Charin",
+        description: "Fresh produce supplier specializing in vegetables",
         email: "charin@gmail.com",
-        type: "Taking Return",
-        onTheWay: "12",
-        address: "321 Vendor Lane, Singapore 456789",
-        registrationDate: "2024-01-25",
-        status: "Active"
+        contact_number: "9267545457"
     },
     {
         id: 5,
-        supplierName: "Hoffman",
-        product: "Milk Bikis",
-        contactNumber: "9367546531",
+        name: "Hoffman",
+        description: "Bakery and biscuit products supplier",
         email: "hoffman@gmail.com",
-        type: "Taking Return",
-        onTheWay: "-",
-        address: "654 Business Park, Singapore 567890",
-        registrationDate: "2024-04-05",
-        status: "Inactive"
+        contact_number: "9367546531"
     },
     {
         id: 6,
-        supplierName: "Fainden Juke",
-        product: "Marie Gold",
-        contactNumber: "9667545982",
+        name: "Fainden Juke",
+        description: "Premium biscuit and cookies supplier",
         email: "fainden@gmail.com",
-        type: "Not Taking Return",
-        onTheWay: "9",
-        address: "987 Industrial Ave, Singapore 678901",
-        registrationDate: "2024-02-14",
-        status: "Active"
+        contact_number: "9667545982"
     },
     {
         id: 7,
-        supplierName: "Martin",
-        product: "Saffola",
-        contactNumber: "9867545457",
+        name: "Martin",
+        description: "Cooking oil and edible oil products supplier",
         email: "martin@gmail.com",
-        type: "Taking Return",
-        onTheWay: "-",
-        address: "147 Supply Chain St, Singapore 789012",
-        registrationDate: "2024-03-20",
-        status: "Active"
+        contact_number: "9867545457"
     },
     {
         id: 8,
-        supplierName: "Joe Nike",
-        product: "Good day",
-        contactNumber: "9567545769",
+        name: "Joe Nike",
+        description: "Biscuits and snack products supplier",
         email: "joenike@gmail.com",
-        type: "Taking Return",
-        onTheWay: "-",
-        address: "258 Distribution Way, Singapore 890123",
-        registrationDate: "2024-01-30",
-        status: "Active"
+        contact_number: "9567545769"
     },
     {
         id: 9,
-        supplierName: "Dender Luke",
-        product: "Apple",
-        contactNumber: "9667545980",
+        name: "Dender Luke",
+        description: "Fresh fruits and organic produce supplier",
         email: "dender@gmail.com",
-        type: "Not Taking Return",
-        onTheWay: "7",
-        address: "369 Wholesale Rd, Singapore 901234",
-        registrationDate: "2024-04-12",
-        status: "Active"
+        contact_number: "9667545980"
     },
     {
         id: 10,
-        supplierName: "Global Supplies Inc",
-        product: "Office Equipment",
-        contactNumber: "6512345678",
+        name: "Global Supplies Inc",
+        description: "Office equipment and business supplies",
         email: "contact@globalsupplies.com",
-        type: "Taking Return",
-        onTheWay: "25",
-        address: "500 Corporate Plaza, Singapore 012345",
-        registrationDate: "2024-01-01",
-        status: "Active"
+        contact_number: "6512345678"
     }
 ];

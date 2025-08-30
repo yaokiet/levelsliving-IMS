@@ -25,50 +25,26 @@ export function SupplierInfoCard({
           </div>
           <div className="flex">
             <span className="w-32 text-gray-600 dark:text-gray-300">Name</span>
-            <span className="font-medium">{supplier.supplierName}</span>
+            <span className="font-medium">{supplier.name}</span>
           </div>
           <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Product</span>
-            <span className="font-medium">{supplier.product}</span>
+            <span className="w-32 text-gray-600 dark:text-gray-300">Description</span>
+            <span className="font-medium">{supplier.description || "No description"}</span>
           </div>
           <div className="flex">
             <span className="w-32 text-gray-600 dark:text-gray-300">Contact</span>
-            <span className="font-medium">{supplier.contactNumber}</span>
+            <span className="font-medium">{supplier.contact_number || "No contact"}</span>
           </div>
           <div className="flex">
             <span className="w-32 text-gray-600 dark:text-gray-300">Email</span>
-            <span className="font-medium">{supplier.email}</span>
-          </div>
-          <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Address</span>
-            <span className="font-medium">{supplier.address || "N/A"}</span>
-          </div>
-          <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Type</span>
-            <span className={`font-medium ${supplier.type.toLowerCase().includes("taking return") ? "text-green-500" : "text-red-500"}`}>
-              {supplier.type}
-            </span>
-          </div>
-          <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Status</span>
-            <span className={`font-medium ${supplier.status?.toLowerCase() === "active" ? "text-green-500" : "text-red-500"}`}>
-              {supplier.status || "N/A"}
-            </span>
-          </div>
-          <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">Registration</span>
-            <span className="font-medium">{supplier.registrationDate || "N/A"}</span>
-          </div>
-          <div className="flex">
-            <span className="w-32 text-gray-600 dark:text-gray-300">On the Way</span>
-            <span className="font-medium">{supplier.onTheWay}</span>
+            <span className="font-medium">{supplier.email || "No email"}</span>
           </div>
         </div>
       </div>
       <div className="flex-shrink-0 mt-8 md:mt-0 md:ml-8 px-3 py-3 border rounded-lg bg-white dark:bg-gray-300">
         <img
           src="/item-icon.png" // Placeholder image for now
-          alt={`${supplier.supplierName} logo`}
+          alt={`${supplier.name} logo`}
           className={imageClassName}
         />
       </div>

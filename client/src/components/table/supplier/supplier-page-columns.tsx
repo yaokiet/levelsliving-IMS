@@ -16,6 +16,21 @@ import {
 import { DataTableColumnHeader } from "@/components/table/reusable/data-table-column-header";
 import type { Supplier } from "@/types/supplier";
 
+// Clickable Supplier ID component
+function ClickableSupplierID({ supplierId }: { supplierId: number }) {
+  const router = useRouter();
+  
+  return (
+    <Button
+      variant="link"
+      className="p-0 h-auto font-medium text-blue-600 hover:text-blue-800"
+      onClick={() => router.push(`/suppliers/${supplierId}`)}
+    >
+      {supplierId}
+    </Button>
+  );
+}
+
 export const columns: ColumnDef<Supplier>[] = [
   // Select checkbox column
   {
@@ -40,26 +55,45 @@ export const columns: ColumnDef<Supplier>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+  // Supplier ID column (clickable)
+  {
+    accessorKey: "id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Supplier ID" />
+    ),
+    cell: ({ row }) => {
+      const supplierId = row.getValue("id") as number;
+      return <ClickableSupplierID supplierId={supplierId} />;
+    },
+  },
   // Supplier Name column
   {
-    accessorKey: "supplierName",
+    accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Supplier Name" />
     ),
   },
-  // Product column
+  // Description column
   {
-    accessorKey: "product",
+    accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Product" />
+      <DataTableColumnHeader column={column} title="Description" />
     ),
+    cell: ({ row }) => {
+      const value = row.getValue("description") as string;
+      return <span>{value || "No description"}</span>;
+    },
   },
   // Contact Number column
   {
-    accessorKey: "contactNumber",
+    accessorKey: "contact_number",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Contact Number" />
     ),
+    cell: ({ row }) => {
+      const value = row.getValue("contact_number") as string;
+      return <span>{value || "No contact"}</span>;
+    },
   },
   // Email column
   {
@@ -67,50 +101,10 @@ export const columns: ColumnDef<Supplier>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
     ),
-  },
-  // Type column with color coding
-  {
-    accessorKey: "type",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
-    ),
     cell: ({ row }) => {
-      const value = row.getValue("type") as string;
-      const isTakingReturn = value.toLowerCase().includes("taking return");
-      const colorClass = isTakingReturn ? "text-green-500" : "text-red-500";
-      return (
-        <span className={`font-medium ${colorClass}`}>
-          {value}
-        </span>
-      );
+      const value = row.getValue("email") as string;
+      return <span>{value || "No email"}</span>;
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  // Status column
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-    cell: ({ row }) => {
-      const value = row.getValue("status") as string;
-      const isActive = value?.toLowerCase() === "active";
-      const colorClass = isActive ? "text-green-500" : "text-red-500";
-      return (
-        <span className={`font-medium ${colorClass}`}>
-          {value}
-        </span>
-      );
-    },
-  },
-  // On the way column
-  {
-    accessorKey: "onTheWay",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="On the way" />
-    ),
   },
   // Actions column
   {
@@ -130,7 +124,7 @@ export const columns: ColumnDef<Supplier>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(supplier.supplierName)}
+              onClick={() => navigator.clipboard.writeText(supplier.name)}
             >
               Copy Supplier Name
             </DropdownMenuItem>
