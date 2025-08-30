@@ -1,5 +1,8 @@
 "use client";
 
+// This file defines the columns for the components table in the main page.
+// It uses TanStack Table for defining the structure and behavior of the table columns.
+
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -116,7 +119,6 @@ export const columns: ColumnDef<ComponentDetail>[] = [
               Copy Component SKU
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit component link</DropdownMenuItem>
             <DropdownMenuItem className="text-red-600">
               Remove component
             </DropdownMenuItem>

@@ -1,5 +1,8 @@
 "use client";
 
+// This file defines the columns for the components table in the item details page (Child Page).
+// It uses TanStack Table for defining the structure and behavior of the table columns.
+
 import { useItem } from "@/context/ItemContext";
 import { ComponentDetail } from "@/types/item"; // <-- Use the new ComponentDetail type
 import { columns } from "./item-components-columns"; // <-- This now imports the correct columns
