@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from database.database import get_db
 from database.schemas.order_item import OrderItemCreate, OrderItemUpdate, OrderItemRead
 from database.services.order_item import (
-    get_order_item, get_all_order_items, get_order_items_by_order_id,
+    get_order_item, get_all_order_items,
     create_order_item, update_order_item, delete_order_item
 )
 
@@ -15,13 +15,6 @@ def read_order_items(db: Session = Depends(get_db)):
     Retrieve all order items.
     """
     return get_all_order_items(db)
-
-@router.get("/order/{order_id}", response_model=list[OrderItemRead])
-def read_order_items_by_order(order_id: int, db: Session = Depends(get_db)):
-    """
-    Retrieve all order items for a specific order.
-    """
-    return get_order_items_by_order_id(db, order_id)
 
 @router.get("/{order_id}/{item_id}", response_model=OrderItemRead)
 def read_order_item(order_id: int, item_id: int, db: Session = Depends(get_db)):
