@@ -10,28 +10,43 @@ router = APIRouter(prefix="/supplier-item", tags=["supplier-item"])
 
 @router.get("/", response_model=list[SupplierItemRead])
 def read_supplier_items(db: Session = Depends(get_db)):
+    """
+    Retrieve all supplier-item relationships.
+    """
     return get_all_supplier_items(db)
 
 @router.get("/{supplier_item_id}", response_model=SupplierItemRead)
 def read_supplier_item(supplier_item_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve a supplier-item relationship by its ID.
+    """
     si = get_supplier_item(db, supplier_item_id)
     if not si:
         raise HTTPException(status_code=404, detail="SupplierItem not found")
     return si
 
 @router.post("/", response_model=SupplierItemRead)
-def create_new_supplier_item(supplier_item: SupplierItemCreate, db: Session = Depends(get_db)):
-    return create_supplier_item(db, supplier_item)
+def create_new_supplier_item(payload: SupplierItemCreate, db: Session = Depends(get_db)):
+    """
+    Create a new supplier-item relationship.
+    """
+    return create_supplier_item(db, payload)
 
 @router.put("/{supplier_item_id}", response_model=SupplierItemRead)
-def update_existing_supplier_item(supplier_item_id: int, supplier_item: SupplierItemUpdate, db: Session = Depends(get_db)):
-    updated = update_supplier_item(db, supplier_item_id, supplier_item)
+def update_existing_supplier_item(supplier_item_id: int, payload: SupplierItemUpdate, db: Session = Depends(get_db)):
+    """
+    Update an existing supplier-item relationship by ID.
+    """
+    updated = update_supplier_item(db, supplier_item_id, payload)
     if not updated:
         raise HTTPException(status_code=404, detail="SupplierItem not found or duplicate pair")
     return updated
 
 @router.delete("/{supplier_item_id}", response_model=SupplierItemRead)
 def delete_existing_supplier_item(supplier_item_id: int, db: Session = Depends(get_db)):
+    """
+    Delete a supplier-item relationship by ID.
+    """
     deleted = delete_supplier_item(db, supplier_item_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="SupplierItem not found")

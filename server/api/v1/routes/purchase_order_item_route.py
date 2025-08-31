@@ -10,10 +10,16 @@ router = APIRouter(prefix="/purchase-order-item", tags=["purchase-order-item"])
 
 @router.get("/", response_model=list[PurchaseOrderItemRead])
 def read_purchase_order_items(db: Session = Depends(get_db)):
+    """
+    Retrieve all purchase order items.
+    """
     return get_all_purchase_order_items(db)
 
 @router.get("/{po_id}/{item_id}", response_model=PurchaseOrderItemRead)
 def read_purchase_order_item(po_id: int, item_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve a purchase order item by its composite key.
+    """
     po_item = get_purchase_order_item(db, po_id, item_id)
     if not po_item:
         raise HTTPException(status_code=404, detail="Purchase order item not found")
@@ -21,10 +27,16 @@ def read_purchase_order_item(po_id: int, item_id: int, db: Session = Depends(get
 
 @router.post("/", response_model=PurchaseOrderItemRead)
 def create_new_purchase_order_item(payload: PurchaseOrderItemCreate, db: Session = Depends(get_db)):
+    """
+    Create a new purchase order item.
+    """
     return create_purchase_order_item(db, payload)
 
 @router.put("/{po_id}/{item_id}", response_model=PurchaseOrderItemRead)
 def update_existing_purchase_order_item(po_id: int, item_id: int, payload: PurchaseOrderItemUpdate, db: Session = Depends(get_db)):
+    """
+    Update an existing purchase order item by composite key.
+    """
     updated = update_purchase_order_item(db, po_id, item_id, payload)
     if not updated:
         raise HTTPException(status_code=404, detail="Purchase order item not found")
@@ -32,6 +44,9 @@ def update_existing_purchase_order_item(po_id: int, item_id: int, payload: Purch
 
 @router.delete("/{po_id}/{item_id}", response_model=PurchaseOrderItemRead)
 def delete_existing_purchase_order_item(po_id: int, item_id: int, db: Session = Depends(get_db)):
+    """
+    Delete a purchase order item by composite key.
+    """
     deleted = delete_purchase_order_item(db, po_id, item_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Purchase order item not found")

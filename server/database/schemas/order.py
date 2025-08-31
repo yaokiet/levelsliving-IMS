@@ -1,6 +1,7 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
+from .order_item import OrderItemRead
 
 class OrderBase(BaseModel):
     shopify_order_id: Optional[int] = None
@@ -25,6 +26,19 @@ class OrderUpdate(BaseModel):
 
 class OrderRead(OrderBase):
     order_id: int
+
+    class Config:
+        orm_mode = True
+
+# New schema for the nested response format
+class OrderWithItems(BaseModel):
+    id: int
+    cust_name: str
+    order_date: str
+    cust_contact: str
+    order_qty: int
+    status: str
+    subRows: List[OrderItemRead]
 
     class Config:
         orm_mode = True

@@ -5,7 +5,7 @@ from database.database import get_db
 from database.schemas.user import UserCreate, UserUpdate, UserRead
 from database.services.user import get_user, get_all_users, create_user, update_user, delete_user
 
-router = APIRouter(prefix="/user", tags=["User"])
+router = APIRouter(prefix="/user", tags=["user"])
 
 @router.get("/", response_model=list[UserRead], dependencies=[require_role("admin")])
 def read_users(db: Session = Depends(get_db)):

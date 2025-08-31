@@ -18,10 +18,16 @@ router = APIRouter(prefix="/item-component", tags=["item-component"])
 
 @router.get("/", response_model=list[ItemComponentRead])
 def read_item_components(db: Session = Depends(get_db)):
+    """
+    Retrieve all item-component (BOM) relationships.
+    """
     return get_all_item_components(db)
 
 @router.get("/{parent_id}/{child_id}", response_model=ItemComponentRead)
 def read_item_component(parent_id: int, child_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve an item-component relationship by its composite key.
+    """
     row = get_item_component(db, parent_id, child_id)
     if not row:
         raise HTTPException(status_code=404, detail="ItemComponent not found")
@@ -29,6 +35,9 @@ def read_item_component(parent_id: int, child_id: int, db: Session = Depends(get
 
 @router.post("/", response_model=ItemComponentRead)
 def create_new_item_component(payload: ItemComponentCreate, db: Session = Depends(get_db)):
+    """
+    Create a new item-component relationship.
+    """
     return create_item_component(db, payload)
 
 @router.put("/{parent_id}/{child_id}", response_model=ItemComponentRead)
@@ -38,6 +47,9 @@ def update_existing_item_component(
     payload: ItemComponentUpdate,
     db: Session = Depends(get_db),
 ):
+    """
+    Update an existing item-component relationship by composite key.
+    """
     updated = update_item_component(db, parent_id, child_id, payload)
     if not updated:
         raise HTTPException(status_code=404, detail="ItemComponent not found")
@@ -45,6 +57,9 @@ def update_existing_item_component(
 
 @router.delete("/{parent_id}/{child_id}", response_model=ItemComponentRead)
 def delete_existing_item_component(parent_id: int, child_id: int, db: Session = Depends(get_db)):
+    """
+    Delete an item-component relationship by composite key.
+    """
     deleted = delete_item_component(db, parent_id, child_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="ItemComponent not found")
