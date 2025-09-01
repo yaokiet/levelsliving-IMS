@@ -81,6 +81,7 @@ CREATE TABLE "order" (
     order_id SERIAL PRIMARY KEY,
     shopify_order_id BIGINT,
     order_date TIMESTAMP NOT NULL,
+    status VARCHAR(32) NOT NULL,
     name VARCHAR(64) NOT NULL,
     contact VARCHAR(16) NOT NULL,
     street VARCHAR(254) NOT NULL,

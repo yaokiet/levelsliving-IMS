@@ -76,10 +76,11 @@ INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_
 -- =======================
 -- CUSTOMER ORDER
 -- =======================
-INSERT INTO "order" (order_id, shopify_order_id, order_date, name, contact, street, unit, postal_code) VALUES
-(1, 1001, '2025-08-20 10:00:00+08', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
-(2, 1002, '2025-08-28 15:30:00+08', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
-(3, 1003, '2025-09-01 09:45:00+08', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879');
+INSERT INTO "order" (order_id, shopify_order_id, order_date, status, name, contact, street, unit, postal_code) VALUES
+(1, 1001, '2025-08-20 10:00:00+08', 'pending', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
+(2, 1002, '2025-08-28 15:30:00+08', 'pending', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
+(3, 1003, '2025-09-01 09:45:00+08', 'pending', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879');
+
 
 -- =======================
 -- ORDER ITEM
