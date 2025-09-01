@@ -3,28 +3,37 @@
 // This file defines the columns for the main page table.
 
 import { useState, useEffect } from "react";
-import { OrderItem } from "@/types/order-item";
+import { OrderItem, mockOrderItems } from "@/types/order-item";
 import { columns } from "./order-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
-import { getAllOrders, getOrdersWithItems } from "@/lib/api/ordersApi";
+import { getOrdersWithItems } from "@/lib/api/ordersApi";
 import OrderPageSubTable from "./order-page-sub-table";
 
 export default function OrderPageTable() {
   const [data, setData] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch items when the component mounts
   useEffect(() => {
     try {
-      getOrdersWithItems().then((getOrdersWithItems) => {
-        console.log("Fetched orders:", getOrdersWithItems);
-        setData(getOrdersWithItems);
+      getOrdersWithItems().then((orders) => {
+        console.log("Fetched orders:", orders);
+        setData(orders);
         setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
   }, []);
+
+  const renderSubRows = (row: any) => (
+    <tr>
+      <td colSpan={columns.length} className="p-0" style={{ padding: 0 }}>
+        <OrderPageSubTable
+          data={row.subRows.map((r: { original: any }) => r.original)}
+        />
+      </td>
+    </tr>
+  );
 
   return (
     <>
@@ -41,15 +50,7 @@ export default function OrderPageTable() {
           // subRowColumns={orderItemColumns}
           filterKey="status"
           filterLabel="Status"
-          renderSubRows={(row) => (
-            <tr>
-              <td colSpan={columns.length} style={{ padding: 0 }}>
-                <OrderPageSubTable
-                  data={row.subRows.map((r: any) => r.original)}
-                />
-              </td>
-            </tr>
-          )}
+          renderSubRows={renderSubRows}
         />
       )}
     </>

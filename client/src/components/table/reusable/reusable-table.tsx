@@ -43,6 +43,7 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
   className? : string;
   containerClassName?: string;
+  renderToolbarExtras?: (ctx: { table: ReturnType<typeof useReactTable<TData>> }) => React.ReactNode;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -58,6 +59,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   className = "",
   containerClassName = "w-5/5 rounded-xl shadow-xl p-8",
   renderSubRows,
+  renderToolbarExtras,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -155,6 +157,12 @@ return (
                   });
                 }}
               />
+            </div>
+          )}
+          {/* Render additional toolbar for Add to Cart button */}
+          {renderToolbarExtras && (
+            <div className="ml-auto flex items-center gap-3">
+              {renderToolbarExtras({ table })}
             </div>
           )}
           {showViewOptions && (

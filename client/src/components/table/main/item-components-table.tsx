@@ -7,6 +7,7 @@ import { useItem } from "@/context/ItemContext";
 import { ComponentDetail } from "@/types/item"; // <-- Use the new ComponentDetail type
 import { columns } from "./item-components-columns"; // <-- This now imports the correct columns
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
+import { DataTableAddSelected } from "@/components/table/reusable/data-table-add-selected-to-cart";
 
 export default function ItemComponentsTable() {
   const { item, loading } = useItem();
@@ -26,6 +27,16 @@ export default function ItemComponentsTable() {
           searchPlaceholder="Filter components by SKU..."
           showViewOptions={true}
           showPagination={true}
+          renderToolbarExtras={({ table }) => (
+            <DataTableAddSelected<ComponentDetail>
+              table={table}
+              label="Add selected to cart"
+              clearAfterAdd
+              onAddSelected={(items) => {
+                console.log("Add to cart:", items);
+              }}
+            />
+          )}
         />
       )}
     </>
