@@ -28,12 +28,12 @@ export const columns: ColumnDef<OrderItem>[] = [
   },
   // Order ID Column
   {
-    accessorKey: "id",
+    accessorKey: "order_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Order ID" />
     ),
     cell: ({ row }) => {
-      const id = row.getValue("id") as string;
+      const id = row.getValue("order_id") as string;
       const router = useRouter();
 
       return (
@@ -54,13 +54,12 @@ export const columns: ColumnDef<OrderItem>[] = [
       );
     },
   },
-  //   Cust name column
   {
-    accessorKey: "cust_name",
+    accessorKey: "shopify_order_id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Customer Name" />
+      <DataTableColumnHeader column={column} title="Shopify Order ID" />
     ),
-    cell: ({ row }) => <div>{row.getValue("cust_name")}</div>,
+    cell: ({ row }) => <div>{row.getValue("shopify_order_id")}</div>,
   },
   // Order Date column
   {
@@ -70,13 +69,45 @@ export const columns: ColumnDef<OrderItem>[] = [
     ),
     cell: ({ row }) => <div>{row.getValue("order_date")}</div>,
   },
+  //   Cust name column
+  {
+    accessorKey: "name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Customer Name" />
+    ),
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
   //   Contact Num
   {
-    accessorKey: "cust_contact",
+    accessorKey: "contact",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Contact Number" />
     ),
-    cell: ({ row }) => <div>{row.getValue("cust_contact")}</div>,
+    cell: ({ row }) => <div>{row.getValue("contact")}</div>,
+  },
+  // Street
+  {
+    accessorKey: "street",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Street" />
+    ),
+    cell: ({ row }) => <div>{row.getValue("street")}</div>,
+  },
+  // Unit
+  {
+    accessorKey: "unit",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Unit" />
+    ),
+    cell: ({ row }) => <div>{row.getValue("unit")}</div>,
+  },
+  // Postal Code
+  {
+    accessorKey: "postal_code",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Postal Code" />
+    ),
+    cell: ({ row }) => <div>{row.getValue("postal_code")}</div>,
   },
   // Order Qty Column
   {
@@ -108,7 +139,7 @@ export const orderItemColumns: ColumnDef<OrderItem>[] = [
     
     cell: ({ row }) => {
       const sku = row.getValue("sku") as string;
-      const id = row.original.id;
+      const id = row.original.order_id;
       const router = useRouter();
 
       return (
