@@ -10,3 +10,7 @@ export function getAllOrders() {
 export function getOrdersWithItems() {
   return apiFetch<OrderItem[]>(API_PATHS.order_with_items);
 }
+
+export function getOrderById(orderId: number | string) {
+  return apiFetch<OrderItem>(API_PATHS.order_by_id(orderId));
+}
