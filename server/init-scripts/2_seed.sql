@@ -1,8 +1,21 @@
+-- =======================
+-- USERS
+-- =======================
 INSERT INTO "user" (name, role, email, password_hash) VALUES
 ('admintest', 'admin', 'admin@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
 ('usertest', 'user', 'user@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
 
--- Insert sample inventory items
+-- =======================
+-- SUPPLIERS
+-- =======================
+INSERT INTO supplier (id, name, description, email, contact_number) VALUES
+(1, 'Component Solutions Inc.', 'Supplier for raw furniture components', 'sales@componentsolutions.com', '+1-800-555-0101'),
+(2, 'Fine Finish Furnishings', 'Supplier for assembled furniture', 'contact@finefinish.com', '+65 6789 1234'),
+(3, 'TechSource Electronics', 'Distributor of computer peripherals', 'orders@techsource.sg', '+65 6222 3333');
+
+-- =======================
+-- ITEMS
+-- =======================
 INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUES
 (1, 'CHAIR-001', 'Furniture', 'Office Chair', 'Black', 15, 10),
 (2, 'DESK-001', 'Furniture', 'Standing Desk', 'Oak', 8, 5),
@@ -17,27 +30,77 @@ INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUE
 (11, 'DESK-TOP-01', 'Component', 'Desk Tabletop', 'Oak Veneer', 20, 5),
 (12, 'DESK-LEG-01', 'Component', 'Desk Leg Set', 'Motorized', 20, 5);
 
+-- =======================
+-- SUPPLIER_ITEM
+-- =======================
+INSERT INTO supplier_item (id, item_id, supplier_id) VALUES
+-- Component Solutions Inc. supplies all components
+(1, 7, 1), (2, 8, 1), (3, 9, 1), (4, 10, 1), (5, 11, 1), (6, 12, 1),
+-- Fine Finish Furnishings supplies assembled furniture
+(7, 1, 2), (8, 2, 2),
+-- TechSource Electronics supplies peripherals
+(9, 3, 3), (10, 4, 3), (11, 5, 3),
+-- Desk Lamps are also supplied by TechSource
+(12, 6, 3);
 
--- Insert sample chair item components for mapping
+-- =======================
+-- ITEM_COMPONENT (Bill of Materials)
+-- =======================
 INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
-(1, 7, 4),   -- 4 'Chair Leg' components
-(1, 8, 1),   -- 1 'Seat Cushion' component
-(1, 9, 1),   -- 1 'Backrest Frame' component
-(1, 10, 1);  -- 1 'Screw Pack' component
+-- Office Chair components
+(1, 7, 4), (1, 8, 1), (1, 9, 1), (1, 10, 1),
+-- Standing Desk components
+(2, 11, 1), (2, 12, 1);
 
--- Insert desk item components for mapping
-INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
-(2, 11, 1),  -- 1 'Desk Tabletop' component
-(2, 12, 4);  -- 4 'Desk Leg Set' component
+-- =======================
+-- PURCHASE ORDER
+-- =======================
+INSERT INTO purchase_order (id, supplier_id, user_id, order_date) VALUES
+-- PO to restock components, placed by the admin user
+(1, 1, 1, '2025-08-15 11:30:00'),
+-- PO to restock electronics, placed by a regular user
+(2, 3, 2, '2025-08-22 16:00:00');
 
--- Insert into order
-INSERT INTO "order" (order_id, shopify_order_id, order_date, name,  contact, street, unit, postal_code) VALUES
-(1, 1001, '2023-01-01', 'John Doe', '1234567890', '123 Elm St', 'Apt 1', '12345'),
-(2, 1002, '2023-01-02', 'Jane Smith', '0987654321', '456 Oak St', 'Apt 2', '54321');
+-- =======================
+-- PURCHASE ORDER ITEM
+-- =======================
+INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_id) VALUES
+-- Items for PO #1 (from Component Solutions Inc.)
+(1, 7, 50, 1),  -- 50 Chair Legs
+(1, 10, 100, 4), -- 100 Screw Packs
+(1, 12, 10, 6),   -- 10 Desk Leg Sets
+-- Items for PO #2 (from TechSource Electronics)
+(2, 3, 10, 9),   -- 10 Monitors
+(2, 5, 15, 11);  -- 15 Wireless Mice
 
--- Insert into orderitem
+-- =======================
+-- CUSTOMER ORDER
+-- =======================
+INSERT INTO "order" (order_id, shopify_order_id, order_date, name, contact, street, unit, postal_code) VALUES
+(1, 1001, '2025-08-20 10:00:00+08', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
+(2, 1002, '2025-08-28 15:30:00+08', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
+(3, 1003, '2025-09-01 09:45:00+08', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879');
+
+-- =======================
+-- ORDER ITEM
+-- =======================
 INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, delivery_time, team_assigned, delivered, custom, remarks, value) VALUES
-(1, 1, 1, ARRAY['Tag A'], DATE '2023-01-03', TIME '10:00:00', 'Team A', false, NULL, '', 199.99),
-(1, 2, 1, ARRAY['Tag B'], DATE '2023-01-04', TIME '11:00:00', 'Team B', false, NULL, '', 399.00),
-(1, 3, 1, ARRAY['Tag C'], DATE '2023-01-05', TIME '12:00:00', 'Team C', false, NULL, '', 299.50),
-(2, 1, 4, ARRAY['Tag D'], DATE '2023-01-06', TIME '13:00:00', 'Team D', false, NULL, '', 799.00);
+-- Items for Order 1
+(1, 1, 2, '{"shopee"}', '2025-08-25', '14:00:00', 'Team A', true, NULL, 'Leave at doorstep if no one is home.', 150.00),
+(1, 6, 1, '{"shopee"}', '2025-08-25', '14:00:00', 'Team A', true, NULL, NULL, 45.50),
+-- Items for Order 2
+(2, 2, 1, '{"private"}', '2025-09-05', '10:30:00', 'Team B', false, 'Custom engraving: "Carpe Diem"', 'Call upon arrival.', 499.99),
+(2, 3, 1, NULL, '2025-09-05', '10:30:00', 'Team B', false, NULL, NULL, 320.00),
+-- Items for Order 3
+(3, 4, 1, '{"custom"}', '2025-09-10', NULL, NULL, false, 'Red switches, custom keycaps', NULL, 189.90),
+(3, 5, 1, '{"private", "custom"}', '2025-09-10', NULL, NULL, false, NULL, 'Birthday gift, please include gift wrap.', 79.50),
+(3, 10, 5, NULL, '2025-09-10', NULL, NULL, false, NULL, 'Extra parts', 5.00);
+
+-- =======================
+-- USER SESSIONS
+-- =======================
+INSERT INTO user_session (user_id, refresh_token, created_at, expires_at) VALUES
+-- Active session for the admin user
+(1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImFkbWludGVzdCIsImlhdCI6MTcxNDI4OTAyMn0.fake_admin_token_string_for_testing_only', '2025-08-25 10:00:00', '2025-10-01 10:00:00'),
+-- Active session for the regular user
+(2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkxIiwibmFtZSI6InVzZXJ0ZXN0IiwiaWF0IjoxNzE0Mjg5MDIzfQ.fake_user_token_string_for_testing_only_2', '2025-08-31 18:30:00', '2025-10-01 18:30:00');

@@ -12,6 +12,7 @@ class Order(Base):
     street = Column(String(254), nullable=False)
     unit = Column(String(16), nullable=True)
     postal_code = Column(String(6), nullable=False)
+    status = Column(String(32), nullable=False)
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.schemas.order import OrderCreate, OrderUpdate, OrderRead, OrderWithItems
+from database.schemas.order import OrderCreate, OrderUpdate, OrderRead, OrderWithItems, OrderWithOrderItems
 from database.services.order import (
-    get_order, get_all_orders, get_orders_with_items, get_order_with_items_by_id, create_order, update_order, delete_order
+    get_order, get_all_orders, get_orders_with_items, get_order_with_items_by_id, create_order, update_order, delete_order, get_orders_with_order_items, get_order_with_order_items_by_id
 )
 
 router = APIRouter(prefix="/order", tags=["order"])
@@ -18,21 +18,42 @@ def read_orders(db: Session = Depends(get_db)):
 @router.get("/with-items", response_model=list[OrderWithItems])
 def read_orders_with_items(db: Session = Depends(get_db)):
     """
-    Retrieve all customer orders with their nested order items.
-    Returns orders in a nested format with subRows containing order items.
+    Retrieve all customer orders with their nested items.
+    Returns orders in a nested format with subRows containing items.
     """
     return get_orders_with_items(db)
 
 @router.get("/{order_id}/with-items", response_model=OrderWithItems)
 def read_order_with_items(order_id: int, db: Session = Depends(get_db)):
     """
-    Retrieve a specific customer order with its nested order items by order ID.
-    Returns the order in a nested format with subRows containing order items.
+    Retrieve a specific customer order with its nested items by order ID.
+    Returns the order in a nested format with subRows containing items.
     """
     order_with_items = get_order_with_items_by_id(db, order_id)
     if not order_with_items:
         raise HTTPException(status_code=404, detail="Order not found")
     return order_with_items
+
+@router.get("/with-order-items", response_model=list[OrderWithOrderItems])
+def read_orders_with_order_items(db: Session = Depends(get_db)):
+    """
+    Retrieve all customer orders with their nested order_items.
+    Returns orders in a nested format with subRows containing order_items.
+    """
+    return get_orders_with_order_items(db)
+
+@router.get("/{order_id}/with-order-items", response_model=OrderWithOrderItems)
+def read_order_with_order_items(order_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve a specific customer order with its nested order_items by order ID.
+    Returns the order in a nested format with subRows containing order_items.
+    """
+    order_with_order_items = get_order_with_order_items_by_id(db, order_id)
+    if not order_with_order_items:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order_with_order_items
+
+
 
 @router.get("/{order_id}", response_model=OrderRead)
 def read_order(order_id: int, db: Session = Depends(get_db)):
