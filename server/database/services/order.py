@@ -39,6 +39,43 @@ def get_order_with_items_by_id(db: Session, order_id: int):
     
     return order_with_items
 
+def get_order_with_order_items_by_id(db: Session, order_id: int):
+    """Get a single order with its nested order_items by order_id"""
+    order = get_order(db, order_id)
+    if not order:
+        return None
+    
+    # Get order items for this order
+    order_items = db.query(OrderItem).filter(OrderItem.order_id == order.order_id).all()
+    
+    # Calculate total order quantity
+    order_qty = sum(item.qty_requested for item in order_items)
+
+    
+    order_with_order_items = {
+        "id": order.order_id,
+        "cust_name": order.name,
+        "cust_contact": order.contact,
+        "order_date": order.order_date.strftime("%Y-%m-%d"),
+        "order_qty": order_qty,
+        "status": order.status,
+        "subRows": order_items,
+    }
+    
+    return order_with_order_items
+
+def get_orders_with_order_items(db: Session):
+    """Get all orders with their nested order_items"""
+    orders = db.query(Order).all()
+    result = []
+    
+    for order in orders:
+        order_with_order_items = get_order_with_order_items_by_id(db, order.order_id)
+        if order_with_order_items:
+            result.append(order_with_order_items)
+    
+    return result
+
 def get_orders_with_items(db: Session):
     """Get all orders with their nested items"""
     orders = db.query(Order).all()
