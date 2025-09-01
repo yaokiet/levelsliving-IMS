@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from database.models.order import Order
 from database.models.order_item import OrderItem
+from database.models.item import Item
 from database.schemas.order import OrderCreate, OrderUpdate
 
 def get_order(db: Session, order_id: int):
@@ -10,34 +11,36 @@ def get_all_orders(db: Session):
     return db.query(Order).all()
 
 def get_order_with_items_by_id(db: Session, order_id: int):
-    """Get a single order with its nested order items by order_id"""
+    """Get a single order with its nested items by order_id"""
     order = get_order(db, order_id)
     if not order:
         return None
     
     # Get order items for this order
     order_items = db.query(OrderItem).filter(OrderItem.order_id == order.order_id).all()
+
+    # Get items for this order
+    item_ids = [item.item_id for item in order_items]
+    items = db.query(Item).filter(Item.id.in_(item_ids)).all()
     
     # Calculate total order quantity
     order_qty = sum(item.qty_requested for item in order_items)
-    
-    # Determine status (you can customize this logic)
-    status = "Pending"  # Default status
+
     
     order_with_items = {
         "id": order.order_id,
         "cust_name": order.name,
-        "order_date": order.order_date.strftime("%Y-%m-%d"),
         "cust_contact": order.contact,
+        "order_date": order.order_date.strftime("%Y-%m-%d"),
         "order_qty": order_qty,
-        "status": status,
-        "subRows": order_items
+        "status": order.status,
+        "subRows": items,
     }
     
     return order_with_items
 
 def get_orders_with_items(db: Session):
-    """Get all orders with their nested order items in the required format"""
+    """Get all orders with their nested items"""
     orders = db.query(Order).all()
     result = []
     

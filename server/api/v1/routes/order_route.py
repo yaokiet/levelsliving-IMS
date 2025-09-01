@@ -18,8 +18,9 @@ def read_orders(db: Session = Depends(get_db)):
 @router.get("/with-items", response_model=list[OrderWithItems])
 def read_orders_with_items(db: Session = Depends(get_db)):
     """
-    Retrieve all customer orders with their nested order items.
-    Returns orders in a nested format with subRows containing order items.
+    Retrieve all customer orders with their nested items.
+    Returns orders in a nested format with subRows containing items.
+    Note: The items returned contain the infor of the items under the corresponding Order, but not the actual order_items.
     """
     return get_orders_with_items(db)
 
@@ -27,7 +28,7 @@ def read_orders_with_items(db: Session = Depends(get_db)):
 def read_order_with_items(order_id: int, db: Session = Depends(get_db)):
     """
     Retrieve a specific customer order with its nested order items by order ID.
-    Returns the order in a nested format with subRows containing order items.
+    Returns the order in a nested format with subRows containing items.
     """
     order_with_items = get_order_with_items_by_id(db, order_id)
     if not order_with_items:
