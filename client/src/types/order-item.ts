@@ -1,10 +1,9 @@
-import { Timestamp } from "next/dist/server/lib/cache-handlers/types";
 import type { Item } from "./item";
 
 export interface OrderItem {
     id: number,
     shopify_order_id: number,
-    order_date: Timestamp,
+    order_date: Date,
     name: string,
     contact: number,
     street: string,
@@ -68,7 +67,7 @@ export const mockOrderItems: OrderItem[] = [
     {
         id: 1,
         shopify_order_id: 1001,
-        order_date: new Date("2024-08-01") as unknown as Timestamp,
+        order_date: new Date("2024-08-01"),
         name: "Alice Tan",
         contact: 91234567,
         street: "123 Main St",
@@ -95,7 +94,7 @@ export const mockOrderItems: OrderItem[] = [
     {
         id: 2,
         shopify_order_id: 1002,
-        order_date: new Date("2024-08-02") as unknown as Timestamp,
+        order_date: new Date("2024-08-02"),
         name: "Bob Lim",
         contact: 98765432,
         street: "456 Second St",
@@ -107,7 +106,7 @@ export const mockOrderItems: OrderItem[] = [
     {
         id: 3,
         shopify_order_id: 1003,
-        order_date: new Date("2024-08-03") as unknown as Timestamp,
+        order_date: new Date("2024-08-03"),
         name: "Cheryl Ong",
         contact: 90011223,
         street: "789 Third St",
@@ -119,7 +118,7 @@ export const mockOrderItems: OrderItem[] = [
     {
         id: 4,
         shopify_order_id: 1004,
-        order_date: new Date("2024-08-04") as unknown as Timestamp,
+        order_date: new Date("2024-08-04"),
         name: "David Lee",
         contact: 81239876,
         street: "101 Fourth St",
@@ -131,7 +130,7 @@ export const mockOrderItems: OrderItem[] = [
     {
         id: 5,
         shopify_order_id: 1005,
-        order_date: new Date("2024-08-05") as unknown as Timestamp,
+        order_date: new Date("2024-08-05"),
         name: "Evelyn Goh",
         contact: 82345678,
         street: "202 Fifth St",
