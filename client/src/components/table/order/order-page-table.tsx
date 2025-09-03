@@ -3,7 +3,7 @@
 // This file defines the columns for the main page table.
 
 import { useState, useEffect } from "react";
-import { OrderItem, mockOrderItems } from "@/types/order-item";
+import { OrderItem } from "@/types/order-item";
 import { columns } from "./order-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
 import { getOrdersWithItems } from "@/lib/api/ordersApi";
