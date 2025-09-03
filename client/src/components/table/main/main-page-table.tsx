@@ -4,15 +4,10 @@
 
 import React, { useState, useEffect } from "react";
 import { Item } from "@/types/item";
-import { columns, createMainPageColumns } from "./main-page-columns";
+import { createMainPageColumns } from "./main-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
 import { getAllItems } from "@/lib/api/itemsApi";
 import { AddToCartModal } from "@/components/ui/modal/add-to-cart-modal";
-// import { DataTableAddSelected } from "@/components/table/reusable/data-table-add-selected-to-cart"
-
-type Props = {
-  items: Item[];
-};
 
 export default function MainPageTable() {
   const [data, setData] = useState<Item[]>([]);
