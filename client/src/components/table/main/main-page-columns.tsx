@@ -22,7 +22,11 @@ import { DataTableColumnHeader } from "../reusable/data-table-column-header"
 
 // This is the main page table columns definition.
 // It defines the columns that will be displayed in the table.
-export const columns: ColumnDef<Item>[] = [
+type AddToCartHandler = (id: number) => void;
+
+export const createMainPageColumns = (
+  onAddToCart?: AddToCartHandler
+): ColumnDef<Item>[] => [
   // This column is for selecting rows.
   // It allows users to select multiple rows for bulk actions.
   {
@@ -141,6 +145,21 @@ export const columns: ColumnDef<Item>[] = [
       />
     ),
   },
+  // Add to cart button column
+  {
+    id: "add-to-cart",
+    cell: ({ row }) => {
+      const item = row.original
+      return (
+        <Button
+          variant="outline"
+          onClick={() => (onAddToCart ? onAddToCart(item.id) : console.log("Add to cart clicked, item id: ", item.id))}
+        >
+          Add to cart
+        </Button>
+      )
+    },
+  },
   // Actions column
   {
     id: "actions",
@@ -172,3 +191,6 @@ export const columns: ColumnDef<Item>[] = [
     },
   },
 ]
+
+// Backwards-compatible default export for places that import `columns` directly.
+export const columns: ColumnDef<Item>[] = createMainPageColumns();
