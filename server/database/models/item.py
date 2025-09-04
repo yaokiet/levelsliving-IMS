@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from database.database import Base
 
 class Item(Base):
@@ -12,5 +15,17 @@ class Item(Base):
     qty = Column(Integer, nullable=False)
     threshold_qty = Column(Integer, nullable=False)
 
+    # Relationships
+    # One Item -> many OrderItem
+    order_items = relationship(
+        "OrderItem",
+        back_populates="item",
+        lazy="selectin",               # list-friendly; batches backrefs
+        passive_deletes=True,
+    )
+
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def __repr__(self) -> str:
+        return f"<Item id={self.id} sku={self.sku} name={self.item_name}>"
