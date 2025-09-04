@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/table/reusable/data-table-column-header";
 import type { Supplier } from "@/types/supplier";
+import { deleteSupplier } from "@/lib/api/supplierApi";
 
 // Clickable Supplier ID component
 function ClickableSupplierID({ supplierId }: { supplierId: number }) {
@@ -158,6 +159,20 @@ export const columns: ColumnDef<Supplier>[] = [
       const supplier = row.original;
       const router = useRouter();
 
+      const handleDelete = async () => {
+        if (window.confirm(`Are you sure you want to delete supplier "${supplier.name}"?`)) {
+          try {
+            await deleteSupplier(supplier.id);
+            alert("Supplier deleted successfully!");
+            // Refresh the page to update the table
+            window.location.reload();
+          } catch (error) {
+            console.error("Error deleting supplier:", error);
+            alert("Failed to delete supplier. Please try again.");
+          }
+        }
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -180,7 +195,10 @@ export const columns: ColumnDef<Supplier>[] = [
               View Details
             </DropdownMenuItem>
             <DropdownMenuItem>Edit supplier</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem 
+              className="text-red-600"
+              onClick={handleDelete}
+            >
               Remove supplier
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -12,5 +12,7 @@ export const API_PATHS = {
     order_with_items: `${API_PREFIX}/order/with-items`,
     order_by_id: (orderId: number | string) => `${API_PREFIX}/order/${orderId}`,
     order_with_items_by_id: (orderId: number | string) => `${API_PREFIX}/order/${orderId}/with-items`,
+    supplier: `${API_PREFIX}/supplier`,
+    supplier_by_id: (supplierId: number | string) => `${API_PREFIX}/supplier/${supplierId}`,
     // // Add more as needed
 };

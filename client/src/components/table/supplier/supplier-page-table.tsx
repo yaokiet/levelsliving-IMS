@@ -1,48 +1,64 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Supplier, mockSuppliers } from "@/types/supplier"
+import { Supplier } from "@/types/supplier"
 import { columns } from "./supplier-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
+import { getAllSuppliers } from "@/lib/api/supplierApi"
 
 export default function SupplierPageTable() {
   const [data, setData] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchSuppliers = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const suppliers = await getAllSuppliers()
+      console.log("Fetched suppliers:", suppliers)
+      setData(suppliers)
+    } catch (error) {
+      console.error("Error fetching suppliers:", error)
+      setError("Failed to load suppliers. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    setData(mockSuppliers)
-    setLoading(false)
+    fetchSuppliers()
   }, [])
-
-// Fetch suppliers when the component mounts
-//   useEffect(() => {
-//       try {
-//         getAllSuppliers().then(suppliers => {
-//           console.log("Fetched suppliers:", suppliers)
-//           setData(suppliers)
-//           setLoading(false)
-//         })
-//       }
-//       catch (error) {
-//         console.error("Error fetching suppliers:", error)
-//       }
-
-//     }, []);
   
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="text-lg">Loading suppliers...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="text-lg text-red-600 mb-2">Error</div>
+          <div className="text-sm text-muted-foreground">{error}</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <ReusableTable 
-          columns={columns} 
-          data={data} 
-          searchKey="name" 
-          searchPlaceholder="Filter suppliers by name"
-          showViewOptions={true}
-          showPagination={true}
-        />
-      )}
-    </>
+    <ReusableTable 
+      columns={columns} 
+      data={data} 
+      searchKey="name" 
+      searchPlaceholder="Filter suppliers by name"
+      showViewOptions={true}
+      showPagination={true}
+    />
   )
 }
