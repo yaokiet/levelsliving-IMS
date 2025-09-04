@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Phone, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -66,14 +66,41 @@ export const columns: ColumnDef<Supplier>[] = [
       return <ClickableSupplierID supplierId={supplierId} />;
     },
   },
-  // Supplier Name column
+  // Supplier Name column with responsive layout
   {
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Supplier Name" />
     ),
+    cell: ({ row }) => {
+      const supplier = row.original;
+      return (
+        <div className="space-y-1">
+          <div className="font-medium">{supplier.name}</div>
+          {/* Show description on smaller screens only */}
+          <div className="text-sm text-muted-foreground block md:hidden">
+            {supplier.description || "No description"}
+          </div>
+          {/* Show contact info on smaller screens only */}
+          <div className="flex flex-col gap-1 md:hidden">
+            {supplier.contact_number && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Phone className="h-3 w-3" />
+                {supplier.contact_number}
+              </div>
+            )}
+            {supplier.email && (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <Mail className="h-3 w-3" />
+                {supplier.email}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    },
   },
-  // Description column
+  // Description column (hidden on small screens)
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -81,10 +108,17 @@ export const columns: ColumnDef<Supplier>[] = [
     ),
     cell: ({ row }) => {
       const value = row.getValue("description") as string;
-      return <span>{value || "No description"}</span>;
+      return (
+        <div className="max-w-[200px] truncate">
+          {value || "No description"}
+        </div>
+      );
+    },
+    meta: {
+      className: "hidden md:table-cell",
     },
   },
-  // Contact Number column
+  // Contact Number column (hidden on small screens)
   {
     accessorKey: "contact_number",
     header: ({ column }) => (
@@ -94,8 +128,11 @@ export const columns: ColumnDef<Supplier>[] = [
       const value = row.getValue("contact_number") as string;
       return <span>{value || "No contact"}</span>;
     },
+    meta: {
+      className: "hidden lg:table-cell",
+    },
   },
-  // Email column
+  // Email column (hidden on small screens)
   {
     accessorKey: "email",
     header: ({ column }) => (
@@ -103,12 +140,20 @@ export const columns: ColumnDef<Supplier>[] = [
     ),
     cell: ({ row }) => {
       const value = row.getValue("email") as string;
-      return <span>{value || "No email"}</span>;
+      return (
+        <div className="max-w-[150px] truncate">
+          {value || "No email"}
+        </div>
+      );
+    },
+    meta: {
+      className: "hidden lg:table-cell",
     },
   },
   // Actions column
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
       const supplier = row.original;
       const router = useRouter();
@@ -141,6 +186,9 @@ export const columns: ColumnDef<Supplier>[] = [
           </DropdownMenuContent>
         </DropdownMenu>
       );
+    },
+    meta: {
+      className: "w-[50px]",
     },
   },
 ];
