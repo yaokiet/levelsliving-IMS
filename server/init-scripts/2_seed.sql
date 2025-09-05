@@ -13,6 +13,9 @@ INSERT INTO supplier (id, name, description, email, contact_number) VALUES
 (2, 'Fine Finish Furnishings', 'Supplier for assembled furniture', 'contact@finefinish.com', '+65 6789 1234'),
 (3, 'TechSource Electronics', 'Distributor of computer peripherals', 'orders@techsource.sg', '+65 6222 3333');
 
+-- Reset supplier sequence to continue from the max ID
+SELECT setval('supplier_id_seq', (SELECT MAX(id) FROM supplier));
+
 -- =======================
 -- ITEMS
 -- =======================
