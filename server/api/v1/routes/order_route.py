@@ -8,32 +8,21 @@ from sqlalchemy.orm import Session
 from database.database import get_db
 from database.schemas.pagination import Paginated
 from database.schemas.order import (
-    OrderCreate,
     OrderUpdate,
     OrderRead,
-    OrderWithItems,
-    OrderWithOrderItems,
+    OrderDetails
 )
 from database.services.order import (
     get_order,
-    get_order_with_items_by_id,
-    get_order_with_order_items_by_id,
-    create_order,
     update_order,
     delete_order,
-    # alias to avoid shadowing by route handler names
+    get_order_with_items_by_id,
     list_orders_with_items as svc_list_orders_with_items,
-    list_orders_with_order_items as svc_list_orders_with_order_items,
 )
 
 router = APIRouter(prefix="/order", tags=["order"])
 
-
-# ---------------------------------------------------------------------------
-# Paginated lists (meta + data)
-# ---------------------------------------------------------------------------
-
-@router.get("/with-items", response_model=Paginated[OrderWithItems])
+@router.get("/with-items", response_model=Paginated[OrderDetails])
 def list_orders_with_items(
     page: int = Query(1, ge=1, description="1-based page number"),
     size: int = Query(50, ge=1, le=200, description="Page size (max 200)"),
@@ -62,35 +51,6 @@ def list_orders_with_items(
         include_total=include_total,
     )
 
-
-@router.get("/with-order-items", response_model=Paginated[OrderWithOrderItems])
-def list_orders_with_order_items(
-    page: int = Query(1, ge=1),
-    size: int = Query(50, ge=1, le=200),
-    status: Optional[str] = None,
-    date_from: Optional[str] = None,
-    date_to: Optional[str] = None,
-    sort: Optional[List[str]] = Query(None, alias="sort"),
-    include_total: bool = False,
-    db: Session = Depends(get_db),
-):
-    """List orders with nested **OrderItems** (offset pagination)."""
-    return svc_list_orders_with_order_items(
-        db,
-        page=page,
-        size=size,
-        status=status,
-        date_from=date_from,
-        date_to=date_to,
-        sort=sort,
-        include_total=include_total,
-    )
-
-
-# ---------------------------------------------------------------------------
-# Single-order (detail) endpoints
-# ---------------------------------------------------------------------------
-
 @router.get("/{order_id}", response_model=OrderRead)
 def read_order(order_id: int, db: Session = Depends(get_db)):
     """Get one order by id."""
@@ -100,32 +60,13 @@ def read_order(order_id: int, db: Session = Depends(get_db)):
     return order
 
 
-@router.get("/{order_id}/with-items", response_model=OrderWithItems)
+@router.get("/{order_id}/with-items", response_model=OrderDetails)
 def read_order_with_items(order_id: int, db: Session = Depends(get_db)):
     """Get one order with its **Items**."""
     order_with_items = get_order_with_items_by_id(db, order_id)
     if not order_with_items:
         raise HTTPException(status_code=404, detail="Order not found")
     return order_with_items
-
-
-@router.get("/{order_id}/with-order-items", response_model=OrderWithOrderItems)
-def read_order_with_order_items(order_id: int, db: Session = Depends(get_db)):
-    """Get one order with its **OrderItems**."""
-    order_with_oi = get_order_with_order_items_by_id(db, order_id)
-    if not order_with_oi:
-        raise HTTPException(status_code=404, detail="Order not found")
-    return order_with_oi
-
-
-# ---------------------------------------------------------------------------
-# Mutations
-# ---------------------------------------------------------------------------
-
-@router.post("", response_model=OrderRead)
-def create_new_order(payload: OrderCreate, db: Session = Depends(get_db)):
-    """Create a new order."""
-    return create_order(db, payload)
 
 
 @router.put("/{order_id}", response_model=OrderRead)

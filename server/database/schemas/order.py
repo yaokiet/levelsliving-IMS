@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from .order_item import OrderItemRead
-from .item import ItemRead
+from datetime import date, time
+from decimal import Decimal
 
 class OrderBase(BaseModel):
     shopify_order_id: Optional[int] = None
@@ -33,28 +33,42 @@ class OrderRead(OrderBase):
     class Config:
         orm_mode = True
 
-# Order with items
-class OrderWithItems(BaseModel):
-    id: int
-    cust_name: str
-    order_date: str
-    cust_contact: str
-    order_qty: int
-    status: str
-    subRows: List[ItemRead]
+
+# Modified fields schemas for front end rendering
+class ItemMergedRead(BaseModel):
+    """Order with Items' details merged from Item and OrderItem fields """
+
+    # From Item
+    item_id: int
+    sku: str
+    type: str
+    item_name: str
+    variant: Optional[str] = None
+
+    # From OrderItem
+    qty_requested: int
+    tag: Optional[List[str]] = None
+    delivery_date: date
+    delivery_time: Optional[time] = None
+    team_assigned: Optional[str] = None
+    custom: Optional[str] = None
+    remarks: Optional[str] = None
+    value: Decimal  
 
     class Config:
         orm_mode = True
 
-# Order with order_items
-class OrderWithOrderItems(BaseModel):
+
+class OrderDetails(BaseModel):
+    """Order header + total_value + list of ItemMergedRead."""
     id: int
     cust_name: str
     order_date: str
     cust_contact: str
     order_qty: int
     status: str
-    subRows: List[OrderItemRead]
+    total_value: Decimal
+    subRows: List[ItemMergedRead]
 
     class Config:
         orm_mode = True
