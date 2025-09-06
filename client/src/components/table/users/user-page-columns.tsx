@@ -3,23 +3,66 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { User } from "@/types/user"
+import { DataTableColumnHeader } from "../reusable/data-table-column-header"
+import { useRouter } from "next/navigation"
 
 // Define columns for the users table
 export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "id",
-    header: "ID",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="ID"
+      />
+    ),
+    cell: ({ row }) => {
+      const id = row.original.id
+      const router = useRouter();
+
+      return (
+        <div
+          className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
+          onClick={() => router.push(`/users/${id}`)} // Placeholder for navigation
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              router.push(`/users/${id}`) // Placeholder for navigation
+            }
+          }}
+          tabIndex={0}
+          role="link"
+          aria-label={`View details for ${id}`}
+        >
+          {id}
+        </div>
+      )
+    },
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Name"
+      />
+    ),
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Email"
+      />
+    ),
   },
   {
     accessorKey: "role",
-    header: "Role",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        title="Role"
+      />
+    ),
   },
 ]
