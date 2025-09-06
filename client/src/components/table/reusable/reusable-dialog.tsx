@@ -1,66 +1,52 @@
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 
-interface DialogButtonProps {
-    buttonText: string
-    dialogTitle: string
-    dialogDescription?: string
-    cancelButtonText?: string
-    confirmButtonText?: string
-    onConfirm?: () => void
-    children?: React.ReactNode
+interface ReusableDialogProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    dialogTitle: string;
+    dialogDescription?: string;
+    cancelButtonText?: string;
+    confirmButtonText?: string;
+    onConfirm?: () => void;
+    children?: React.ReactNode;
 }
 
 export function ReusableDialog({
-    buttonText,
+    open,
+    onOpenChange,
     dialogTitle,
     dialogDescription,
     cancelButtonText,
     confirmButtonText,
     onConfirm,
     children,
-}: DialogButtonProps) {
+}: ReusableDialogProps) {
     return (
-        <Dialog>
-            <form>
-                <DialogTrigger asChild>
-                    <Button variant="outline">{buttonText}</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>{dialogTitle}</DialogTitle>
-                        {dialogDescription && (
-                            <DialogDescription>
-                                {dialogDescription}
-                            </DialogDescription>
-                        )}
-                    </DialogHeader>
-                    {children}
-                    <DialogFooter>
-                        {cancelButtonText && (
-                            <DialogClose asChild>
-                                <Button variant="outline">{cancelButtonText}</Button>
-                            </DialogClose>
-                        )}
-                        {confirmButtonText && (
-                            <DialogClose asChild>
-                                <Button type="button" onClick={onConfirm}>
-                                    {confirmButtonText}
-                                </Button>
-                            </DialogClose>
-                        )}
-                    </DialogFooter>
-                </DialogContent>
-            </form>
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>{dialogTitle}</DialogTitle>
+                    {dialogDescription && (
+                        <DialogDescription>{dialogDescription}</DialogDescription>
+                    )}
+                </DialogHeader>
+                {children}
+                <DialogFooter>
+                    {cancelButtonText && (
+                        <DialogClose asChild>
+                            <Button variant="outline">{cancelButtonText}</Button>
+                        </DialogClose>
+                    )}
+                    {confirmButtonText && (
+                        <DialogClose asChild>
+                            <Button type="button" onClick={onConfirm}>
+                                {confirmButtonText}
+                            </Button>
+                        </DialogClose>
+                    )}
+                </DialogFooter>
+            </DialogContent>
         </Dialog>
-    )
+    );
 }

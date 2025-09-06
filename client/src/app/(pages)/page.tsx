@@ -6,10 +6,10 @@ import LowQuantityStock, { LowStockItem } from "@/components/sample/low-quantity
 import { SalesPurchaseChart } from "@/components/chart/sales-purchase-chart";
 
 // sample imports for dialog
-import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { useState } from "react";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { DialogWithTrigger } from "@/components/table/reusable/dialog-with-trigger";
 
 export default function Page() {
   const lowStockItems: LowStockItem[] = [
@@ -34,7 +34,7 @@ export default function Page() {
       </h2>
       <div className="flex flex-1 flex-col">
         {/* sample dialog button */}
-        <ReusableDialog
+        <DialogWithTrigger
           buttonText="Open Dialog"
           dialogTitle="Edit Item"
           dialogDescription="Update the details below."
@@ -58,7 +58,7 @@ export default function Page() {
               />
             </div>
           </div>
-        </ReusableDialog>
+        </DialogWithTrigger>
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
             <SectionCards />
