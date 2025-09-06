@@ -8,27 +8,27 @@ INSERT INTO "user" (name, role, email, password_hash) VALUES
 -- =======================
 -- SUPPLIERS
 -- =======================
-INSERT INTO supplier (id, name, description, email, contact_number) VALUES
-(1, 'Component Solutions Inc.', 'Supplier for raw furniture components', 'sales@componentsolutions.com', '+1-800-555-0101'),
-(2, 'Fine Finish Furnishings', 'Supplier for assembled furniture', 'contact@finefinish.com', '+65 6789 1234'),
-(3, 'TechSource Electronics', 'Distributor of computer peripherals', 'orders@techsource.sg', '+65 6222 3333');
+INSERT INTO supplier (name, description, email, contact_number) VALUES
+('Component Solutions Inc.', 'Supplier for raw furniture components', 'sales@componentsolutions.com', '+1-800-555-0101'),
+('Fine Finish Furnishings', 'Supplier for assembled furniture', 'contact@finefinish.com', '+65 6789 1234'),
+('TechSource Electronics', 'Distributor of computer peripherals', 'orders@techsource.sg', '+65 6222 3333');
 
 -- =======================
 -- ITEMS
 -- =======================
-INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUES
-(1, 'CHAIR-001', 'Furniture', 'Office Chair', 'Black', 15, 10),
-(2, 'DESK-001', 'Furniture', 'Standing Desk', 'Oak', 8, 5),
-(3, 'MONITOR-001', 'Electronics', '27-inch Monitor', 'Silver', 3, 5),
-(4, 'KEYBOARD-001', 'Electronics', 'Mechanical Keyboard', NULL, 12, 8),
-(5, 'MOUSE-001', 'Electronics', 'Wireless Mouse', 'Black', 7, 10),
-(6, 'LAMP-001', 'Lighting', 'Desk Lamp', 'White', 20, 15),
-(7, 'LEG-STL-01', 'Component', 'Chair Leg', 'Steel', 100, 20),
-(8, 'SEAT-PAD-01', 'Component', 'Seat Cushion', 'Foam', 50, 10),
-(9, 'BACK-RST-01', 'Component', 'Backrest Frame', 'Plastic', 50, 10),
-(10, 'SCRW-PK-01', 'Component', 'Screw Pack', 'M6', 200, 50),
-(11, 'DESK-TOP-01', 'Component', 'Desk Tabletop', 'Oak Veneer', 20, 5),
-(12, 'DESK-LEG-01', 'Component', 'Desk Leg Set', 'Motorized', 20, 5);
+INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
+('CHAIR-001', 'Furniture', 'Office Chair', 'Black', 15, 10),
+('DESK-001', 'Furniture', 'Standing Desk', 'Oak', 8, 5),
+('MONITOR-001', 'Electronics', '27-inch Monitor', 'Silver', 3, 5),
+('KEYBOARD-001', 'Electronics', 'Mechanical Keyboard', NULL, 12, 8),
+('MOUSE-001', 'Electronics', 'Wireless Mouse', 'Black', 7, 10),
+('LAMP-001', 'Lighting', 'Desk Lamp', 'White', 20, 15),
+('LEG-STL-01', 'Component', 'Chair Leg', 'Steel', 100, 20),
+('SEAT-PAD-01', 'Component', 'Seat Cushion', 'Foam', 50, 10),
+('BACK-RST-01', 'Component', 'Backrest Frame', 'Plastic', 50, 10),
+('SCRW-PK-01', 'Component', 'Screw Pack', 'M6', 200, 50),
+('DESK-TOP-01', 'Component', 'Desk Tabletop', 'Oak Veneer', 20, 5),
+('DESK-LEG-01', 'Component', 'Desk Leg Set', 'Motorized', 20, 5);
 
 -- =======================
 -- SUPPLIER_ITEM
@@ -76,10 +76,10 @@ INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_
 -- =======================
 -- CUSTOMER ORDER
 -- =======================
-INSERT INTO "order" (order_id, shopify_order_id, order_date, status, name, contact, street, unit, postal_code) VALUES
-(1, 1001, '2025-08-20 10:00:00+08', 'pending', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
-(2, 1002, '2025-08-28 15:30:00+08', 'pending', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
-(3, 1003, '2025-09-01 09:45:00+08', 'pending', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879');
+INSERT INTO "order" (shopify_order_id, order_date, status, name, contact, street, unit, postal_code) VALUES
+(1001, '2025-08-20 10:00:00+08', 'pending', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
+(1002, '2025-08-28 15:30:00+08', 'pending', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
+(1003, '2025-09-01 09:45:00+08', 'pending', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879');
 
 
 -- =======================
