@@ -117,3 +117,33 @@ CREATE TABLE user_session (
   created_at TIMESTAMP DEFAULT NOW(),
   expires_at TIMESTAMP NOT NULL
 );
+
+-- =======================
+-- CART ITEMS
+-- =======================
+-- This table will store items that a user adds to their cart before creating a purchase order.
+-- Each row represents a unique item for a specific user.
+-- The cart is cleared for that user once a purchase order is successfully created.
+
+CREATE TABLE cart_item (
+    -- Unique identifier for each cart entry
+    id SERIAL PRIMARY KEY,
+
+    -- Foreign key to the "user" table.
+    -- If a user is deleted, their cart items are also deleted (ON DELETE CASCADE).
+    user_id INT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+
+    -- Foreign key to the "item" table.
+    -- If an item is removed from the system, it's also removed from all carts (ON DELETE CASCADE).
+    item_id INT NOT NULL REFERENCES item(id) ON DELETE CASCADE,
+
+    -- The quantity of the item in the cart. Must be a positive number.
+    quantity INT NOT NULL CHECK (quantity > 0),
+
+    -- A user cannot have the same item in their cart more than once.
+    -- If an item is added again, its quantity should be updated instead.
+    UNIQUE (user_id, item_id)
+);
+
+-- Index on user_id for quick retrieval of a user's entire cart.
+CREATE INDEX idx_cart_item_user_id ON cart_item(user_id);

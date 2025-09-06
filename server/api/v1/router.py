@@ -9,6 +9,7 @@ from .routes.order_route import router as order_router
 from .routes.order_item_route import router as order_item_router
 from .routes.auth_route import router as auth_router
 from .routes.lark_route import router as lark_router
+from .routes.cart_route import router as cart_router
 
 from fastapi import APIRouter
 
@@ -24,6 +25,7 @@ router.include_router(order_router)
 router.include_router(order_item_router)
 router.include_router(auth_router)
 router.include_router(lark_router)
+router.include_router(cart_router)
 
 
 @router.get("/test")
