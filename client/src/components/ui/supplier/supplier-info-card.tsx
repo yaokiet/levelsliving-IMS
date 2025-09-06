@@ -3,7 +3,7 @@ import type { Supplier } from "@/types/supplier";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, Building2, FileText, Copy, Edit, Trash2 } from "lucide-react";
+import { Phone, Building2, FileText, Copy, Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface SupplierInfoCardProps {
