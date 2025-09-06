@@ -4,6 +4,7 @@ import React from "react";
 import { ItemProvider, useItem } from "@/context/ItemContext";
 import { ItemInfoCard } from "@/components/ui/item/item-info-card";
 import ItemComponentsTable from "@/components/table/main/item-components-table";
+import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 
 // This is the inner component that will have access to the context
 function ItemDetailsContent() {
@@ -25,10 +26,8 @@ function ItemDetailsContent() {
 
   return (
     <div className="container mx-auto py-10 px-6">
-      <ItemInfoCard
-        item={item}
-      />
-
+      <ItemEditModal item={item} />
+      <ItemInfoCard item={item} />
       <ItemComponentsTable />
     </div>
   );

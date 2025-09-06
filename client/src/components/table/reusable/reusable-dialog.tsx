@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useState } from "react";
 
 interface ReusableDialogProps {
     open: boolean;
@@ -8,10 +9,15 @@ interface ReusableDialogProps {
     dialogDescription?: string;
     cancelButtonText?: string;
     confirmButtonText?: string;
-    onConfirm?: () => void;
+    // Allow handlers that return an HTTP-like response
+    onConfirm?: () =>
+        | void
+        | boolean
+        | { status: number }
+        | Response
+        | Promise<void | boolean | { status: number } | Response>;
     children?: React.ReactNode;
 }
-
 export function ReusableDialog({
     open,
     onOpenChange,
@@ -22,6 +28,41 @@ export function ReusableDialog({
     onConfirm,
     children,
 }: ReusableDialogProps) {
+    const [submitting, setSubmitting] = useState(false);
+
+    /**
+     * Returns true if the given response has a status code of 200, false otherwise.
+     * @param res The response to check. Can be an object with a .status property,
+     *            or a number (in which case it is compared directly to 200),
+     *            or anything else (in which case the function returns false).
+     * @returns true if the status code is 200, false otherwise.
+     */
+    const isStatus200 = (res: unknown): boolean => {
+        if (!res || typeof res !== "object") return false;
+        const status = (res as any).status;
+        return typeof status === "number" && status === 200;
+    };
+
+    const handleConfirm = async () => {
+        if (!onConfirm) {
+            // No confirm handler; do not auto-close
+            return;
+        }
+        try {
+            setSubmitting(true);
+            const result = await onConfirm();
+
+            if (isStatus200(result)) {
+                onOpenChange(false);
+            }
+            // If not 200, keep dialog open
+        } catch {
+            // Keep dialog open on error
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[425px]">
@@ -35,15 +76,15 @@ export function ReusableDialog({
                 <DialogFooter>
                     {cancelButtonText && (
                         <DialogClose asChild>
-                            <Button variant="outline">{cancelButtonText}</Button>
+                            <Button variant="outline" disabled={submitting}>
+                                {cancelButtonText}
+                            </Button>
                         </DialogClose>
                     )}
                     {confirmButtonText && (
-                        <DialogClose asChild>
-                            <Button type="button" onClick={onConfirm}>
-                                {confirmButtonText}
-                            </Button>
-                        </DialogClose>
+                        <Button type="button" onClick={handleConfirm} disabled={submitting}>
+                            {submitting ? "Please wait..." : confirmButtonText}
+                        </Button>
                     )}
                 </DialogFooter>
             </DialogContent>
