@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, CheckConstraint
 from sqlalchemy.orm import relationship
-from database.database import Base  # assuming your SQLAlchemy Base is defined here
+from database.database import Base
 
 class User(Base):
     __tablename__ = "user"
@@ -12,6 +12,12 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
 
     # Relationships
+    # One User -> many CartItem
+    cart_items = relationship(
+        "CartItem",
+        back_populates="user",
+        passive_deletes=True,
+    )
     # purchase_orders = relationship("PurchaseOrder", back_populates="user")
 
     __table_args__ = (
