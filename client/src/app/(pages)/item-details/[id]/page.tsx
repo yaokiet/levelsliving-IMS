@@ -5,10 +5,12 @@ import { ItemProvider, useItem } from "@/context/ItemContext";
 import { ItemInfoCard } from "@/components/ui/item/item-info-card";
 import ItemComponentsTable from "@/components/table/main/item-components-table";
 import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
+import { useRouter } from "next/navigation";
 
 // This is the inner component that will have access to the context
 function ItemDetailsContent() {
-  const { item, loading, error } = useItem();
+  const { item, loading, error, refetch } = useItem();
+  const router = useRouter();
 
   if (loading) {
     return <div className="container mx-auto py-10 px-6">Loading...</div>;
@@ -26,8 +28,19 @@ function ItemDetailsContent() {
 
   return (
     <div className="container mx-auto py-10 px-6">
-      <ItemEditModal item={item} />
-      <ItemInfoCard item={item} />
+      <ItemInfoCard
+        item={item}
+        action={
+          <ItemEditModal
+            item={item}
+            onUpdated={async () => {
+              // fetch latest details into context
+              await refetch();
+              router.refresh(); // refresh any server components on the page
+            }}
+          />
+        }
+      />
       <ItemComponentsTable />
     </div>
   );
