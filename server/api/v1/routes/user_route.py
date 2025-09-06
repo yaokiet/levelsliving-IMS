@@ -18,12 +18,12 @@ def read_users(
     search_columns: Optional[str] = Query(
         None,
         alias="search_columns",
-        description="Columns to search (e.g. search_columns=name&email)",
+        description="Columns to search (e.g. search_columns=name,email)",
     ),
     sort: Optional[str] = Query(
         None,
         alias="sort",
-        description="Sort by columns, e.g. sort=name:asc&email:desc",
+        description="Sort by columns, e.g. sort=name:asc,email:desc",
     ),
     include_total: bool = Query(
         True, description="If true, also compute COUNT(*) for total/pages"

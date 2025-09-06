@@ -28,6 +28,11 @@ export function DataTableSearch({
         placeholder={placeholder}
         value={input}
         onChange={e => setInput(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === "Enter") {
+            onSearch(input)
+          }
+        }}
         className="max-w-sm"
         type="text"
       />
