@@ -28,6 +28,7 @@ import { DataTableSearch } from "./data-table-search";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableViewFilterOptions } from "./data-table-column-visibility";
 import { DropdownFilterSelect } from "./data-table-dropdown-filter";
+import { ColumnMultiSelect } from "./column-multi-select";
 
 interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +47,9 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   renderToolbarExtras?: (ctx: { table: ReturnType<typeof useReactTable<TData>> }) => React.ReactNode;
   searchValue?: string;
   onSearch?: (value: string) => void;
+  filterableColumns?: { key: string; label: string }[];
+  searchColumns?: string[];
+  onSearchColumnsChange?: (cols: string[]) => void;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -64,6 +68,9 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   renderToolbarExtras,
   searchValue,
   onSearch,
+  filterableColumns = [],
+  searchColumns = [],
+  onSearchColumnsChange,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -125,14 +132,22 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     <div className={`justify-center ${className}`}>
       <div className={`${containerClassName}`}>
         {/* Search bar and view options */}
-        {(searchKey || showViewOptions) && (
+        {(onSearch || showViewOptions) && (
           <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
-            <div className="flex-1 min-w-[220px]">
+            <div className="flex-1 min-w-[220px] flex gap-2">
               {onSearch && (
                 <DataTableSearch
                   value={searchValue ?? ""}
                   onSearch={onSearch}
                   placeholder={searchPlaceholder}
+                />
+              )}
+              {filterableColumns.length > 0 && onSearchColumnsChange && (
+                <ColumnMultiSelect
+                  options={filterableColumns}
+                  value={searchColumns}
+                  onChange={onSearchColumnsChange}
+                  placeholder="Select columns"
                 />
               )}
             </div>
