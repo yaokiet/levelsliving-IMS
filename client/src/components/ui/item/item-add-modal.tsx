@@ -1,12 +1,11 @@
-import type { Item, ItemUpdate } from "@/types/item";
+import type { ItemCreate } from "@/types/item";
 import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { updateExistingItem } from "@/lib/api/itemsApi";
+import { createNewItem } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
 
-interface ItemEditModalProps {
-  item: Item;
-  onUpdated?: () => void | Promise<void>;
+interface ItemAddModalProps {
+  onCreated?: () => void | Promise<void>;
 }
 
 // Local form state type as strings for easier input handling
@@ -19,15 +18,15 @@ type FormState = {
   threshold_qty: string; // same as qty
 };
 
-// Build initial form state from Item
-function initFormFromItem(item: Item): FormState {
+// Build initial form state for a new item
+function initEmptyForm(): FormState {
   return {
-    item_name: item.item_name ?? "",
-    sku: item.sku ?? "",
-    variant: item.variant ?? "",
-    type: item.type ?? "",
-    qty: String(item.qty ?? 0),
-    threshold_qty: String(item.threshold_qty ?? 0),
+    item_name: "",
+    sku: "",
+    variant: "",
+    type: "",
+    qty: "0",
+    threshold_qty: "0",
   };
 }
 
@@ -38,30 +37,21 @@ function parseNonNegativeInt(value: string): number | null {
   return n;
 }
 
-export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
+export function ItemAddModal({ onCreated }: ItemAddModalProps) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<FormState>(() => initFormFromItem(item));
+  const [form, setForm] = useState<FormState>(() => initEmptyForm());
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Keep form in sync when the item changes externally
-  useEffect(() => {
-    setForm(initFormFromItem(item));
-  }, [item]);
-
-  // Reset errors and optionally reset form when dialog open changes
-  const handleOpenChange = useCallback(
-    (nextOpen: boolean) => {
-      setOpen(nextOpen);
-      if (!nextOpen) {
-        // Clear error and reset form when closing for a fresh start next time
-        setError(null);
-        setForm(initFormFromItem(item));
-        setSubmitting(false);
-      }
-    },
-    [item]
-  );
+  // Reset errors and form when dialog open changes
+  const handleOpenChange = useCallback((nextOpen: boolean) => {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setError(null);
+      setForm(initEmptyForm());
+      setSubmitting(false);
+    }
+  }, []);
 
   // Generic input change handler factory
   const onChange =
@@ -70,16 +60,16 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
       setForm((f) => ({ ...f, [key]: value }));
     };
 
-  // Derived flag: has anything changed?
-  const initialForm = useMemo(() => initFormFromItem(item), [item]);
-  const isDirty = useMemo(
-    () => JSON.stringify(form) !== JSON.stringify(initialForm),
+  // Derived flag: all fields are at their initial defaults?
+  const initialForm = useMemo(() => initEmptyForm(), []);
+  const isPristine = useMemo(
+    () => JSON.stringify(form) === JSON.stringify(initialForm),
     [form, initialForm]
   );
 
-  // Validate and build ItemUpdate payload from form
+  // Validate and build ItemCreate payload from form
   const validateAndBuildPayload = (): {
-    payload?: ItemUpdate;
+    payload?: ItemCreate;
     message?: string;
   } => {
     const name = form.item_name.trim();
@@ -99,7 +89,7 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
     if (thresholdNum === null)
       return { message: "Threshold Qty must be a non-negative integer." };
 
-    const payload: ItemUpdate = {
+    const payload: ItemCreate = {
       item_name: name,
       sku,
       variant: variantRaw === "" ? null : variantRaw,
@@ -111,13 +101,13 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
     return { payload };
   };
 
-  // Confirm (Save) handler called by ReusableDialog
+  // Confirm (Create) handler called by ReusableDialog
   const onConfirm = async () => {
     setError(null);
 
-    // Early exit if nothing changed to avoid unnecessary API call
-    if (!isDirty) {
-      return { status: 200 };
+    // Optional: prevent creating if user hasn't changed anything from defaults
+    if (isPristine) {
+      return { status: 400 };
     }
 
     const { payload, message } = validateAndBuildPayload();
@@ -128,16 +118,15 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
 
     try {
       setSubmitting(true);
-      await updateExistingItem(item.id, payload);
+      await createNewItem(payload);
 
       // Allow parent to re-fetch or re-render related data
-      await onUpdated?.();
+      await onCreated?.();
 
       // Signal success to close the dialog
       return { status: 200 };
     } catch (e: unknown) {
-      // Surface best-effort message without leaking backend internals
-      const fallback = "An error occurred while updating the item.";
+      const fallback = "An error occurred while creating the item.";
       const msg =
         e &&
         typeof e === "object" &&
@@ -158,14 +147,14 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
     <>
       {/* Launcher button for the modal */}
       <Button variant="outline" onClick={() => setOpen(true)}>
-        Edit Item
+        Add Item
       </Button>
 
       <ReusableDialog
         open={open}
         onOpenChange={handleOpenChange}
-        dialogTitle={`Edit Item: ${item.item_name}`}
-        confirmButtonText={submitting ? "Saving..." : "Save"}
+        dialogTitle="Add New Item"
+        confirmButtonText={submitting ? "Creating..." : "Create"}
         cancelButtonText="Cancel"
         onConfirm={onConfirm}
       >
