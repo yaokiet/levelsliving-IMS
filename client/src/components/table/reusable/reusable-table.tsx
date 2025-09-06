@@ -41,9 +41,11 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   filterOptions?: string[];
   filterValue?: string;
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
-  className? : string;
+  className?: string;
   containerClassName?: string;
   renderToolbarExtras?: (ctx: { table: ReturnType<typeof useReactTable<TData>> }) => React.ReactNode;
+  searchValue?: string;
+  onSearch?: (value: string) => void;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -60,6 +62,8 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   containerClassName = "w-5/5 rounded-xl shadow-xl p-8",
   renderSubRows,
   renderToolbarExtras,
+  searchValue,
+  onSearch,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -83,9 +87,9 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     onRowSelectionChange: setRowSelection,
     onExpandedChange: setExpanded,
     // getExpandedRowModel: getExpandedRowModel(), // For expanding rows
-    
+
     // To fix the expand icon from disappearing when filtering
-    getRowCanExpand: (row) => 
+    getRowCanExpand: (row) =>
       Array.isArray(row.original.subRows) && row.original.subRows.length > 0,
     state: {
       sorting,
@@ -103,146 +107,146 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       filterOptions && filterOptions.length > 0
         ? filterOptions
         : filterKey
-        ? Array.from(
+          ? Array.from(
             new Set(
               data
                 .map((item) => item[filterKey])
                 .filter((v) => v !== undefined && v !== null && v !== "")
             )
           )
-        : [],
+          : [],
     [filterOptions, data, filterKey]
   );
 
   // Debugging
   console.log(table.getRowModel().rows);
 
-return (
-  <div className={`justify-center ${className}`}>
-    <div className={`${containerClassName}`}>
-      {/* Search bar and view options */}
-      {(searchKey || showViewOptions) && (
-        <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
-          <div className="flex-1 min-w-[220px]">
-            {searchKey && (
-              <DataTableSearch
-                table={table}
-                searchKey={searchKey}
-                placeholder={searchPlaceholder}
-              />
+  return (
+    <div className={`justify-center ${className}`}>
+      <div className={`${containerClassName}`}>
+        {/* Search bar and view options */}
+        {(searchKey || showViewOptions) && (
+          <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
+            <div className="flex-1 min-w-[220px]">
+              {onSearch && (
+                <DataTableSearch
+                  value={searchValue ?? ""}
+                  onSearch={onSearch}
+                  placeholder={searchPlaceholder}
+                />
+              )}
+            </div>
+            {filterKey && (
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-medium" htmlFor={`filter-${filterKey}`}>
+                  Filter {filterLabel} column
+                </label>
+                <DropdownFilterSelect
+                  filterKey={filterKey}
+                  // label={filterLabel}
+                  options={computedFilterOptions}
+                  value={currentFilterValue || "__all__"}
+                  onChange={(value) => {
+                    setColumnFilters((prev) => {
+                      if (value === "__all__") {
+                        return prev.filter((f) => f.id !== filterKey);
+                      }
+                      const found = prev.find((f) => f.id === filterKey);
+                      if (found) {
+                        return prev.map((f) =>
+                          f.id === filterKey ? { ...f, value } : f
+                        );
+                      }
+                      return [...prev, { id: filterKey, value }];
+                    });
+                  }}
+                />
+              </div>
+            )}
+            {/* Render additional toolbar for Add to Cart button */}
+            {renderToolbarExtras && (
+              <div className="ml-auto flex items-center gap-3">
+                {renderToolbarExtras({ table })}
+              </div>
+            )}
+            {showViewOptions && (
+              <div className="flex-shrink-0">
+                <DataTableViewFilterOptions table={table} />
+              </div>
             )}
           </div>
-          {filterKey && (
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium" htmlFor={`filter-${filterKey}`}>
-                Filter {filterLabel} column
-              </label>
-              <DropdownFilterSelect
-                filterKey={filterKey}
-                // label={filterLabel}
-                options={computedFilterOptions}
-                value={currentFilterValue || "__all__"}
-                onChange={(value) => {
-                  setColumnFilters((prev) => {
-                    if (value === "__all__") {
-                      return prev.filter((f) => f.id !== filterKey);
-                    }
-                    const found = prev.find((f) => f.id === filterKey);
-                    if (found) {
-                      return prev.map((f) =>
-                        f.id === filterKey ? { ...f, value } : f
-                      );
-                    }
-                    return [...prev, { id: filterKey, value }];
-                  });
-                }}
-              />
-            </div>
-          )}
-          {/* Render additional toolbar for Add to Cart button */}
-          {renderToolbarExtras && (
-            <div className="ml-auto flex items-center gap-3">
-              {renderToolbarExtras({ table })}
-            </div>
-          )}
-          {showViewOptions && (
-            <div className="flex-shrink-0">
-              <DataTableViewFilterOptions table={table} />
-            </div>
-          )}
-        </div>
-      )}
-      {/* Table */}
-      <div className={`overflow-hidden rounded-lg border`}>
-        <Table className="w-full">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className="font-semibold border-b px-4 py-3"
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+        )}
+        {/* Table */}
+        <div className={`overflow-hidden rounded-lg border`}>
+          <Table className="w-full">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className="font-semibold border-b px-4 py-3"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <React.Fragment key={row.id}>
-                  <TableRow
-                    data-state={row.getIsSelected() && "selected"}
-                    className="hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors"
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <React.Fragment key={row.id}>
+                    <TableRow
+                      data-state={row.getIsSelected() && "selected"}
+                      className="hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className="border-b px-4 py-2"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                    {/* Expand Subrows below parent */}
+                    {row.getIsExpanded() &&
+                      row.subRows &&
+                      row.subRows.length > 0 &&
+                      renderSubRows &&
+                      renderSubRows(row, columns.length)
+                    }
+                  </React.Fragment>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className="border-b px-4 py-2"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  {/* Expand Subrows below parent */}
-                  {row.getIsExpanded() &&
-                    row.subRows &&
-                    row.subRows.length > 0 &&
-                    renderSubRows &&
-                    renderSubRows(row, columns.length)
-                  }
-                </React.Fragment>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      {/* Pagination */}
-      {showPagination && (
-        <div className="py-4 flex justify-end">
-          <DataTablePagination table={table} />
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
-      )}
+        {/* Pagination */}
+        {showPagination && (
+          <div className="py-4 flex justify-end">
+            <DataTablePagination table={table} />
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
 };
