@@ -3,23 +3,14 @@ import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { useCallback, useMemo, useState } from "react";
 import { createNewItem } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
+import { ItemFormFields, type ItemFormState } from "./item-form-fields";
 
 interface ItemAddModalProps {
   onCreated?: () => void | Promise<void>;
 }
 
-// Local form state type as strings for easier input handling
-type FormState = {
-  item_name: string;
-  sku: string;
-  variant: string; // keep empty string for null semantics
-  type: string;
-  qty: string; // hold numeric as string while editing
-  threshold_qty: string; // same as qty
-};
-
 // Build initial form state for a new item
-function initEmptyForm(): FormState {
+function initEmptyForm(): ItemFormState {
   return {
     item_name: "",
     sku: "",
@@ -39,7 +30,7 @@ function parseNonNegativeInt(value: string): number | null {
 
 export function ItemAddModal({ onCreated }: ItemAddModalProps) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<FormState>(() => initEmptyForm());
+  const [form, setForm] = useState<ItemFormState>(() => initEmptyForm());
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -52,13 +43,6 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
       setSubmitting(false);
     }
   }, []);
-
-  // Generic input change handler factory
-  const onChange =
-    (key: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setForm((f) => ({ ...f, [key]: value }));
-    };
 
   // Derived flag: all fields are at their initial defaults?
   const initialForm = useMemo(() => initEmptyForm(), []);
@@ -105,7 +89,6 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
   const onConfirm = async () => {
     setError(null);
 
-    // Optional: prevent creating if user hasn't changed anything from defaults
     if (isPristine) {
       return { status: 400 };
     }
@@ -119,11 +102,7 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
     try {
       setSubmitting(true);
       await createNewItem(payload);
-
-      // Allow parent to re-fetch or re-render related data
       await onCreated?.();
-
-      // Signal success to close the dialog
       return { status: 200 };
     } catch (e: unknown) {
       const fallback = "An error occurred while creating the item.";
@@ -159,143 +138,12 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
         onConfirm={onConfirm}
       >
         <div className="grid gap-4">
-          {/* Global error message */}
           {error && (
             <div className="text-red-500 text-sm mb-2" role="alert">
               {error}
             </div>
           )}
-
-          {/* Item Name */}
-          <div className="grid gap-2">
-            <label htmlFor="item-name" className="text-sm font-medium">
-              Item Name
-            </label>
-            <input
-              id="item-name"
-              name="item_name"
-              type="text"
-              value={form.item_name}
-              onChange={onChange("item_name")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, item_name: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="e.g., 12-inch Frying Pan"
-              autoComplete="off"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* SKU */}
-          <div className="grid gap-2">
-            <label htmlFor="item-sku" className="text-sm font-medium">
-              Item SKU
-            </label>
-            <input
-              id="item-sku"
-              name="sku"
-              type="text"
-              value={form.sku}
-              onChange={onChange("sku")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, sku: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="e.g., SKU-12345"
-              autoComplete="off"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Variant (optional) */}
-          <div className="grid gap-2">
-            <label htmlFor="item-variant" className="text-sm font-medium">
-              Variant
-            </label>
-            <input
-              id="item-variant"
-              name="variant"
-              type="text"
-              value={form.variant ?? ""}
-              onChange={onChange("variant")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, variant: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="Optional, e.g., Blue (Large)"
-              autoComplete="off"
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Type */}
-          <div className="grid gap-2">
-            <label htmlFor="item-type" className="text-sm font-medium">
-              Type
-            </label>
-            <input
-              id="item-type"
-              name="type"
-              type="text"
-              value={form.type}
-              onChange={onChange("type")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, type: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="e.g., Cookware"
-              autoComplete="off"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Quantity */}
-          <div className="grid gap-2">
-            <label htmlFor="item-qty" className="text-sm font-medium">
-              Quantity
-            </label>
-            <input
-              id="item-qty"
-              name="qty"
-              type="number"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              min={0}
-              step={1}
-              value={form.qty}
-              onChange={onChange("qty")}
-              className="w-full border rounded px-2 py-1"
-              placeholder="0"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Threshold Quantity */}
-          <div className="grid gap-2">
-            <label htmlFor="item-threshold-qty" className="text-sm font-medium">
-              Threshold Qty
-            </label>
-            <input
-              id="item-threshold-qty"
-              name="threshold_qty"
-              type="number"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              min={0}
-              step={1}
-              value={form.threshold_qty}
-              onChange={onChange("threshold_qty")}
-              className="w-full border rounded px-2 py-1"
-              placeholder="0"
-              required
-              disabled={submitting}
-            />
-          </div>
+          <ItemFormFields form={form} setForm={setForm} submitting={submitting} />
         </div>
       </ReusableDialog>
     </>

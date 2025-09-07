@@ -39,7 +39,9 @@ export default function ItemDetailsPage() {
 
   return (
     <div className="container mx-auto py-10 px-6">
-      <ItemAddModal />
+      {/* onCreated & onReload are use to refresh the table but both are used for
+      different situations */}
+      <ItemAddModal onCreated={loadItems}/> 
       <MainPageTable data={data} loading={loading} onReload={loadItems} />
     </div>
   );

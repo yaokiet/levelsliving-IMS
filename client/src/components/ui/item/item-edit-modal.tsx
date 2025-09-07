@@ -3,6 +3,9 @@ import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { updateExistingItem } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
+import { ItemFormFields } from "./item-form-fields";
+import type { ItemFormState } from "@/types/item";
+
 
 interface ItemEditModalProps {
   item: Item;
@@ -12,18 +15,8 @@ interface ItemEditModalProps {
   isOpen?: boolean;
 }
 
-// Local form state type as strings for easier input handling
-type FormState = {
-  item_name: string;
-  sku: string;
-  variant: string; // keep empty string for null semantics
-  type: string;
-  qty: string; // hold numeric as string while editing
-  threshold_qty: string; // same as qty
-};
-
 // Build initial form state from Item
-function initFormFromItem(item: Item): FormState {
+function initFormFromItem(item: Item): ItemFormState {
   return {
     item_name: item.item_name ?? "",
     sku: item.sku ?? "",
@@ -41,26 +34,7 @@ function parseNonNegativeInt(value: string): number | null {
   return n;
 }
 
-/**
- * Edit an existing item by displaying a modal dialog with a form pre-populated
- * with the item's current values. When the user confirms the dialog, the item
- * will be updated with the new values. If the user closes the dialog without
- * confirming, the item will not be updated.
- *
- * The component accepts an optional `onUpdated` callback function that will be
- * called after a successful update. The callback will be called with no
- * arguments.
- * This callback can be used to refresh the item list or refetch the itemContext
- *
- * The component also accepts an optional `isOpen` prop that allows the parent to
- * control whether the dialog is open or closed. If not specified, the dialog will
- * be initially closed.
- *
- * Finally, the component accepts an optional `hideLauncher` prop that allows the
- * parent to hide the launcher button for the modal dialog. If not specified, the
- * launcher button will be visible.
- * This is for custom opening of the modal dialog, e.g. from the Actions menu in table
- */
+
 
 export function ItemEditModal({
   item,
@@ -72,8 +46,8 @@ export function ItemEditModal({
   const [internalOpen, setInternalOpen] = useState(false);
   const open = isOpen ?? internalOpen;
   const setOpen = setIsOpen ?? setInternalOpen;
-  // const [open, setOpen] = useState(false);
-  const [form, setForm] = useState<FormState>(() => initFormFromItem(item));
+
+  const [form, setForm] = useState<ItemFormState>(() => initFormFromItem(item));
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -87,7 +61,6 @@ export function ItemEditModal({
     (nextOpen: boolean) => {
       setOpen(nextOpen);
       if (!nextOpen) {
-        // Clear error and reset form when closing for a fresh start next time
         setError(null);
         setForm(initFormFromItem(item));
         setSubmitting(false);
@@ -95,13 +68,6 @@ export function ItemEditModal({
     },
     [item, setOpen]
   );
-
-  // Generic input change handler factory
-  const onChange =
-    (key: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setForm((f) => ({ ...f, [key]: value }));
-    };
 
   // Derived flag: has anything changed?
   const initialForm = useMemo(() => initFormFromItem(item), [item]);
@@ -151,7 +117,6 @@ export function ItemEditModal({
 
     return { payload };
   };
-
   
   /**
    * Handles the "Confirm" button click by validating the form state and building
@@ -171,7 +136,6 @@ export function ItemEditModal({
   const onConfirm = async () => {
     setError(null);
 
-    // Early exit if nothing changed to avoid unnecessary API call
     if (!isDirty) {
       return { status: 200 };
     }
@@ -185,14 +149,9 @@ export function ItemEditModal({
     try {
       setSubmitting(true);
       await updateExistingItem(item.id, payload);
-
-      // Allow parent to re-fetch or re-render related data
       await onUpdated?.();
-
-      // Signal success to close the dialog
       return { status: 200 };
     } catch (e: unknown) {
-      // Surface best-effort message without leaking backend internals
       const fallback = "An error occurred while updating the item.";
       const msg =
         e &&
@@ -228,143 +187,12 @@ export function ItemEditModal({
         onConfirm={onConfirm}
       >
         <div className="grid gap-4">
-          {/* Global error message */}
           {error && (
             <div className="text-red-500 text-sm mb-2" role="alert">
               {error}
             </div>
           )}
-
-          {/* Item Name */}
-          <div className="grid gap-2">
-            <label htmlFor="item-name" className="text-sm font-medium">
-              Item Name
-            </label>
-            <input
-              id="item-name"
-              name="item_name"
-              type="text"
-              value={form.item_name}
-              onChange={onChange("item_name")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, item_name: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="e.g., 12-inch Frying Pan"
-              autoComplete="off"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* SKU */}
-          <div className="grid gap-2">
-            <label htmlFor="item-sku" className="text-sm font-medium">
-              Item SKU
-            </label>
-            <input
-              id="item-sku"
-              name="sku"
-              type="text"
-              value={form.sku}
-              onChange={onChange("sku")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, sku: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="e.g., SKU-12345"
-              autoComplete="off"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Variant (optional) */}
-          <div className="grid gap-2">
-            <label htmlFor="item-variant" className="text-sm font-medium">
-              Variant
-            </label>
-            <input
-              id="item-variant"
-              name="variant"
-              type="text"
-              value={form.variant ?? ""}
-              onChange={onChange("variant")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, variant: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="Optional, e.g., Blue (Large)"
-              autoComplete="off"
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Type */}
-          <div className="grid gap-2">
-            <label htmlFor="item-type" className="text-sm font-medium">
-              Type
-            </label>
-            <input
-              id="item-type"
-              name="type"
-              type="text"
-              value={form.type}
-              onChange={onChange("type")}
-              onBlur={(e) =>
-                setForm((f) => ({ ...f, type: e.target.value.trim() }))
-              }
-              className="w-full border rounded px-2 py-1"
-              placeholder="e.g., Cookware"
-              autoComplete="off"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Quantity */}
-          <div className="grid gap-2">
-            <label htmlFor="item-qty" className="text-sm font-medium">
-              Quantity
-            </label>
-            <input
-              id="item-qty"
-              name="qty"
-              type="number"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              min={0}
-              step={1}
-              value={form.qty}
-              onChange={onChange("qty")}
-              className="w-full border rounded px-2 py-1"
-              placeholder="0"
-              required
-              disabled={submitting}
-            />
-          </div>
-
-          {/* Threshold Quantity */}
-          <div className="grid gap-2">
-            <label htmlFor="item-threshold-qty" className="text-sm font-medium">
-              Threshold Qty
-            </label>
-            <input
-              id="item-threshold-qty"
-              name="threshold_qty"
-              type="number"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              min={0}
-              step={1}
-              value={form.threshold_qty}
-              onChange={onChange("threshold_qty")}
-              className="w-full border rounded px-2 py-1"
-              placeholder="0"
-              required
-              disabled={submitting}
-            />
-          </div>
+          <ItemFormFields form={form} setForm={setForm} submitting={submitting} />
         </div>
       </ReusableDialog>
     </>

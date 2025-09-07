@@ -6,6 +6,7 @@ import { createItemComponent } from "@/lib/api/apiItemComponent";
 import { getAllItems } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
 import type { Item } from "@/types/item";
+import { useAppliedSearch } from "@/components/ui/item/item-applied-search-hook";
 
 // Types for items fetched to add as children
 type ItemSummary = {
@@ -37,16 +38,19 @@ export function ItemAddChildItem({
   const parentItemId = item.id;
   const [open, setOpen] = useState(false);
 
-  // Separate input vs. applied search term
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    searchInput,
+    setSearchInput,
+    searchQuery,
+    setSearchQuery,
+    applySearch,
+  } = useAppliedSearch("");
 
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [qtyById, setQtyById] = useState<Map<number, string>>(new Map());
 
-  // State for available items to select from
   const [availableItems, setAvailableItems] = useState<ItemSummary[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
@@ -63,7 +67,7 @@ export function ItemAddChildItem({
       setAvailableItems([]);
       setQtyById(new Map());
     }
-  }, []);
+  }, [setSearchInput, setSearchQuery]);
 
   // Fetch all items (by calling api) when dialog opens
   useEffect(() => {
@@ -76,7 +80,6 @@ export function ItemAddChildItem({
       try {
         const all = await getAllItems();
         if (cancelled) return;
-        // Map to minimal summary shape if needed
         const mapped: ItemSummary[] = all.map((it) => ({
           id: it.id,
           item_name: it.item_name,
@@ -112,13 +115,9 @@ export function ItemAddChildItem({
         );
       });
   }, [availableItems, excludeIds, parentItemId, searchQuery]);
-
     /**
    * Apply the search only when button clicked or Enter pressed.
    */
-  const applySearch = () => {
-    setSearchQuery(searchInput);
-  };
 
   /**
    * Toggles the selection of an item to add as a child to the parent item.
@@ -153,45 +152,6 @@ export function ItemAddChildItem({
     setQtyById((prev) => {
       const next = new Map(prev);
       next.set(id, val);
-      return next;
-    });
-  };
-
-  const allFilteredIds = useMemo(() => filtered.map((i) => i.id), [filtered]);
-  const allFilteredSelected = useMemo(
-    () =>
-      allFilteredIds.length > 0 &&
-      allFilteredIds.every((id) => selected.has(id)),
-    [allFilteredIds, selected]
-  );
-
-  //   Way of searching to be changed
-  // Fetch from API with search param instead of filtering all in memory
-  /**
-   * Toggles the selection of all items that are filtered by the current search
-   * and not excluded by the excludeIds prop.
-   * If all items are already selected, this will unselect all of them.
-   * If some or none of the items are selected, this will select all of them.
-   */
-  const toggleSelectAllFiltered = () => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      const nextQty = new Map(qtyById);
-      const ids = allFilteredIds;
-      if (ids.length === 0) return next;
-      const allSelected = ids.every((id) => next.has(id));
-      if (allSelected) {
-        ids.forEach((id) => {
-          next.delete(id);
-          nextQty.delete(id);
-        });
-      } else {
-        ids.forEach((id) => {
-          next.add(id);
-          if (!nextQty.has(id)) nextQty.set(id, "1");
-        });
-      }
-      setQtyById(nextQty);
       return next;
     });
   };
