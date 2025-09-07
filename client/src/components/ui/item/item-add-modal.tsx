@@ -11,6 +11,9 @@ import { parseNonNegativeInt, parsePositiveInt } from "./util/item-int-util-func
 interface ItemAddModalProps {
   onCreated?: () => void | Promise<void>;
   parentItemId?: number;
+  dialogTitle?: string;
+  buttonName?: string;
+  confirmButtonText?: string;
 }
 
 // Build initial form state for a new item
@@ -25,7 +28,7 @@ function initEmptyForm(): ItemFormState {
   };
 }
 
-export function ItemAddModal({ onCreated, parentItemId }: ItemAddModalProps) {
+export function ItemAddModal({ onCreated, parentItemId, dialogTitle, buttonName, confirmButtonText }: ItemAddModalProps) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<ItemFormState>(() => initEmptyForm());
   const [requiredQty, setRequiredQty] = useState<string>("1");
@@ -156,14 +159,14 @@ export function ItemAddModal({ onCreated, parentItemId }: ItemAddModalProps) {
     <>
       {/* Launcher button for the modal */}
       <Button variant="outline" onClick={() => setOpen(true)}>
-        Create Child Item
+        {buttonName ?? "Add Item"}
       </Button>
 
       <ReusableDialog
         open={open}
         onOpenChange={handleOpenChange}
-        dialogTitle="Add New Item"
-        confirmButtonText={"Create and Link Item"}
+        dialogTitle={dialogTitle ?? "Create New Item"}
+        confirmButtonText={confirmButtonText ?? "Create Item"}
         cancelButtonText="Cancel"
         onConfirm={onConfirm}
       >

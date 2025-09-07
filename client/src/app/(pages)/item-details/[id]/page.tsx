@@ -57,6 +57,9 @@ function ItemDetailsContent() {
         {/* Create a brand new item and immediately link it as a child */}
         <ItemAddModal
           parentItemId={item.id}
+          dialogTitle="Create & Link New Child Item"
+          buttonName="Create & Link New Item"
+          confirmButtonText="Create & Link Child Item"
           onCreated={async () => {
             await refetch();
             router.refresh();

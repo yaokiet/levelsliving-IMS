@@ -20,6 +20,7 @@ interface ItemAddChildItemProps {
   item: Item; // parent item (from useItem in page.tsx)
   excludeIds?: number[]; // optional: ids to exclude (already linked children)
   onAdded?: () => void | Promise<void>; // callback after successful add to refresh parent
+  dialogTitle?: string; // optional: override dialog title
 }
 
 /**
@@ -35,6 +36,7 @@ export function ItemAddChildItem({
   item,
   excludeIds = [],
   onAdded,
+  dialogTitle,
 }: ItemAddChildItemProps) {
   const parentItemId = item.id;
   const [open, setOpen] = useState(false);
@@ -239,7 +241,10 @@ export function ItemAddChildItem({
       <ReusableDialog
         open={open}
         onOpenChange={handleOpenChange}
-        dialogTitle="Add Child Items"
+        dialogTitle={
+          dialogTitle ??
+          (parentItemId != null ? "Add & Link New Child Item" : "Add New Item")
+        }
         confirmButtonText={submitting ? "Adding..." : "Add Selected"}
         cancelButtonText="Cancel"
         onConfirm={onConfirm}
