@@ -35,9 +35,12 @@ export function ItemAddChildItem({
   onAdded,
 }: ItemAddChildItemProps) {
   const parentItemId = item.id;
-
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
+
+  // Separate input vs. applied search term
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -53,7 +56,8 @@ export function ItemAddChildItem({
     if (!nextOpen) {
       setError(null);
       setListError(null);
-      setSearch("");
+      setSearchInput("");
+      setSearchQuery("");
       setSelected(new Set());
       setSubmitting(false);
       setAvailableItems([]);
@@ -97,7 +101,7 @@ export function ItemAddChildItem({
   // Some IDs to exclude: parent item itself + already linked children + any passed excludeIds
   const filtered = useMemo(() => {
     const exclude = new Set<number>([parentItemId, ...excludeIds]);
-    const q = search.trim().toLowerCase();
+    const q = searchQuery.trim().toLowerCase();
     return availableItems
       .filter((it) => !exclude.has(it.id))
       .filter((it) => {
@@ -107,7 +111,14 @@ export function ItemAddChildItem({
           it.sku.toLowerCase().includes(q)
         );
       });
-  }, [availableItems, excludeIds, parentItemId, search]);
+  }, [availableItems, excludeIds, parentItemId, searchQuery]);
+
+    /**
+   * Apply the search only when button clicked or Enter pressed.
+   */
+  const applySearch = () => {
+    setSearchQuery(searchInput);
+  };
 
   /**
    * Toggles the selection of an item to add as a child to the parent item.
@@ -284,17 +295,23 @@ export function ItemAddChildItem({
               type="text"
               className="w-full border rounded px-2 py-1"
               placeholder="Search by name or SKU..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  applySearch();
+                }
+              }}
               disabled={submitting}
             />
             <Button
               type="button"
               variant="secondary"
-              onClick={toggleSelectAllFiltered}
-              disabled={submitting || filtered.length === 0}
+              onClick={applySearch}
+              disabled={submitting}
             >
-              {allFilteredSelected ? "Unselect All" : "Select All"}
+              Search
             </Button>
           </div>
 
