@@ -1,6 +1,6 @@
 import type { ItemCreate } from "@/types/item";
 import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { createNewItem } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
 

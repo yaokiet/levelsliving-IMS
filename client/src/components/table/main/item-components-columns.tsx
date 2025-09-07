@@ -21,6 +21,7 @@ import { ComponentDetail } from "@/types/item";
 import { useItem } from "@/context/ItemContext";
 import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 import { DataTableColumnHeader } from "../reusable/data-table-column-header";
+import { ItemRemoveComponentModal } from "@/components/ui/item/item-remove-component-modal";
 
 export const columns: ColumnDef<ComponentDetail>[] = [
   // This column is for selecting rows.
@@ -106,7 +107,10 @@ export const columns: ColumnDef<ComponentDetail>[] = [
     cell: ({ row }) => {
       const component = row.original;
       const [editOpen, setEditOpen] = useState(false);
-      const { refetch } = useItem(); // get refetch from context
+      const [removeOpen, setRemoveOpen] = useState(false);
+      // Get parent item from context to pass to remove modal
+      // Refetch function to update table after edit
+      const { item, refetch } = useItem(); 
 
       return (
         <>
@@ -128,6 +132,12 @@ export const columns: ColumnDef<ComponentDetail>[] = [
               <DropdownMenuItem onClick={() => setEditOpen(true)}>
                 Edit item
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setRemoveOpen(true)}
+                className="text-red-600"
+              >
+                Remove component
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -143,6 +153,24 @@ export const columns: ColumnDef<ComponentDetail>[] = [
               await refetch();
             }}
           />
+
+          {/* Remove Component Modal (parent from context item) */}
+          {item && (
+            <ItemRemoveComponentModal
+              parent={{ id: item.id, sku: item.sku, item_name: item.item_name }}
+              child={{
+                id: component.id,
+                sku: component.sku,
+                item_name: component.item_name,
+              }}
+              isOpen={removeOpen}
+              setIsOpen={setRemoveOpen}
+              hideLauncher
+              onRemoved={async () => {
+                await refetch();
+              }}
+            />
+          )}
         </>
       );
     },
