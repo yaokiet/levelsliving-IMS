@@ -6,7 +6,16 @@ import { ItemAddModal } from "@/components/ui/item/item-add-modal";
 import { getAllItems } from "@/lib/api/itemsApi";
 import type { Item } from "@/types/item";
 
-// This is the main page export
+
+/**
+ * Page component for the item details page.
+ *
+ * This component fetches all items from the server and renders a table
+ * of them. It also renders an "Add Item" button that opens the
+ * ItemAddModal component when clicked.
+ *
+ * @returns {JSX.Element} The item details page component.
+ */
 export default function ItemDetailsPage() {
   const [data, setData] = React.useState<Item[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -23,6 +32,7 @@ export default function ItemDetailsPage() {
     }
   }, []);
 
+  // Load items on mount
   React.useEffect(() => {
     loadItems();
   }, [loadItems]);

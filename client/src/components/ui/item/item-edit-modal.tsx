@@ -41,7 +41,34 @@ function parseNonNegativeInt(value: string): number | null {
   return n;
 }
 
-export function ItemEditModal({ item, onUpdated, isOpen, setIsOpen, hideLauncher }: ItemEditModalProps) {
+/**
+ * Edit an existing item by displaying a modal dialog with a form pre-populated
+ * with the item's current values. When the user confirms the dialog, the item
+ * will be updated with the new values. If the user closes the dialog without
+ * confirming, the item will not be updated.
+ *
+ * The component accepts an optional `onUpdated` callback function that will be
+ * called after a successful update. The callback will be called with no
+ * arguments.
+ * This callback can be used to refresh the item list or refetch the itemContext
+ *
+ * The component also accepts an optional `isOpen` prop that allows the parent to
+ * control whether the dialog is open or closed. If not specified, the dialog will
+ * be initially closed.
+ *
+ * Finally, the component accepts an optional `hideLauncher` prop that allows the
+ * parent to hide the launcher button for the modal dialog. If not specified, the
+ * launcher button will be visible.
+ * This is for custom opening of the modal dialog, e.g. from the Actions menu in table
+ */
+
+export function ItemEditModal({
+  item,
+  onUpdated,
+  isOpen,
+  setIsOpen,
+  hideLauncher,
+}: ItemEditModalProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = isOpen ?? internalOpen;
   const setOpen = setIsOpen ?? setInternalOpen;
@@ -83,7 +110,15 @@ export function ItemEditModal({ item, onUpdated, isOpen, setIsOpen, hideLauncher
     [form, initialForm]
   );
 
-  // Validate and build ItemUpdate payload from form
+
+  /**
+   * Validate the form state and build a payload suitable for the `updateExistingItem`
+   * API function. If the form state is invalid, return an object with a `message`
+   * property containing an error message for the user. If the form state is valid,
+   * return an object with a `payload` property containing the updated item data.
+   *
+   * @returns { { payload?: ItemUpdate; message?: string; } }
+   */
   const validateAndBuildPayload = (): {
     payload?: ItemUpdate;
     message?: string;
@@ -117,7 +152,22 @@ export function ItemEditModal({ item, onUpdated, isOpen, setIsOpen, hideLauncher
     return { payload };
   };
 
-  // Confirm (Save) handler called by ReusableDialog
+  
+  /**
+   * Handles the "Confirm" button click by validating the form state and building
+   * a payload suitable for the `updateExistingItem` API function. If the form
+   * state is invalid, returns a promise that resolves to an object with a
+   * `status` property set to 400 and an `error` property with an error message
+   * for the user. If the form state is valid, attempts to call the
+   * `updateExistingItem` API function with the updated item data. If the API call
+   * is successful, returns a promise that resolves to an object with a `status`
+   * property set to 200 and calls the `onUpdated` callback (if provided). If the
+   * API call fails, returns a promise that resolves to an object with a `status`
+   * property set to 500 and an `error` property with an error message for the
+   * user.
+   *
+   * @returns { Promise<{ status: number; error?: string; }> }
+   */
   const onConfirm = async () => {
     setError(null);
 
@@ -168,7 +218,6 @@ export function ItemEditModal({ item, onUpdated, isOpen, setIsOpen, hideLauncher
           Edit Item
         </Button>
       )}
-
 
       <ReusableDialog
         open={open}

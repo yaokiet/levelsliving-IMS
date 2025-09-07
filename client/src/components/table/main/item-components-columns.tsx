@@ -8,6 +8,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ComponentDetail } from "@/types/item";
+import { useItem } from "@/context/ItemContext";
+import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 import { DataTableColumnHeader } from "../reusable/data-table-column-header";
 
 export const columns: ColumnDef<ComponentDetail>[] = [
@@ -102,28 +105,45 @@ export const columns: ColumnDef<ComponentDetail>[] = [
     id: "actions",
     cell: ({ row }) => {
       const component = row.original;
+      const [editOpen, setEditOpen] = useState(false);
+      const { refetch } = useItem(); // get refetch from context
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(component.sku)}
-            >
-              Copy Component SKU
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
-              Remove component
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(component.sku)}
+              >
+                Copy Component SKU
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                Edit item
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Item Edit Modal */}
+          <ItemEditModal
+            item={component}
+            isOpen={editOpen}
+            setIsOpen={setEditOpen}
+            hideLauncher
+            // After successful edit, refetch the context to update the table
+            // The table will re-render automatically when context updates
+            onUpdated={async () => {
+              await refetch();
+            }}
+          />
+        </>
       );
     },
   },

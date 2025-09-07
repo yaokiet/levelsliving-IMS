@@ -13,16 +13,30 @@ interface MainPageTableProps {
   onReload?: () => void | Promise<void>;
 }
 
-export default function MainPageTable({data, loading = false, onReload}: MainPageTableProps) {
+/**
+ * A table component for the main page, showing a list of items.
+ *
+ * @param {Item[]} data The list of items to display.
+ * @param {boolean} [loading=false] If true, display a "Loading..." message instead of the table.
+ * @param {() => void | Promise<void>} [onReload] A callback to be called when item is edited successfully
+ */
+export default function MainPageTable({
+  data,
+  loading = false,
+  onReload,
+}: MainPageTableProps) {
   const [open, setOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
 
+  // Handler for when "Add to Cart" is clicked in a row
   const handleAddToCartClick = React.useCallback((id: number) => {
     setSelectedId(id);
     setOpen(true);
   }, []);
 
-  // Build columns with the click handler
+  // Build columns with handlers
+  // onReload is passed to refresh the table after an item is updated
+  // handleAddToCartClick is passed to open the AddToCartModal with the correct item ID
   const columns = React.useMemo(
     () => createMainPageColumns(handleAddToCartClick, onReload),
     [handleAddToCartClick, onReload]

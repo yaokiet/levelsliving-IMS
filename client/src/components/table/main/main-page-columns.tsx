@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
 // This file defines the columns for the main page table.
 
-import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, AlertCircle } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal, AlertCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +15,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import type { Item } from "@/types/item"
-import { ItemEditModal } from "@/components/ui/item/item-edit-modal"
+} from "@/components/ui/dropdown-menu";
+import type { Item } from "@/types/item";
+import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 
 // Importing of Data Table Components (For easier reuse)
-import { DataTableColumnHeader } from "../reusable/data-table-column-header"
+import { DataTableColumnHeader } from "../reusable/data-table-column-header";
 
 // This is the main page table columns definition.
 // It defines the columns that will be displayed in the table.
@@ -28,7 +28,7 @@ type AddToCartHandler = (id: number) => void;
 
 export const createMainPageColumns = (
   onAddToCart?: AddToCartHandler,
-  onItemUpdated?: () => void | Promise<void>,
+  onItemUpdated?: () => void | Promise<void>
 ): ColumnDef<Item>[] => [
   // This column is for selecting rows.
   // It allows users to select multiple rows for bulk actions.
@@ -58,23 +58,20 @@ export const createMainPageColumns = (
   {
     accessorKey: "sku",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="SKU"
-      />
+      <DataTableColumnHeader column={column} title="SKU" />
     ),
     cell: ({ row }) => {
-      const sku = row.getValue("sku") as string
-      const id = row.original.id
+      const sku = row.getValue("sku") as string;
+      const id = row.original.id;
       const router = useRouter();
 
       return (
-        <div 
+        <div
           className="font-medium cursor-pointer text-blue-600 hover:text-blue-800 hover:underline"
           onClick={() => router.push(`/item-details/${id}`)} // Placeholder for navigation
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              router.push(`/item-details/${id}`) // Placeholder for navigation
+            if (e.key === "Enter") {
+              router.push(`/item-details/${id}`); // Placeholder for navigation
             }
           }}
           tabIndex={0}
@@ -83,31 +80,25 @@ export const createMainPageColumns = (
         >
           {sku}
         </div>
-      )
+      );
     },
   },
-    // Item Type column
+  // Item Type column
   {
     accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Type"
-      />
+      <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => <div>{row.getValue("type")}</div>,
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
   },
   // Variant column
   {
     accessorKey: "variant",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Variant"
-      />
+      <DataTableColumnHeader column={column} title="Variant" />
     ),
     cell: ({ row }) => <div>{row.getValue("variant") || "-"}</div>,
   },
@@ -115,60 +106,58 @@ export const createMainPageColumns = (
   {
     accessorKey: "qty",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Quantity"
-      />
+      <DataTableColumnHeader column={column} title="Quantity" />
     ),
     cell: ({ row }) => {
-      const qty = row.getValue("qty") as number
-      const threshold = row.original.threshold_qty
-      const isLow = qty <= threshold
+      const qty = row.getValue("qty") as number;
+      const threshold = row.original.threshold_qty;
+      const isLow = qty <= threshold;
 
       return (
         <div className="flex items-center">
           <span className="font-medium">{qty}</span>
           {isLow && (
-            <AlertCircle 
-              className="ml-2 h-4 w-4 text-amber-500" 
+            <AlertCircle
+              className="ml-2 h-4 w-4 text-amber-500"
               aria-label={`Below threshold (${threshold})`}
             />
           )}
         </div>
-      )
+      );
     },
   },
   // Threshold Quantity column
   {
     accessorKey: "threshold_qty",
     header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        title="Threshold"
-      />
+      <DataTableColumnHeader column={column} title="Threshold" />
     ),
   },
   // Add to cart button column
   {
     id: "add-to-cart",
     cell: ({ row }) => {
-      const item = row.original
+      const item = row.original;
       return (
         <Button
           variant="outline"
-          onClick={() => (onAddToCart ? onAddToCart(item.id) : console.log("Add to cart clicked, item id: ", item.id))}
+          onClick={() =>
+            onAddToCart
+              ? onAddToCart(item.id)
+              : console.log("Add to cart clicked, item id: ", item.id)
+          }
         >
           Add to cart
         </Button>
-      )
+      );
     },
   },
   // Actions column
   {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original
-      const [editOpen, setEditOpen] = useState(false)
+      const item = row.original;
+      const [editOpen, setEditOpen] = useState(false);
 
       return (
         <>
@@ -187,11 +176,16 @@ export const createMainPageColumns = (
                 Copy SKU
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setEditOpen(true)}>Edit item</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">Delete item</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                Edit item
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">
+                Delete item
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* Item Edit Modal */}
           <ItemEditModal
             item={item}
             isOpen={editOpen}
@@ -200,7 +194,7 @@ export const createMainPageColumns = (
             onUpdated={onItemUpdated}
           />
         </>
-      )
+      );
     },
   },
-]
+];
