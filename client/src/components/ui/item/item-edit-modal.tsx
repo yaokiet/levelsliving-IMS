@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 interface ItemEditModalProps {
   item: Item;
   onUpdated?: () => void | Promise<void>;
+  setIsOpen?: (open: boolean) => void;
+  hideLauncher?: boolean;
+  isOpen?: boolean;
 }
 
 // Local form state type as strings for easier input handling
@@ -38,8 +41,11 @@ function parseNonNegativeInt(value: string): number | null {
   return n;
 }
 
-export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
-  const [open, setOpen] = useState(false);
+export function ItemEditModal({ item, onUpdated, isOpen, setIsOpen, hideLauncher }: ItemEditModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isOpen ?? internalOpen;
+  const setOpen = setIsOpen ?? setInternalOpen;
+  // const [open, setOpen] = useState(false);
   const [form, setForm] = useState<FormState>(() => initFormFromItem(item));
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -60,7 +66,7 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
         setSubmitting(false);
       }
     },
-    [item]
+    [item, setOpen]
   );
 
   // Generic input change handler factory
@@ -157,9 +163,12 @@ export function ItemEditModal({ item, onUpdated }: ItemEditModalProps) {
   return (
     <>
       {/* Launcher button for the modal */}
-      <Button variant="outline" onClick={() => setOpen(true)}>
-        Edit Item
-      </Button>
+      {!hideLauncher && (
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          Edit Item
+        </Button>
+      )}
+
 
       <ReusableDialog
         open={open}

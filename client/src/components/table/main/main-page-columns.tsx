@@ -7,6 +7,7 @@ import { MoreHorizontal, AlertCircle } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +16,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Item } from "@/types/item"
+import type { Item } from "@/types/item"
+import { ItemEditModal } from "@/components/ui/item/item-edit-modal"
 
 // Importing of Data Table Components (For easier reuse)
 import { DataTableColumnHeader } from "../reusable/data-table-column-header"
@@ -25,7 +27,8 @@ import { DataTableColumnHeader } from "../reusable/data-table-column-header"
 type AddToCartHandler = (id: number) => void;
 
 export const createMainPageColumns = (
-  onAddToCart?: AddToCartHandler
+  onAddToCart?: AddToCartHandler,
+  onItemUpdated?: () => void | Promise<void>,
 ): ColumnDef<Item>[] => [
   // This column is for selecting rows.
   // It allows users to select multiple rows for bulk actions.
@@ -165,32 +168,39 @@ export const createMainPageColumns = (
     id: "actions",
     cell: ({ row }) => {
       const item = row.original
+      const [editOpen, setEditOpen] = useState(false)
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(item.sku)}
-            >
-              Copy SKU
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View details</DropdownMenuItem>
-            <DropdownMenuItem>Edit item</DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">Delete item</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(item.sku)}
+              >
+                Copy SKU
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => setEditOpen(true)}>Edit item</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">Delete item</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <ItemEditModal
+            item={item}
+            isOpen={editOpen}
+            setIsOpen={setEditOpen}
+            hideLauncher
+            onUpdated={onItemUpdated}
+          />
+        </>
       )
     },
   },
 ]
-
-// Backwards-compatible default export for places that import `columns` directly.
-export const columns: ColumnDef<Item>[] = createMainPageColumns();
