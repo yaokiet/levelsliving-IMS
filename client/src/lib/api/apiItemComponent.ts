@@ -1,12 +1,18 @@
 import { apiFetch } from "./apiClient";
 import { API_PATHS } from "./apiConfig";
 
-export function createItemComponent(parentId: number, childId: number) {
+export type ItemComponentCreate = {
+  parent_id: number;
+  child_id: number;
+  qty_required: number;
+};
+
+export function createItemComponent(data: ItemComponentCreate) {
   const path = API_PATHS.create_item_component();
   return apiFetch(path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ parent_id: parentId, child_id: childId }),
+    body: JSON.stringify(data),
   });
 }
 

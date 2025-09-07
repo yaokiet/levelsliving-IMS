@@ -110,7 +110,7 @@ export const columns: ColumnDef<ComponentDetail>[] = [
       const [removeOpen, setRemoveOpen] = useState(false);
       // Get parent item from context to pass to remove modal
       // Refetch function to update table after edit
-      const { item, refetch } = useItem(); 
+      const { item, refetch } = useItem();
 
       return (
         <>

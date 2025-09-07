@@ -6,6 +6,7 @@ import { ItemInfoCard } from "@/components/ui/item/item-info-card";
 import ItemComponentsTable from "@/components/table/main/item-components-table";
 import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 import { useRouter } from "next/navigation";
+import { ItemAddChildItem } from "@/components/ui/item/item-add-child-item";
 
 // This is the inner component that will have access to the context
 function ItemDetailsContent() {
@@ -41,6 +42,17 @@ function ItemDetailsContent() {
           />
         }
       />
+      <ItemAddChildItem
+        item={item}
+        // To prevent adding duplicates, exclude current component IDs
+        excludeIds={item.components.map((comp) => comp.id)}
+        // Ensure the table refresh after adding a component
+        onAdded={async () => {
+          await refetch();
+          router.refresh();
+        }}
+      />
+      {/* Components Table */}
       <ItemComponentsTable />
     </div>
   );
