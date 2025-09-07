@@ -7,6 +7,7 @@ import { getAllItems } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
 import type { Item } from "@/types/item";
 import { useAppliedSearch } from "@/components/ui/item/item-applied-search-hook";
+import { parsePositiveInt } from "./util/item-int-util-func";
 
 // Types for items fetched to add as children
 type ItemSummary = {
@@ -55,19 +56,22 @@ export function ItemAddChildItem({
   const [listLoading, setListLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
 
-  const handleOpenChange = useCallback((nextOpen: boolean) => {
-    setOpen(nextOpen);
-    if (!nextOpen) {
-      setError(null);
-      setListError(null);
-      setSearchInput("");
-      setSearchQuery("");
-      setSelected(new Set());
-      setSubmitting(false);
-      setAvailableItems([]);
-      setQtyById(new Map());
-    }
-  }, [setSearchInput, setSearchQuery]);
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      setOpen(nextOpen);
+      if (!nextOpen) {
+        setError(null);
+        setListError(null);
+        setSearchInput("");
+        setSearchQuery("");
+        setSelected(new Set());
+        setSubmitting(false);
+        setAvailableItems([]);
+        setQtyById(new Map());
+      }
+    },
+    [setSearchInput, setSearchQuery]
+  );
 
   // Fetch all items (by calling api) when dialog opens
   useEffect(() => {
@@ -115,7 +119,7 @@ export function ItemAddChildItem({
         );
       });
   }, [availableItems, excludeIds, parentItemId, searchQuery]);
-    /**
+  /**
    * Apply the search only when button clicked or Enter pressed.
    */
 
@@ -156,13 +160,6 @@ export function ItemAddChildItem({
     });
   };
 
-  // helper to parse positive int
-  const parseQty = (s: string | undefined): number | null => {
-    const n = Number.parseInt((s ?? "").trim(), 10);
-    if (!Number.isFinite(n) || n < 1) return null;
-    return n;
-  };
-
   /**
    * Handles the "Confirm" button click by validating the form state and building
    * a payload suitable for the `createItemComponent` API function. If the form
@@ -190,9 +187,13 @@ export function ItemAddChildItem({
       setSubmitting(true);
 
       // Validate all selected quantities
-      const invalidQtyIds = Array.from(selected).filter((childId) => parseQty(qtyById.get(childId)) === null);
+      const invalidQtyIds = Array.from(selected).filter(
+        (childId) => parsePositiveInt(qtyById.get(childId) ?? "") === null
+      );
       if (invalidQtyIds.length > 0) {
-        setError("Please enter a valid positive integer quantity for all selected items.");
+        setError(
+          "Please enter a valid positive integer quantity for all selected items."
+        );
         setSubmitting(false);
         return { status: 400 };
       }
@@ -201,7 +202,7 @@ export function ItemAddChildItem({
       const payloads = Array.from(selected).map((childId) => ({
         parent_id: parentItemId,
         child_id: childId,
-        qty_required: parseQty(qtyById.get(childId)) as number,
+        qty_required: parsePositiveInt(qtyById.get(childId) ?? "") as number,
       }));
 
       const results = await Promise.allSettled(

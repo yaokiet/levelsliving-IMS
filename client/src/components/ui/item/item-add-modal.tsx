@@ -3,10 +3,14 @@ import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { useCallback, useMemo, useState } from "react";
 import { createNewItem } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
-import { ItemFormFields, type ItemFormState } from "./item-form-fields";
+import { ItemFormFields } from "./item-form-fields";
+import type { ItemFormState } from "@/types/item";
+import { createItemComponent } from "@/lib/api/apiItemComponent";
+import { parseNonNegativeInt, parsePositiveInt } from "./util/item-int-util-func";
 
 interface ItemAddModalProps {
   onCreated?: () => void | Promise<void>;
+  parentItemId?: number;
 }
 
 // Build initial form state for a new item
@@ -21,16 +25,10 @@ function initEmptyForm(): ItemFormState {
   };
 }
 
-// Safely parse a non-negative integer from a string (base-10)
-function parseNonNegativeInt(value: string): number | null {
-  const n = Number.parseInt(value, 10);
-  if (Number.isNaN(n) || n < 0) return null;
-  return n;
-}
-
-export function ItemAddModal({ onCreated }: ItemAddModalProps) {
+export function ItemAddModal({ onCreated, parentItemId }: ItemAddModalProps) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<ItemFormState>(() => initEmptyForm());
+  const [requiredQty, setRequiredQty] = useState<string>("1");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -40,6 +38,7 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
     if (!nextOpen) {
       setError(null);
       setForm(initEmptyForm());
+      setRequiredQty("1");
       setSubmitting(false);
     }
   }, []);
@@ -84,7 +83,6 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
 
     return { payload };
   };
-
   // Confirm (Create) handler called by ReusableDialog
   const onConfirm = async () => {
     setError(null);
@@ -99,9 +97,41 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
       return { status: 400 };
     }
 
+    // If we need to link the new item as a child, validate requiredQty now
+    let reqQtyNum: number | null = null;
+    if (parentItemId != null) {
+      reqQtyNum = parsePositiveInt(requiredQty);
+      if (reqQtyNum === null) {
+        setError("Required quantity must be a positive integer (>= 1).");
+        return { status: 400 };
+      }
+    }
+
     try {
       setSubmitting(true);
-      await createNewItem(payload);
+
+      // Create the new item
+      const created = await createNewItem(payload);
+
+      // Expect created.id to exist
+      const newItemId =
+        created && typeof (created as any).id === "number"
+          ? (created as any).id
+          : null;
+
+      if (newItemId == null) {
+        throw new Error("Create API did not return the new item ID.");
+      }
+
+      // If parentItemId provided, link the newly created item as a child with qty
+      if (parentItemId != null && reqQtyNum != null) {
+        await createItemComponent({
+          parent_id: parentItemId,
+          child_id: newItemId,
+          qty_required: reqQtyNum,
+        });
+      }
+
       await onCreated?.();
       return { status: 200 };
     } catch (e: unknown) {
@@ -126,14 +156,14 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
     <>
       {/* Launcher button for the modal */}
       <Button variant="outline" onClick={() => setOpen(true)}>
-        Add Item
+        Create Child Item
       </Button>
 
       <ReusableDialog
         open={open}
         onOpenChange={handleOpenChange}
         dialogTitle="Add New Item"
-        confirmButtonText={submitting ? "Creating..." : "Create"}
+        confirmButtonText={"Create and Link Item"}
         cancelButtonText="Cancel"
         onConfirm={onConfirm}
       >
@@ -143,7 +173,34 @@ export function ItemAddModal({ onCreated }: ItemAddModalProps) {
               {error}
             </div>
           )}
-          <ItemFormFields form={form} setForm={setForm} submitting={submitting} />
+          <ItemFormFields
+            form={form}
+            setForm={setForm}
+            submitting={submitting}
+          />
+
+          {parentItemId != null && (
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="required-qty"
+                className="text-sm text-muted-foreground"
+              >
+                Required Qty
+              </label>
+              <input
+                id="required-qty"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                step={1}
+                className="w-28 border rounded px-2 py-1 text-right"
+                value={requiredQty}
+                onChange={(e) => setRequiredQty(e.target.value)}
+                disabled={submitting}
+                placeholder="1"
+              />
+            </div>
+          )}
         </div>
       </ReusableDialog>
     </>

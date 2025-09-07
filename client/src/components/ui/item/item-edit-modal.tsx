@@ -5,6 +5,7 @@ import { updateExistingItem } from "@/lib/api/itemsApi";
 import { Button } from "@/components/ui/button";
 import { ItemFormFields } from "./item-form-fields";
 import type { ItemFormState } from "@/types/item";
+import { parseNonNegativeInt } from "./util/item-int-util-func";
 
 
 interface ItemEditModalProps {
@@ -26,15 +27,6 @@ function initFormFromItem(item: Item): ItemFormState {
     threshold_qty: String(item.threshold_qty ?? 0),
   };
 }
-
-// Safely parse a non-negative integer from a string (base-10)
-function parseNonNegativeInt(value: string): number | null {
-  const n = Number.parseInt(value, 10);
-  if (Number.isNaN(n) || n < 0) return null;
-  return n;
-}
-
-
 
 export function ItemEditModal({
   item,
