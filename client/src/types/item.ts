@@ -9,8 +9,14 @@ export interface Item {
     // status: string
 }
 
-
-
+export type ItemFormState = {
+  item_name: string;
+  sku: string;
+  variant: string;
+  type: string;
+  qty: string;
+  threshold_qty: string;
+};
 
 export interface ItemCreate {
   sku: string;
