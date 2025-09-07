@@ -1,28 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
-import SupplierPageTable from "@/components/table/supplier/supplier-page-table";
+import React, { useState, useRef } from "react";
+import SupplierPageTable, { SupplierTableRef } from "@/components/table/supplier/supplier-page-table";
 import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { createSupplier } from "@/lib/api/supplierApi";
 
 function SuppliersPageContent() {
+  const tableRef = useRef<SupplierTableRef>(null)
+
   return (
     <div className="container mx-auto py-10 px-6">
       <div className="flex gap-4 mb-6">
-        <AddSupplierDialog />
+        <AddSupplierDialog onSupplierAdded={() => tableRef.current?.refreshData()} />
       </div>
       
-      <SupplierPageTable />
+      <SupplierPageTable ref={tableRef} />
     </div>
   );
 }
 
-function AddSupplierDialog() {
+function AddSupplierDialog({ onSupplierAdded }: { onSupplierAdded?: () => void }) {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [email, setEmail] = useState("")
-  const [contact_number, setContact_number] = useState("")
+  const [contactNumber, setContactNumber] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const handleAddSupplier = async () => {
@@ -35,14 +38,11 @@ function AddSupplierDialog() {
     setIsLoading(true)
     
     try {
-      // This would use the context, but for now let's keep the direct API call
-      const { createSupplier } = await import("@/lib/api/supplierApi");
-      
       const supplierData = {
         name: name.trim(),
         description: description.trim() || undefined,
         email: email.trim() || undefined,
-        contact_number: contact_number.trim() || undefined
+        contact_number: contactNumber.trim() || undefined
       }
 
       await createSupplier(supplierData)
@@ -51,11 +51,11 @@ function AddSupplierDialog() {
       setName("")
       setDescription("")
       setEmail("")
-      setContact_number("")
+      setContactNumber("")
       
       alert(`Supplier "${name}" added successfully!`)
-      // Trigger a page refresh to update the table
-      window.location.reload()
+      // Refresh the table data
+      onSupplierAdded?.()
     } catch (error) {
       console.error("Error creating supplier:", error)
       alert("Failed to create supplier. Please try again.")
@@ -102,8 +102,8 @@ function AddSupplierDialog() {
           <Input 
             id="supplier-contact" 
             type="text" 
-            value={contact_number} 
-            onChange={e => setContact_number(e.target.value)}
+            value={contactNumber} 
+            onChange={e => setContactNumber(e.target.value)}
             placeholder="Enter contact number (optional)"
           />
         </div>

@@ -1,12 +1,14 @@
-'use client'
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { Supplier } from "@/types/supplier"
-import { columns } from "./supplier-page-columns"
+import { createColumns } from "./supplier-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
 import { getAllSuppliers } from "@/lib/api/supplierApi"
 
-export default function SupplierPageTable() {
+export interface SupplierTableRef {
+  refreshData: () => Promise<void>
+}
+
+const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
   const [data, setData] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,9 +28,17 @@ export default function SupplierPageTable() {
     }
   }
 
+  // Create columns with the refresh callback
+  const columns = createColumns(fetchSuppliers)
+
   useEffect(() => {
     fetchSuppliers()
   }, [])
+
+  // Expose the refresh function to parent components
+  useImperativeHandle(ref, () => ({
+    refreshData: fetchSuppliers
+  }))
   
   if (loading) {
     return (
@@ -61,4 +71,8 @@ export default function SupplierPageTable() {
       showPagination={true}
     />
   )
-}
+})
+
+SupplierPageTable.displayName = 'SupplierPageTable'
+
+export default SupplierPageTable

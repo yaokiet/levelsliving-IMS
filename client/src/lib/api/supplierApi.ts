@@ -1,21 +1,6 @@
 import { apiFetch } from "./apiClient";
 import { API_PATHS } from "./apiConfig";
-import type { Supplier } from "@/types/supplier";
-
-// API interfaces matching backend schemas
-export interface SupplierCreate {
-  name: string;
-  description?: string;
-  email?: string;
-  contact_number?: string;
-}
-
-export interface SupplierUpdate {
-  name?: string;
-  description?: string;
-  email?: string;
-  contact_number?: string;
-}
+import type { Supplier, SupplierCreate, SupplierUpdate } from "@/types/supplier";
 
 /**
  * Get all suppliers

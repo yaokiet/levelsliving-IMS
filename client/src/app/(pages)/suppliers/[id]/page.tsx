@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Supplier } from "@/types/supplier";
 import { SupplierInfoCard } from "@/components/ui/supplier/supplier-info-card";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { getSupplier } from "@/lib/api/supplierApi";
 
 // To use after implementing database retrieval logic
@@ -26,7 +26,6 @@ import { getSupplier } from "@/lib/api/supplierApi";
 
 function SupplierDetailsContent() {
   const params = useParams();
-  const router = useRouter();
   const supplierId = params?.id ? Number(params.id) : null;
   const [supplier, setSupplier] = useState<Supplier | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,18 +95,6 @@ function SupplierDetailsContent() {
 
   return (
     <div className="container mx-auto py-6 px-4 sm:py-10 sm:px-6">
-      {/* Breadcrumb Navigation */}
-      <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-        <button 
-          onClick={() => router.push('/suppliers')}
-          className="hover:text-foreground transition-colors"
-        >
-          Suppliers
-        </button>
-        <span>/</span>
-        <span className="text-foreground font-medium">{supplier.name}</span>
-      </nav>
-
       <SupplierInfoCard supplier={supplier} />
     </div>
   );

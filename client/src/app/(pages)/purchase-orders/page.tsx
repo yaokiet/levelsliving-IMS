@@ -60,7 +60,7 @@ export default function PurchaseOrdersPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Loading purchase orders...</p>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading purchase orders...</p>
           </div>
         </div>
       </div>
@@ -89,8 +89,8 @@ export default function PurchaseOrdersPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Purchase Orders</h1>
-          <p className="text-gray-600 mt-1">Manage and track purchase orders</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Purchase Orders</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage and track purchase orders</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
@@ -155,9 +155,9 @@ export default function PurchaseOrdersPage() {
         <CardContent>
           {purchaseOrders.length === 0 ? (
             <div className="text-center py-8">
-              <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No purchase orders found</h3>
-              <p className="text-gray-600 mb-4">Get started by creating your first purchase order.</p>
+              <FileText className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No purchase orders found</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Get started by creating your first purchase order.</p>
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
                 Create Purchase Order
@@ -168,19 +168,19 @@ export default function PurchaseOrdersPage() {
               {purchaseOrders.map((po) => (
                 <div
                   key={po.id}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div className="flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-lg">
+                        <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
                           PO #{po.id.toString().padStart(4, '0')}
                         </h3>
                         <Badge variant="secondary">
                           {po.status}
                         </Badge>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-gray-600">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <div>
                           <span className="font-medium">Supplier:</span> {po.supplier_name}
                         </div>

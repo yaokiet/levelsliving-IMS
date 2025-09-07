@@ -32,7 +32,8 @@ function ClickableSupplierID({ supplierId }: { supplierId: number }) {
   );
 }
 
-export const columns: ColumnDef<Supplier>[] = [
+export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplier>[] {
+  return [
   // Select checkbox column
   {
     id: "select",
@@ -164,8 +165,8 @@ export const columns: ColumnDef<Supplier>[] = [
           try {
             await deleteSupplier(supplier.id);
             alert("Supplier deleted successfully!");
-            // Refresh the page to update the table
-            window.location.reload();
+            // Refresh the table data
+            onSupplierDeleted?.();
           } catch (error) {
             console.error("Error deleting supplier:", error);
             alert("Failed to delete supplier. Please try again.");
@@ -210,3 +211,7 @@ export const columns: ColumnDef<Supplier>[] = [
     },
   },
 ];
+}
+
+// For backward compatibility, export a default columns array
+export const columns = createColumns();

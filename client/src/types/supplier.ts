@@ -6,6 +6,15 @@ export interface Supplier {
     contact_number?: string;
 }
 
+// API interfaces for CRUD operations
+export interface SupplierCreate extends Omit<Supplier, 'id'> {
+    // All properties from Supplier except 'id'
+}
+
+export interface SupplierUpdate extends Partial<SupplierCreate> {
+    // All properties from SupplierCreate but optional
+}
+
 export const mockSuppliers: Supplier[] = [
     {
         id: 1,
