@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import MainPageTable from "@/components/table/main/main-page-table";
 import { ItemAddModal } from "@/components/ui/item/item-add-modal";
 import { getAllItems } from "@/lib/api/itemsApi";
@@ -32,7 +32,7 @@ export default function ItemDetailsPage() {
   }, []);
 
   // Load items on mount
-  React.useEffect(() => {
+  useEffect(() => {
     loadItems();
   }, [loadItems]);
 
