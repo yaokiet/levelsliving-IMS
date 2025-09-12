@@ -57,6 +57,10 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   pageCount?: number;
   pagination?: { pageIndex: number; pageSize: number };
   onPaginationChange?: OnChangeFn<PaginationState>
+  // For server-side sorting
+  sorting?: SortingState;
+  onSortingChange?: OnChangeFn<SortingState>;
+  manualSorting?: boolean;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -82,8 +86,12 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   pageCount = -1,
   onPaginationChange = undefined,
   pagination,
+  // For server-side sorting
+  sorting,
+  onSortingChange,
+  manualSorting = false,
 }: ReusableTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sortingState, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -106,7 +114,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
@@ -114,10 +121,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     onRowSelectionChange: setRowSelection,
     onExpandedChange: setExpanded,
     // getExpandedRowModel: getExpandedRowModel(), // For expanding rows
-    // For server-side pagination
-    manualPagination: manualPagination,
-    pageCount: manualPagination ? pageCount : undefined,
-    ...(onPaginationChange ? { onPaginationChange } : {}),
     /**
      * Determine if a row can expand.
      *
@@ -128,16 +131,24 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     getRowCanExpand: (row) =>
       Array.isArray(row.original.subRows) && row.original.subRows.length > 0,
     state: {
-      sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
       expanded,
       // For server-side pagination
       ...(pagination ? { pagination } : {}),
+      // For client/server-side sorting
+      sorting: sorting ?? sortingState, // use controlled or local
     },
     getSubRows: (row) => row.subRows, // For getting sub-rows
     maxLeafRowFilterDepth: 0, // Add this to disable filtering subRows
+    // For server-side pagination
+    manualPagination: manualPagination,
+    pageCount: manualPagination ? pageCount : undefined,
+    ...(onPaginationChange ? { onPaginationChange } : {}),
+    // For server-side sorting
+    manualSorting: manualSorting,
+    onSortingChange: onSortingChange ?? setSorting,
   });
 
   const computedFilterOptions = React.useMemo(
@@ -152,7 +163,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                 .filter((v) => v !== undefined && v !== null && v !== "")
             )
           )
-        : [],
+          : [],
     [filterOptions, safeData, filterKey]
   );
 

@@ -5,7 +5,7 @@ import { ReusableTable } from "../reusable/reusable-table"
 import { getAllUsers } from "@/lib/api/userApi"
 import { PaginatedUsers } from "@/types/user"
 import { columns } from "./user-page-columns"
-import { OnChangeFn, PaginationState } from '@tanstack/react-table'
+import { OnChangeFn, PaginationState, SortingState } from '@tanstack/react-table'
 
 export default function UsersTable() {
   const [data, setData] = useState<PaginatedUsers>({
@@ -24,6 +24,7 @@ export default function UsersTable() {
     pageIndex: 0, //initial page index
     pageSize: 10, //default page size
   });
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   // Get filterable columns from the columns definition
   // Type guard to check if column has accessorKey and header
@@ -44,7 +45,14 @@ export default function UsersTable() {
 
   const fetchUsers = () => {
     setLoading(true)
-    getAllUsers({ q: search, search_columns: searchColumns, page: pagination.pageIndex + 1, size: pagination.pageSize }).then(res => {
+    getAllUsers({
+      q: search, search_columns: searchColumns,
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      sort: sorting.map(
+        (s) => `${s.id}:${s.desc ? "desc" : "asc"}`
+      )
+    }).then(res => {
       setData(res)
       setLoading(false)
     }).catch(error => {
@@ -61,6 +69,12 @@ export default function UsersTable() {
     );
   };
 
+  const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
+    setSorting((prev) =>
+      typeof updaterOrValue === "function" ? updaterOrValue(prev) : updaterOrValue
+    );
+  };
+
   const onSearch = (value: string) => {
     if (value !== search) {
       setSearch(value)
@@ -69,7 +83,7 @@ export default function UsersTable() {
 
   useEffect(() => {
     fetchUsers()
-  }, [search, pagination.pageIndex, pagination.pageSize])
+  }, [search, pagination.pageIndex, pagination.pageSize, sorting])
 
   return (
     <>
@@ -93,6 +107,10 @@ export default function UsersTable() {
           pageCount={data.meta.pages || -1}
           pagination={pagination}
           onPaginationChange={handlePaginationChange}
+          // For server-side sorting
+          manualSorting={true}
+          sorting={sorting}
+          onSortingChange={handleSortingChange}
         />
       )}
     </>
