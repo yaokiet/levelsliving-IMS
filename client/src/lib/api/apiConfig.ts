@@ -23,4 +23,10 @@ export const API_PATHS = {
     create_item_component: () => `${API_PREFIX}/item-component`,
     remove_item_component: (parentId: number, childId: number) =>
         `${API_PREFIX}/item-component/${parentId}/${childId}`,
+
+    //Cart endpoints
+    cart: `${API_PREFIX}/cart`,
+    cart_item: (itemId: number | string) => `${API_PREFIX}/cart/${itemId}`,
+    cart_bulk_add: `${API_PREFIX}/cart/bulk-add/`,
+
 };

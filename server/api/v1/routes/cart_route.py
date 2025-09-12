@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
 from database.database import get_db
-from database.schemas.cart import CartItemCreate, CartItemRead, CartItemUpdate
+from database.schemas.cart import CartItemCreate, CartItemRead, CartItemUpdate, CartBulkCreate
 from database.services import cart_service
 
 router = APIRouter(prefix="/cart", tags=["cart"])
@@ -38,6 +38,35 @@ def add_item_to_cart(
         )
     return {"message": "Item added to cart successfully."}
 
+@router.post("/bulk-add/")
+def add_multiple_items_to_cart(
+    payload: CartBulkCreate,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """
+    Adds a list of items to the user's cart in a single request.
+    This is useful for adding all components of a parent item at once.
+    """
+    user_payload = getattr(request.state, "user", None)
+    if not user_payload or "user_id" not in user_payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+    user_id = user_payload["user_id"]
+
+    try:
+        cart_service.add_multiple_items_to_cart(
+            db, user_id=user_id, items=payload.items
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An unexpected error occurred while adding items: {e}",
+        )
+
+    return {"message": "Items added to cart successfully."}
 
 @router.get("/", response_model=List[CartItemRead])
 def read_user_cart(request: Request, db: Session = Depends(get_db)):
