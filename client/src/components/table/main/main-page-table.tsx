@@ -7,6 +7,7 @@ import { createMainPageColumns } from "./main-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
 import { AddToCartModal } from "@/components/ui/modal/add-to-cart-modal";
 
+
 interface MainPageTableProps {
   data: Item[];
   loading?: boolean;

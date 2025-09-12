@@ -14,8 +14,12 @@ class CartItemBase(BaseModel):
 
 class CartItemCreate(CartItemBase):
     """Schema for adding an item to the cart."""
-    pass
+    item_id: int
+    quantity: int
 
+# --- Add this new schema for the bulk endpoint ---
+class CartBulkCreate(BaseModel):
+    items: List[CartItemCreate]
 
 class CartItemUpdate(BaseModel):
     """Schema for updating an item's quantity in the cart."""

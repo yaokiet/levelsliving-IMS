@@ -1,141 +1,193 @@
 "use client";
 
 import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { getItemDetails } from "@/lib/api/itemsApi";
-import type { ItemWithComponents } from "@/types/item";
+import { toast } from "sonner";
+
+import { getLowestChildren } from "@/lib/api/itemsApi";
+import { addMultipleItemsToCart } from "@/lib/api/cartApi";
+import type { LowestChildDetail } from "@/types/item";
+import type { CartBulkCreatePayload } from "@/types/cart";
 
 export interface AddToCartModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   itemId: number | null;
-  onConfirm: (id: number, qty?: number) => Promise<void> | void;
-  title?: string;
-  description?: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  loading?: boolean;
+  itemName: string | null;
+  onSuccess?: () => void;
 }
 
 export function AddToCartModal({
   open,
   onOpenChange,
   itemId,
-  onConfirm,
-  title = "Add to cart",
-  description = "Confirm adding this item to the cart.",
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
-  loading = false,
+  itemName,
+  onSuccess,
 }: AddToCartModalProps) {
   const [submitting, setSubmitting] = React.useState(false);
   const [fetching, setFetching] = React.useState(false);
-  const [item, setItem] = React.useState<ItemWithComponents | null>(null);
-  const [qty, setQty] = React.useState<number>(0);
 
-  // Fetch item details when modal opens with a valid itemId
+  const [components, setComponents] = React.useState<LowestChildDetail[]>([]);
+  const [quantities, setQuantities] = React.useState<Record<number, number>>(
+    {}
+  );
+
   React.useEffect(() => {
     let ignore = false;
-    const fetchItem = async () => {
+    const fetchComponents = async () => {
       if (!open || itemId == null) {
-        setItem(null);
-        setQty(0);
+        setComponents([]);
+        setQuantities({});
         return;
       }
       try {
         setFetching(true);
-        const data = await getItemDetails(itemId);
+        const data = await getLowestChildren(itemId);
         if (ignore) return;
-        setItem(data);
-        // Use threshold_qty as minQty fallback to 0
-        const initialQty = typeof data?.threshold_qty === "number" ? data.threshold_qty : 0;
-        setQty(initialQty);
+
+        setComponents(data);
+        const initialQuantities = data.reduce((acc, component) => {
+          acc[component.id] = component.total_qty_required;
+          return acc;
+        }, {} as Record<number, number>);
+        setQuantities(initialQuantities);
       } catch (e) {
-        // On error, still allow user to input a qty manually
-        setItem(null);
-        setQty(0);
+        toast.error("Failed to fetch components", {
+          description:
+            e instanceof Error ? e.message : "An unknown error occurred.",
+        });
+        setComponents([]);
+        setQuantities({});
       } finally {
         if (!ignore) setFetching(false);
       }
     };
-    fetchItem();
+    fetchComponents();
     return () => {
       ignore = true;
     };
   }, [open, itemId]);
 
+  const handleQuantityChange = (componentId: number, value: string) => {
+    const newQty = Number(value);
+    if (!isNaN(newQty) && newQty >= 0) {
+      setQuantities((prev) => ({ ...prev, [componentId]: newQty }));
+    }
+  };
+
   const handleConfirm = async () => {
-    if (itemId == null) return;
+    if (itemId == null || components.length === 0) return;
+
+    const payload: CartBulkCreatePayload = {
+      items: Object.entries(quantities)
+        .map(([id, quantity]) => ({
+          item_id: Number(id),
+          quantity,
+        }))
+        .filter((item) => item.quantity > 0),
+    };
+
+    if (payload.items.length === 0) {
+      toast("No items to add", {
+        description: "All quantities are zero.",
+      });
+      return;
+    }
+
     try {
       setSubmitting(true);
-      await onConfirm(itemId, qty);
+      await addMultipleItemsToCart(payload);
+      toast.success("Success!", {
+        description: "Components have been added to the cart.",
+      });
+      onSuccess?.();
       onOpenChange(false);
+    } catch (e) {
+      toast.error("Failed to add items to cart", {
+        description:
+          e instanceof Error ? e.message : "An unknown error occurred.",
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
+  const hasComponents = components.length > 0;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>Add Components for: {itemName ?? "Item"}</DialogTitle>
           <DialogDescription>
-            {description} {itemId != null && <span>(ID: {itemId})</span>}
+            This item is composed of the following parts. Adjust the quantities
+            needed before adding to the cart.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-2">
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label className="text-right">Item name</Label>
-            <div className="col-span-2 text-sm">
-              {fetching ? "Loading..." : item?.item_name ?? "-"}
-            </div>
-          </div>
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label className="text-right">SKU</Label>
-            <div className="col-span-2 text-sm">
-              {fetching ? "Loading..." : item?.sku ?? "-"}
-            </div>
-          </div>
-          <div className="grid grid-cols-3 items-center gap-4">
-            <Label htmlFor="minQty" className="text-right">
-              Min Qty
-            </Label>
-            <div className="col-span-2">
-              <Input
-                id="minQty"
-                type="number"
-                min={0}
-                value={Number.isFinite(qty) ? qty : 0}
-                onChange={(e) => setQty(Number(e.target.value) || 0)}
-                disabled={fetching}
-              />
-            </div>
-          </div>
+        <div className="flex-grow overflow-y-auto space-y-4 py-2 pr-4">
+          {fetching && <p>Loading components...</p>}
+          {!fetching && !hasComponents && (
+            <p>This item has no components to add.</p>
+          )}
+
+          {hasComponents &&
+            components.map((component) => (
+              <div
+                key={component.id}
+                className="grid grid-cols-3 items-center gap-4"
+              >
+                <div className="col-span-2">
+                  <Label
+                    htmlFor={`qty-${component.id}`}
+                    className="font-semibold"
+                  >
+                    {component.item_name}
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    SKU: {component.sku}
+                  </p>
+                </div>
+                <Input
+                  id={`qty-${component.id}`}
+                  type="number"
+                  min={0}
+                  value={quantities[component.id] ?? 0}
+                  onChange={(e) =>
+                    handleQuantityChange(component.id, e.target.value)
+                  }
+                  disabled={submitting}
+                />
+              </div>
+            ))}
         </div>
 
         <DialogFooter>
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            disabled={submitting || loading}
+            disabled={submitting}
           >
-            {cancelLabel}
+            Cancel
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={submitting || loading || fetching || itemId == null}
+            disabled={submitting || fetching || !hasComponents}
           >
-            {submitting || loading ? "Working..." : confirmLabel}
+            {submitting ? "Adding..." : "Add to Cart"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
-
-export default AddToCartModal;
