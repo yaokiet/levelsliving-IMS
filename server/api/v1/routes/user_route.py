@@ -15,15 +15,15 @@ def read_users(
     page: int = Query(1, ge=1, description="1-based page number"),
     size: int = Query(50, ge=1, le=200, description="Page size (max 200)"),
     q: Optional[str] = Query(None, description="Search text (name or email)"),
-    search_columns: Optional[str] = Query(
+    search_columns: Optional[List[str]] = Query(
         None,
         alias="search_columns",
-        description="Columns to search (e.g. search_columns=name,email)",
+        description="Columns to search (e.g. search_columns=name&search_columns=email)",
     ),
-    sort: Optional[str] = Query(
+    sort: Optional[List[str]] = Query(
         None,
         alias="sort",
-        description="Sort by columns, e.g. sort=name:asc,email:desc",
+        description="Sort by columns, e.g. sort=name:asc&sort=email:desc",
     ),
     include_total: bool = Query(
         True, description="If true, also compute COUNT(*) for total/pages"
@@ -33,15 +33,13 @@ def read_users(
     """
     List users with pagination, search (q), and sorting.
     """
-    search_columns_list = parse_query_list(search_columns)
-    sort_list = parse_query_list(sort)
     return get_all_users(
         db,
         page=page,
         size=size,
         q=q,
-        search_columns=search_columns_list,
-        sort=sort_list,
+        search_columns=search_columns,
+        sort=sort,
         include_total=include_total,
     )
 

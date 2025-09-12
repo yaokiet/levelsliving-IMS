@@ -3,7 +3,19 @@
 -- =======================
 INSERT INTO "user" (name, role, email, password_hash) VALUES
 ('admintest', 'admin', 'admin@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest', 'user', 'user@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
+('usertest', 'user', 'user@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest2', 'admin', 'admin2@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest3', 'admin', 'admin3@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('usertest2', 'user', 'user2@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('usertest3', 'user', 'user3@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('usertest4', 'user', 'user4@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('usertest5', 'user', 'user5@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('usertest6', 'user', 'user6@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest4', 'admin', 'admin4@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest5', 'admin', 'admin5@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest6', 'admin', 'admin6@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest7', 'admin', 'admin7@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+('admintest8', 'admin', 'admin8@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
 
 -- =======================
 -- SUPPLIERS
@@ -100,8 +112,4 @@ INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, 
 -- =======================
 -- USER SESSIONS
 -- =======================
-INSERT INTO user_session (user_id, refresh_token, created_at, expires_at) VALUES
--- Active session for the admin user
-(1, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6ImFkbWludGVzdCIsImlhdCI6MTcxNDI4OTAyMn0.fake_admin_token_string_for_testing_only', '2025-08-25 10:00:00', '2025-10-01 10:00:00'),
--- Active session for the regular user
-(2, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkxIiwibmFtZSI6InVzZXJ0ZXN0IiwiaWF0IjoxNzE0Mjg5MDIzfQ.fake_user_token_string_for_testing_only_2', '2025-08-31 18:30:00', '2025-10-01 18:30:00');
+

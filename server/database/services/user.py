@@ -69,8 +69,8 @@ def get_all_users(
     # Optional exact totals
     total = pages = None
     if include_total:
-        total = db.query(func.count(User.id)).select_from(base.subquery()).scalar()
-        pages = (total + size - 1) // size if total else 0
+        total = db.query(func.count()).select_from(base.subquery()).scalar() or 0
+        pages = max(1, (total + size - 1) // size)
 
     # Fetch page (size+1 → has_next)
     rows: List[User] = (
