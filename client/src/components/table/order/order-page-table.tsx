@@ -2,60 +2,88 @@
 
 // This file defines the columns for the main page table.
 
-import { useState, useEffect } from "react";
-import { OrderItem } from "@/types/order-item";
-import { columns } from "./order-page-columns";
+import { useState, useEffect, useMemo } from "react";
+import { columns, orderTableFilterableColumns } from "./order-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
-import { getOrdersWithItems } from "@/lib/api/ordersApi";
+import { getAllOrders } from "@/lib/api/ordersApi";
 import OrderPageSubTable from "./order-page-sub-table";
-
-/**
- * Normalize API responses to an array of OrderItem
- *
- * @param input - Input can be an array of OrderItem, or an object with a property
- *   named "data", "orders", or "items" containing an array of OrderItem
- * @returns An array of OrderItem
- */
-function normalizeOrders(input: any): OrderItem[] {
-  // Accept common API shapes and coerce to an array
-  if (Array.isArray(input)) return input as OrderItem[];
-  if (Array.isArray(input?.data)) return input.data as OrderItem[];
-  if (Array.isArray(input?.orders)) return input.orders as OrderItem[];
-  if (Array.isArray(input?.items)) return input.items as OrderItem[];
-  return [];
-}
+import { PaginatedOrderItems } from "@/types/order-item";
+import {
+  OnChangeFn,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table";
 
 export default function OrderPageTable() {
-  const [data, setData] = useState<OrderItem[]>([]);
+  const [data, setData] = useState<PaginatedOrderItems>({
+    meta: {
+      total: 0,
+      page: 1,
+      size: 10,
+      has_prev: false,
+      has_next: false,
+      sort: [],
+      filters: undefined,
+    },
+    data: [],
+  });
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [searchColumns, setSearchColumns] = useState<string[]>(["cust_name"]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, //initial page index
+    pageSize: 10, //default page size
+  });
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [error, setError] = useState<string | null>(null);
+  const filterableColumns = useMemo(() => orderTableFilterableColumns, []);
+
+  const fetchOrders = () => {
+    setLoading(true);
+    getAllOrders({
+      q: search,
+      search_columns: searchColumns,
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      sort: sorting.map((s) => `${s.id}:${s.desc ? "desc" : "asc"}`),
+    })
+      .then((res) => {
+        setData(res);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching users:", error);
+        setLoading(false);
+      });
+  };
+
+  const handlePaginationChange: OnChangeFn<PaginationState> = (
+    updaterOrValue
+  ) => {
+    setPagination((prev) =>
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(prev)
+        : updaterOrValue
+    );
+  };
+
+  const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
+    setSorting((prev) =>
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(prev)
+        : updaterOrValue
+    );
+  };
+
+  const onSearch = (value: string) => {
+    if (value !== search) {
+      setSearch(value);
+    }
+  };
 
   useEffect(() => {
-    let active = true;
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const orders = await getOrdersWithItems();
-        console.log("Fetched orders:", orders, "Array?", Array.isArray(orders));
-        const normalized = normalizeOrders(orders);
-        if (!active) return;
-        if (!Array.isArray(normalized)) {
-          throw new Error("Orders response is not an array");
-        }
-        setData(normalized);
-      } catch (e: any) {
-        console.error("Error fetching orders:", e);
-        if (active) setError(e?.message || "Failed to load orders");
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      active = false;
-    };
-  }, []);
+    fetchOrders();
+  }, [search, pagination.pageIndex, pagination.pageSize, sorting]);
 
   const renderSubRows = (row: any) => (
     <tr>
@@ -73,14 +101,28 @@ export default function OrderPageTable() {
   return (
     <ReusableTable
       columns={columns}
-      data={data}
-      searchKey="cust_name"
-      searchPlaceholder="Filter items by Customer Name"
+      data={data.data}
+      searchPlaceholder="Search orders..."
       showViewOptions={true}
-      showPagination={true}
+      // For search
+      manualSearch={true}
+      searchValue={search}
+      onSearch={onSearch}
+      filterableColumns={filterableColumns} // need for both client and server side search
+      searchColumns={searchColumns}
+      onSearchColumnsChange={setSearchColumns}
+      // For server-side pagination
+      manualPagination={true}
+      pageCount={data.meta.pages || -1}
+      pagination={pagination}
+      onPaginationChange={handlePaginationChange}
+      // For server-side sorting
+      manualSorting={true}
+      sorting={sorting}
+      onSortingChange={handleSortingChange}
       // subRowColumns={orderItemColumns}
-      filterKey="status"
-      filterLabel="Status"
+      // filterKey="status"
+      // filterLabel="Status"
       renderSubRows={renderSubRows}
     />
   );
