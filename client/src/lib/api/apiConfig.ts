@@ -6,11 +6,21 @@ export const API_PATHS = {
     logout: `${API_PREFIX}/logout`,
     refresh: `${API_PREFIX}/refresh`,
     user: `${API_PREFIX}/user`,
-    item: `${API_PREFIX}/item`,
-    item_details: `${API_PREFIX}/item/details`,
+
+    // Order endpoints
     order: `${API_PREFIX}/order`,
     order_with_items: `${API_PREFIX}/order/with-items`,
     order_by_id: (orderId: number | string) => `${API_PREFIX}/order/${orderId}`,
     order_with_items_by_id: (orderId: number | string) => `${API_PREFIX}/order/${orderId}/with-items`,
-    // // Add more as needed
+
+    // Item endpoints
+    update_existing_item: (itemId: number | string) => `${API_PREFIX}/item/${itemId}`,
+    create_new_item: `${API_PREFIX}/item/create`,
+    item: `${API_PREFIX}/item`,
+    item_details: `${API_PREFIX}/item/details`,
+
+    // Item Component endpoints
+    create_item_component: () => `${API_PREFIX}/item-component`,
+    remove_item_component: (parentId: number, childId: number) =>
+        `${API_PREFIX}/item-component/${parentId}/${childId}`,
 };

@@ -46,7 +46,6 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
   className?: string;
   containerClassName?: string;
-  renderToolbarExtras?: (ctx: { table: ReturnType<typeof useReactTable<TData>> }) => React.ReactNode;
   // For search
   searchValue?: string;
   onSearch?: (value: string) => void;
@@ -72,7 +71,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   className = "",
   containerClassName = "w-5/5 rounded-xl shadow-xl p-8",
   renderSubRows,
-  renderToolbarExtras,
   // For search
   searchValue,
   onSearch,
@@ -82,20 +80,29 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   // For server-side pagination
   manualPagination = false,
   pageCount = -1,
-  onPaginationChange,
+  onPaginationChange = undefined,
   pagination,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [expanded, setExpanded] = React.useState<ExpandedState>({}); // For expanding rows
   const currentFilterValue = String(
-    columnFilters.find((filter) => filter.id === filterKey)?.value || "");
+    columnFilters.find((filter) => filter.id === filterKey)?.value || ""
+  );
+
+  // Ensure we always pass a valid array to the table
+  const safeData = React.useMemo<TData[]>(
+    () => (Array.isArray(data) ? data : []),
+    [data]
+  );
 
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -110,8 +117,14 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     // For server-side pagination
     manualPagination: manualPagination,
     pageCount: manualPagination ? pageCount : undefined,
-    onPaginationChange,
-    // To fix the expand icon from disappearing when filtering
+    ...(onPaginationChange ? { onPaginationChange } : {}),
+    /**
+     * Determine if a row can expand.
+     *
+     * If the row has sub-rows, it can expand.
+     * @param row The row to check.
+     * @returns {boolean} Whether the row can expand.
+     */
     getRowCanExpand: (row) =>
       Array.isArray(row.original.subRows) && row.original.subRows.length > 0,
     state: {
@@ -121,7 +134,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       rowSelection,
       expanded,
       // For server-side pagination
-      pagination: pagination ?? { pageIndex: 0, pageSize: 10 },
+      ...(pagination ? { pagination } : {}),
     },
     getSubRows: (row) => row.subRows, // For getting sub-rows
     maxLeafRowFilterDepth: 0, // Add this to disable filtering subRows
@@ -134,13 +147,13 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
         : filterKey
           ? Array.from(
             new Set(
-              data
+              safeData
                 .map((item) => item[filterKey])
                 .filter((v) => v !== undefined && v !== null && v !== "")
             )
           )
-          : [],
-    [filterOptions, data, filterKey]
+        : [],
+    [filterOptions, safeData, filterKey]
   );
 
   // Debugging
@@ -194,12 +207,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                     });
                   }}
                 />
-              </div>
-            )}
-            {/* Render additional toolbar for Add to Cart button */}
-            {renderToolbarExtras && (
-              <div className="ml-auto flex items-center gap-3">
-                {renderToolbarExtras({ table })}
               </div>
             )}
             {showViewOptions && (
