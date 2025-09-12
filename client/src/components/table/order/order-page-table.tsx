@@ -71,23 +71,17 @@ export default function OrderPageTable() {
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
-    <>
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <ReusableTable
-          columns={columns}
-          data={data}
-          searchKey="cust_name"
-          searchPlaceholder="Filter items by Customer Name"
-          showViewOptions={true}
-          showPagination={true}
-          // subRowColumns={orderItemColumns}
-          filterKey="status"
-          filterLabel="Status"
-          renderSubRows={renderSubRows}
-        />
-      )}
-    </>
+    <ReusableTable
+      columns={columns}
+      data={data}
+      searchKey="cust_name"
+      searchPlaceholder="Filter items by Customer Name"
+      showViewOptions={true}
+      showPagination={true}
+      // subRowColumns={orderItemColumns}
+      filterKey="status"
+      filterLabel="Status"
+      renderSubRows={renderSubRows}
+    />
   );
 }

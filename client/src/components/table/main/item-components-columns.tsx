@@ -108,13 +108,14 @@ export const columns: ColumnDef<ComponentDetail>[] = [
       const component = row.original;
       const [editOpen, setEditOpen] = useState(false);
       const [removeOpen, setRemoveOpen] = useState(false);
+      const [dropdownOpen, setDropdownOpen] = useState(false);
       // Get parent item from context to pass to remove modal
       // Refetch function to update table after edit
       const { item, refetch } = useItem();
 
       return (
         <>
-          <DropdownMenu>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
@@ -129,11 +130,11 @@ export const columns: ColumnDef<ComponentDetail>[] = [
                 Copy Component SKU
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setEditOpen(true)}>
+              <DropdownMenuItem onClick={() => { setEditOpen(true); setDropdownOpen(false); }}>
                 Edit item
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setRemoveOpen(true)}
+                onClick={() => { setRemoveOpen(true); setDropdownOpen(false); }}
                 className="text-red-600"
               >
                 Remove component

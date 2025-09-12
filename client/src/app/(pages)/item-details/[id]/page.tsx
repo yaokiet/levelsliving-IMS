@@ -38,7 +38,6 @@ function ItemDetailsContent() {
             onUpdated={async () => {
               // fetch latest details into context
               await refetch();
-              router.refresh(); // refresh any server components on the page
             }}
           />
         }
@@ -51,7 +50,6 @@ function ItemDetailsContent() {
           // Ensure the table refresh after adding a component
           onAdded={async () => {
             await refetch();
-            router.refresh();
           }}
         />
         {/* Create a brand new item and immediately link it as a child */}
@@ -62,7 +60,6 @@ function ItemDetailsContent() {
           confirmButtonText="Create & Link Child Item"
           onCreated={async () => {
             await refetch();
-            router.refresh();
           }}
         />
       </div>

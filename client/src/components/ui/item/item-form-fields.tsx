@@ -12,6 +12,18 @@ export function ItemFormFields({ form, setForm, submitting }: Props) {
     (key: keyof ItemFormState) => (e: React.ChangeEvent<HTMLInputElement>) =>
       setForm((f) => ({ ...f, [key]: e.target.value }));
 
+  // Special handler for numeric inputs
+  const onNumberChange =
+    (key: keyof ItemFormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Parse as integer or use empty string if invalid
+      const value = e.target.value === "" ? 0 : parseInt(e.target.value, 10);
+
+      // Only update if it's a valid number
+      if (!isNaN(value)) {
+        setForm((f) => ({ ...f, [key]: value }));
+      }
+    };
+
   return (
     <>
       {/* Item Name */}
@@ -113,7 +125,7 @@ export function ItemFormFields({ form, setForm, submitting }: Props) {
           min={0}
           step={1}
           value={form.qty}
-          onChange={onChange("qty")}
+          onChange={onNumberChange("qty")}
           className="w-full border rounded px-2 py-1"
           placeholder="0"
           required
@@ -135,7 +147,7 @@ export function ItemFormFields({ form, setForm, submitting }: Props) {
           min={0}
           step={1}
           value={form.threshold_qty}
-          onChange={onChange("threshold_qty")}
+          onChange={onNumberChange("threshold_qty")}
           className="w-full border rounded px-2 py-1"
           placeholder="0"
           required

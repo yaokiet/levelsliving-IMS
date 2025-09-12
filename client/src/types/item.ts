@@ -14,8 +14,8 @@ export type ItemFormState = {
   sku: string;
   variant: string;
   type: string;
-  qty: string;
-  threshold_qty: string;
+  qty: number;
+  threshold_qty: number;
 };
 
 export interface ItemCreate {

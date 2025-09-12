@@ -23,8 +23,8 @@ function initFormFromItem(item: Item): ItemFormState {
     sku: item.sku ?? "",
     variant: item.variant ?? "",
     type: item.type ?? "",
-    qty: String(item.qty ?? 0),
-    threshold_qty: String(item.threshold_qty ?? 0),
+    qty: (item.qty ?? 0),
+    threshold_qty: (item.threshold_qty ?? 0),
   };
 }
 

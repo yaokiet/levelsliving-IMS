@@ -23,15 +23,15 @@ function initEmptyForm(): ItemFormState {
     sku: "",
     variant: "",
     type: "",
-    qty: "0",
-    threshold_qty: "0",
+    qty: 0,
+    threshold_qty: 0,
   };
 }
 
 export function ItemAddModal({ onCreated, parentItemId, dialogTitle, buttonName, confirmButtonText }: ItemAddModalProps) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<ItemFormState>(() => initEmptyForm());
-  const [requiredQty, setRequiredQty] = useState<string>("1");
+  const [requiredQty, setRequiredQty] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -41,7 +41,7 @@ export function ItemAddModal({ onCreated, parentItemId, dialogTitle, buttonName,
     if (!nextOpen) {
       setError(null);
       setForm(initEmptyForm());
-      setRequiredQty("1");
+      setRequiredQty(1);
       setSubmitting(false);
     }
   }, []);
@@ -198,7 +198,7 @@ export function ItemAddModal({ onCreated, parentItemId, dialogTitle, buttonName,
                 step={1}
                 className="w-28 border rounded px-2 py-1 text-right"
                 value={requiredQty}
-                onChange={(e) => setRequiredQty(e.target.value)}
+                onChange={(e) => setRequiredQty(Number(e.target.value))}
                 disabled={submitting}
                 placeholder="1"
               />

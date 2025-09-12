@@ -37,10 +37,10 @@ export function ReusableDialog({
      *            or anything else (in which case the function returns false).
      * @returns true if the status code is 200, false otherwise.
      */
-    const isStatus200 = (res: unknown): boolean => {
+    const isSuccessStatus = (res: unknown): boolean => {
         if (!res || typeof res !== "object") return false;
         const status = (res as any).status;
-        return typeof status === "number" && status === 200;
+        return typeof status === "number" && status >= 200 && status < 300;
     };
 
     const handleConfirm = async () => {
@@ -52,10 +52,10 @@ export function ReusableDialog({
             setSubmitting(true);
             const result = await onConfirm();
 
-            if (isStatus200(result)) {
+            if (isSuccessStatus(result)) {
                 onOpenChange(false);
             }
-            // If not 200, keep dialog open
+            // If not successful, keep dialog open
         } catch {
             // Keep dialog open on error
         } finally {
