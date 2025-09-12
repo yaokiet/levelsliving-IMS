@@ -26,7 +26,13 @@ router = APIRouter(prefix="/order", tags=["order"])
 def list_orders_with_items(
     page: int = Query(1, ge=1, description="1-based page number"),
     size: int = Query(50, ge=1, le=200, description="Page size (max 200)"),
-    status: Optional[str] = Query(None, description="Filter by order status"),
+    q: Optional[str] = Query(None, description="Search text (cust_name, cust_contact, status)"),
+    search_columns: Optional[List[str]] = Query(
+        None,
+        alias="search_columns",
+        description="Columns to search (e.g. search_columns=cust_name&search_columns=cust_contact&search_columns=status)",
+    ),
+    # status: Optional[str] = Query(None, description="Filter by order status"),
     date_from: Optional[str] = Query(None, description="Start date (YYYY-MM-DD or ISO)"),
     date_to: Optional[str] = Query(None, description="End date (exclusive)"),
     sort: Optional[List[str]] = Query(
@@ -35,7 +41,7 @@ def list_orders_with_items(
         description="sort by order_date | order_id -> e.g. sort=order_date:desc&sort=order_id:desc",
     ),
     include_total: bool = Query(
-        False, description="If true, also compute COUNT(*) for total/pages"
+        True, description="If true, also compute COUNT(*) for total/pages"
     ),
     db: Session = Depends(get_db),
 ):
@@ -44,7 +50,9 @@ def list_orders_with_items(
         db,
         page=page,
         size=size,
-        status=status,
+        q=q,
+        search_columns=search_columns,
+        # status=status,
         date_from=date_from,
         date_to=date_to,
         sort=sort,
