@@ -12,7 +12,9 @@ import {
   getSortedRowModel,
   useReactTable,
   VisibilityState,
-  ExpandedState, // For expanding rows
+  ExpandedState,
+  OnChangeFn,
+  PaginationState, // For expanding rows
 } from "@tanstack/react-table";
 
 import {
@@ -45,17 +47,22 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   className?: string;
   containerClassName?: string;
   renderToolbarExtras?: (ctx: { table: ReturnType<typeof useReactTable<TData>> }) => React.ReactNode;
+  // For search
   searchValue?: string;
   onSearch?: (value: string) => void;
   filterableColumns?: { key: string; label: string }[];
   searchColumns?: string[];
   onSearchColumnsChange?: (cols: string[]) => void;
+  // For server-side pagination
+  manualPagination?: boolean;
+  pageCount?: number;
+  pagination?: { pageIndex: number; pageSize: number };
+  onPaginationChange?: OnChangeFn<PaginationState>
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
   columns,
   data,
-  searchKey,
   searchPlaceholder = "Search...",
   showViewOptions = true,
   showPagination = true,
@@ -66,11 +73,17 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   containerClassName = "w-5/5 rounded-xl shadow-xl p-8",
   renderSubRows,
   renderToolbarExtras,
+  // For search
   searchValue,
   onSearch,
   filterableColumns = [],
   searchColumns = [],
   onSearchColumnsChange,
+  // For server-side pagination
+  manualPagination = false,
+  pageCount = -1,
+  onPaginationChange,
+  pagination,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -94,7 +107,10 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     onRowSelectionChange: setRowSelection,
     onExpandedChange: setExpanded,
     // getExpandedRowModel: getExpandedRowModel(), // For expanding rows
-
+    // For server-side pagination
+    manualPagination: manualPagination,
+    pageCount: manualPagination ? pageCount : undefined,
+    onPaginationChange,
     // To fix the expand icon from disappearing when filtering
     getRowCanExpand: (row) =>
       Array.isArray(row.original.subRows) && row.original.subRows.length > 0,
@@ -104,6 +120,8 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       columnVisibility,
       rowSelection,
       expanded,
+      // For server-side pagination
+      pagination: pagination ?? { pageIndex: 0, pageSize: 10 },
     },
     getSubRows: (row) => row.subRows, // For getting sub-rows
     maxLeafRowFilterDepth: 0, // Add this to disable filtering subRows
