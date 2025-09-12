@@ -1,28 +1,44 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
-import { Table } from "@tanstack/react-table"
+import { Button } from "@/components/ui/button"
 
-interface DataTableSearchProps<TData> {
-  table: Table<TData>
-  searchKey: string
+interface DataTableSearchProps {
+  value: string
+  onSearch: (value: string) => void
   placeholder?: string
 }
 
-export function DataTableSearch<TData>({
-  table,
-  searchKey,
+export function DataTableSearch({
+  value,
+  onSearch,
   placeholder = "Search..."
-}: DataTableSearchProps<TData>) {
+}: DataTableSearchProps) {
+  const [input, setInput] = useState(value)
+
+  // Keep local input in sync if parent resets value
+  useEffect(() => {
+    setInput(value)
+  }, [value])
+
   return (
-    <Input
-      placeholder={placeholder}
-      value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-      onChange={(event) => 
-        table.getColumn(searchKey)?.setFilterValue(event.target.value)
-      }
-      className="max-w-sm"
-    />
+    <div className="flex gap-2">
+      <Input
+        placeholder={placeholder}
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === "Enter") {
+            onSearch(input)
+          }
+        }}
+        className="max-w-sm"
+        type="text"
+      />
+      <Button onClick={() => onSearch(input)}>
+        Search
+      </Button>
+    </div>
   )
 }

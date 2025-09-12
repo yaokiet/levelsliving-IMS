@@ -12,7 +12,9 @@ import {
   getSortedRowModel,
   useReactTable,
   VisibilityState,
-  ExpandedState, // For expanding rows
+  ExpandedState,
+  OnChangeFn,
+  PaginationState, // For expanding rows
 } from "@tanstack/react-table";
 
 import {
@@ -28,6 +30,7 @@ import { DataTableSearch } from "./data-table-search";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableViewFilterOptions } from "./data-table-column-visibility";
 import { DropdownFilterSelect } from "./data-table-dropdown-filter";
+import { ColumnMultiSelect } from "./column-multi-select";
 
 interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,12 +46,22 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
   className?: string;
   containerClassName?: string;
+  // For search
+  searchValue?: string;
+  onSearch?: (value: string) => void;
+  filterableColumns?: { key: string; label: string }[];
+  searchColumns?: string[];
+  onSearchColumnsChange?: (cols: string[]) => void;
+  // For server-side pagination
+  manualPagination?: boolean;
+  pageCount?: number;
+  pagination?: { pageIndex: number; pageSize: number };
+  onPaginationChange?: OnChangeFn<PaginationState>
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
   columns,
   data,
-  searchKey,
   searchPlaceholder = "Search...",
   showViewOptions = true,
   showPagination = true,
@@ -58,6 +71,17 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   className = "",
   containerClassName = "w-5/5 rounded-xl shadow-xl p-8",
   renderSubRows,
+  // For search
+  searchValue,
+  onSearch,
+  filterableColumns = [],
+  searchColumns = [],
+  onSearchColumnsChange,
+  // For server-side pagination
+  manualPagination = false,
+  pageCount = -1,
+  onPaginationChange = undefined,
+  pagination,
 }: ReusableTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -90,7 +114,10 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     onRowSelectionChange: setRowSelection,
     onExpandedChange: setExpanded,
     // getExpandedRowModel: getExpandedRowModel(), // For expanding rows
-
+    // For server-side pagination
+    manualPagination: manualPagination,
+    pageCount: manualPagination ? pageCount : undefined,
+    ...(onPaginationChange ? { onPaginationChange } : {}),
     /**
      * Determine if a row can expand.
      *
@@ -106,6 +133,8 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       columnVisibility,
       rowSelection,
       expanded,
+      // For server-side pagination
+      ...(pagination ? { pagination } : {}),
     },
     getSubRows: (row) => row.subRows, // For getting sub-rows
     maxLeafRowFilterDepth: 0, // Add this to disable filtering subRows
@@ -116,7 +145,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       filterOptions && filterOptions.length > 0
         ? filterOptions
         : filterKey
-        ? Array.from(
+          ? Array.from(
             new Set(
               safeData
                 .map((item) => item[filterKey])
@@ -134,23 +163,28 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     <div className={`justify-center ${className}`}>
       <div className={`${containerClassName}`}>
         {/* Search bar and view options */}
-        {(searchKey || showViewOptions) && (
+        {(onSearch || showViewOptions) && (
           <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
-            <div className="flex-1 min-w-[220px]">
-              {searchKey && (
+            <div className="flex-1 min-w-[220px] flex gap-2">
+              {onSearch && (
                 <DataTableSearch
-                  table={table}
-                  searchKey={searchKey}
+                  value={searchValue ?? ""}
+                  onSearch={onSearch}
                   placeholder={searchPlaceholder}
+                />
+              )}
+              {filterableColumns.length > 0 && onSearchColumnsChange && (
+                <ColumnMultiSelect
+                  options={filterableColumns}
+                  value={searchColumns}
+                  onChange={onSearchColumnsChange}
+                  placeholder="Select columns"
                 />
               )}
             </div>
             {filterKey && (
               <div className="flex items-center gap-2">
-                <label
-                  className="text-sm font-medium"
-                  htmlFor={`filter-${filterKey}`}
-                >
+                <label className="text-sm font-medium" htmlFor={`filter-${filterKey}`}>
                   Filter {filterLabel} column
                 </label>
                 <DropdownFilterSelect
@@ -196,9 +230,9 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -213,7 +247,10 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                       className="hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="border-b px-4 py-2">
+                        <TableCell
+                          key={cell.id}
+                          className="border-b px-4 py-2"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -226,7 +263,8 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                       row.subRows &&
                       row.subRows.length > 0 &&
                       renderSubRows &&
-                      renderSubRows(row, columns.length)}
+                      renderSubRows(row, columns.length)
+                    }
                   </React.Fragment>
                 ))
               ) : (
@@ -251,4 +289,4 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       </div>
     </div>
   );
-}
+};
