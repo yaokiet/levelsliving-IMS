@@ -30,7 +30,7 @@ def list_orders_with_items(
     search_columns: Optional[List[str]] = Query(
         None,
         alias="search_columns",
-        description="Columns to search (e.g. search_columns=cust_name&search_columns=cust_contact&search_columns=status)",
+        description="Columns to search (e.g. search_columns=name&search_columns=contact&search_columns=status)",
     ),
     # status: Optional[str] = Query(None, description="Filter by order status"),
     date_from: Optional[str] = Query(None, description="Start date (YYYY-MM-DD or ISO)"),

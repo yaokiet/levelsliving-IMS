@@ -147,7 +147,7 @@ export const orderItemColumns: ColumnDef<OrderItem>[] = [
 ];
 
 export const orderTableFilterableColumns = [
-  { key: "cust_name", label: "Customer Name" },
+  { key: "name", label: "Customer Name" },
   { key: "status", label: "Status" },
-  { key: "cust_contact", label: "Contact Number" },
+  { key: "contact", label: "Contact Number" },
 ];

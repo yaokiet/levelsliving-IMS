@@ -85,11 +85,8 @@ export default function MainPageTable({
             open={open}
             onOpenChange={setOpen}
             itemId={selectedId}
-            onConfirm={handleConfirm}
-            title="Add item to cart"
-            description="Are you sure you want to add this item to the cart?"
-            confirmLabel="Add"
-            cancelLabel="Cancel"
+            onSuccess={() => setOpen(false)}
+            itemName={data.find((item) => item.id === selectedId)?.item_name || null}
           />
         </div>
       )}
