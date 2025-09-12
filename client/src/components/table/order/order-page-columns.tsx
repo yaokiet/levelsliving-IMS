@@ -99,9 +99,18 @@ export const columns: ColumnDef<OrderItem>[] = [
       return row.getValue(columnId) === filterValue;
     },
   },
+  // Total Value column
+  {
+    accessorKey: "total_value",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Total Value" />
+    ),
+    cell: ({ row }) => <div>${row.getValue("total_value")}</div>,
+  },
 ];
 
 export const orderItemColumns: ColumnDef<OrderItem>[] = [
+  { accessorKey: "item_id", header: "Item ID" },
   {
     accessorKey: "sku",
     header: "SKU",
@@ -130,4 +139,9 @@ export const orderItemColumns: ColumnDef<OrderItem>[] = [
     },
   },
   { accessorKey: "item_name", header: "Item Name" },
+  { accessorKey: "type", header: "Type" },
+  { accessorKey: "variant", header: "Variant" },
+  { accessorKey: "qty_requested", header: "Qty Requested" },
+  { accessorKey: "custom", header: "Comments" },
+  { accessorKey: "value", header: "Value" },
 ];

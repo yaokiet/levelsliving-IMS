@@ -5,7 +5,7 @@ export default function TableSection() {
   return (
     <div className="container mx-auto py-10 px-6">
       <div>
-        <MainPageTable />
+        <MainPageTable data={[]}/>
       </div>
     </div>
   );
