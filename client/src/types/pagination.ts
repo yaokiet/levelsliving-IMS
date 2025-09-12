@@ -4,7 +4,7 @@ export interface PageMeta {
   has_prev: boolean;
   has_next: boolean;
   sort: string[];
-  filters: Record<string, any>;
+  filters?: Record<string, any>;
   total?: number;
   pages?: number;
 }
