@@ -37,14 +37,14 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   data: TData[];
   // Search filter (Server Side)
   searchKey?: string; // searchKey is the column key to search on
-  searchPlaceholder?: string;
+  searchPlaceholder?: string; 
   searchColumns?: string[];
   onSearchColumnsChange?: (cols: string[]) => void;
-  // Search filter (Client Side)
+   // Search filter (Client Side)
   searchValue?: string;
   onSearch?: (value: string) => void;
   // View options
-  showViewOptions?: boolean;
+  showViewOptions?: boolean; 
   showPagination?: boolean;
   // Dropdown filter
   filterKey?: string; // filterKey is the column key for filtering the dropdown
@@ -61,7 +61,7 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   manualPagination?: boolean;
   pageCount?: number;
   pagination?: { pageIndex: number; pageSize: number };
-  onPaginationChange?: OnChangeFn<PaginationState>;
+  onPaginationChange?: OnChangeFn<PaginationState>
   // For server-side sorting
   sorting?: SortingState;
   onSortingChange?: OnChangeFn<SortingState>;
@@ -111,9 +111,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     columnFilters.find((filter) => filter.id === filterKey)?.value || ""
   );
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
-  const [clientSearchColumns, setClientSearchColumns] = React.useState<
-    string[]
-  >([]);
+  const [clientSearchColumns, setClientSearchColumns] = React.useState<string[]>([]);
   const isManualSearch = manualSearch;
 
   // Ensure we always pass a valid array to the table
@@ -122,18 +120,11 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     [data]
   );
 
-  function multiColumnGlobalFilter(
-    row: any,
-    columnIds: string[],
-    filterValue: string
-  ) {
+  function multiColumnGlobalFilter(row: any, columnIds: string[], filterValue: string) {
     if (!filterValue) return true;
     return columnIds.some((colId) => {
       const value = row.getValue(colId);
-      return (
-        value != null &&
-        String(value).toLowerCase().includes(filterValue.toLowerCase())
-      );
+      return value != null && String(value).toLowerCase().includes(filterValue.toLowerCase());
     });
   }
 
@@ -185,32 +176,32 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     globalFilterFn: isManualSearch
       ? undefined
       : (row, columnIds, filterValue) =>
-          multiColumnGlobalFilter(
-            row,
-            Array.isArray(clientSearchColumns) && clientSearchColumns.length
-              ? clientSearchColumns
-              : Array.isArray(columnIds)
+        multiColumnGlobalFilter(
+          row,
+          Array.isArray(clientSearchColumns) && clientSearchColumns.length
+            ? clientSearchColumns
+            : Array.isArray(columnIds)
               ? columnIds
               : [columnIds],
-            filterValue
-          ),
+          filterValue
+        ),
   });
 
-  // const computedFilterOptions = React.useMemo(
-  //   () =>
-  //     filterOptions && filterOptions.length > 0
-  //       ? filterOptions
-  //       : filterKey
-  //       ? Array.from(
-  //           new Set(
-  //             safeData
-  //               .map((item) => item[filterKey])
-  //               .filter((v) => v !== undefined && v !== null && v !== "")
-  //           )
-  //         )
-  //       : [],
-  //   [filterOptions, safeData, filterKey]
-  // );
+  const computedFilterOptions = React.useMemo(
+    () =>
+      filterOptions && filterOptions.length > 0
+        ? filterOptions
+        : filterKey
+          ? Array.from(
+            new Set(
+              safeData
+                .map((item) => item[filterKey])
+                .filter((v) => v !== undefined && v !== null && v !== "")
+            )
+          )
+          : [],
+    [filterOptions, safeData, filterKey]
+  );
 
   // Debugging
   console.log(table.getRowModel().rows);
@@ -223,24 +214,18 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
           <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
             <div className="flex-1 min-w-[220px] flex gap-2">
               <DataTableSearch
-                value={isManualSearch ? searchValue ?? "" : globalFilter}
+                value={isManualSearch ? (searchValue ?? "") : globalFilter}
                 onSearch={isManualSearch ? onSearch! : setGlobalFilter}
                 placeholder={searchPlaceholder}
               />
-              {/* Dropdown column filtering */}
-              {filterableColumns.length > 0 &&
-                (isManualSearch ? onSearchColumnsChange : true) && (
-                  <ColumnMultiSelect
-                    options={filterableColumns}
-                    value={isManualSearch ? searchColumns : clientSearchColumns}
-                    onChange={
-                      isManualSearch
-                        ? onSearchColumnsChange!
-                        : setClientSearchColumns
-                    }
-                    placeholder="Select columns"
-                  />
-                )}
+              {filterableColumns.length > 0 && (isManualSearch ? onSearchColumnsChange : true) && (
+                <ColumnMultiSelect
+                  options={filterableColumns}
+                  value={isManualSearch ? searchColumns : clientSearchColumns}
+                  onChange={isManualSearch ? onSearchColumnsChange! : setClientSearchColumns}
+                  placeholder="Select columns"
+                />
+              )}
             </div>
             {showViewOptions && (
               <div className="flex-shrink-0">
@@ -263,9 +248,9 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -280,7 +265,10 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                       className="hover:bg-muted/50 data-[state=selected]:bg-muted transition-colors"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="border-b px-4 py-2">
+                        <TableCell
+                          key={cell.id}
+                          className="border-b px-4 py-2"
+                        >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
@@ -293,7 +281,8 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                       row.subRows &&
                       row.subRows.length > 0 &&
                       renderSubRows &&
-                      renderSubRows(row, columns.length)}
+                      renderSubRows(row, columns.length)
+                    }
                   </React.Fragment>
                 ))
               ) : (
@@ -318,4 +307,4 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       </div>
     </div>
   );
-}
+};

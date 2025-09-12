@@ -29,7 +29,7 @@ export default function OrderPageTable() {
   });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [searchColumns, setSearchColumns] = useState<string[]>(["cust_name"]);
+  const [searchColumns, setSearchColumns] = useState<string[]>(["name"]);
   const [pagination, setPagination] = useState({
     pageIndex: 0, //initial page index
     pageSize: 10, //default page size
