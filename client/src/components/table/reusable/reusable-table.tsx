@@ -61,6 +61,8 @@ interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   sorting?: SortingState;
   onSortingChange?: OnChangeFn<SortingState>;
   manualSorting?: boolean;
+  // For search
+  manualSearch?: boolean;
 }
 
 export function ReusableTable<TData extends Record<string, any>, TValue>({
@@ -90,6 +92,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   sorting,
   onSortingChange,
   manualSorting = false,
+  manualSearch = false,
 }: ReusableTableProps<TData, TValue>) {
   const [sortingState, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -102,12 +105,23 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
   const currentFilterValue = String(
     columnFilters.find((filter) => filter.id === filterKey)?.value || ""
   );
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
+  const [clientSearchColumns, setClientSearchColumns] = React.useState<string[]>([]);
+  const isManualSearch = manualSearch;
 
   // Ensure we always pass a valid array to the table
   const safeData = React.useMemo<TData[]>(
     () => (Array.isArray(data) ? data : []),
     [data]
   );
+
+  function multiColumnGlobalFilter(row: any, columnIds: string[], filterValue: string) {
+    if (!filterValue) return true;
+    return columnIds.some((colId) => {
+      const value = row.getValue(colId);
+      return value != null && String(value).toLowerCase().includes(filterValue.toLowerCase());
+    });
+  }
 
   const table = useReactTable({
     data: safeData,
@@ -139,6 +153,8 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
       ...(pagination ? { pagination } : {}),
       // For client/server-side sorting
       sorting: sorting ?? sortingState, // use controlled or local
+      // For client-side search
+      globalFilter: isManualSearch ? undefined : globalFilter,
     },
     getSubRows: (row) => row.subRows, // For getting sub-rows
     maxLeafRowFilterDepth: 0, // Add this to disable filtering subRows
@@ -149,6 +165,21 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
     // For server-side sorting
     manualSorting: manualSorting,
     onSortingChange: onSortingChange ?? setSorting,
+    // For client-side search
+    onGlobalFilterChange: isManualSearch ? undefined : setGlobalFilter,
+    manualFiltering: isManualSearch,
+    globalFilterFn: isManualSearch
+      ? undefined
+      : (row, columnIds, filterValue) =>
+        multiColumnGlobalFilter(
+          row,
+          Array.isArray(clientSearchColumns) && clientSearchColumns.length
+            ? clientSearchColumns
+            : Array.isArray(columnIds)
+              ? columnIds
+              : [columnIds],
+          filterValue
+        ),
   });
 
   const computedFilterOptions = React.useMemo(
@@ -177,18 +208,16 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
         {(onSearch || showViewOptions) && (
           <div className="flex flex-wrap items-center justify-between gap-6 mb-8">
             <div className="flex-1 min-w-[220px] flex gap-2">
-              {onSearch && (
-                <DataTableSearch
-                  value={searchValue ?? ""}
-                  onSearch={onSearch}
-                  placeholder={searchPlaceholder}
-                />
-              )}
-              {filterableColumns.length > 0 && onSearchColumnsChange && (
+              <DataTableSearch
+                value={isManualSearch ? (searchValue ?? "") : globalFilter}
+                onSearch={isManualSearch ? onSearch! : setGlobalFilter}
+                placeholder={searchPlaceholder}
+              />
+              {filterableColumns.length > 0 && (isManualSearch ? onSearchColumnsChange : true) && (
                 <ColumnMultiSelect
                   options={filterableColumns}
-                  value={searchColumns}
-                  onChange={onSearchColumnsChange}
+                  value={isManualSearch ? searchColumns : clientSearchColumns}
+                  onChange={isManualSearch ? onSearchColumnsChange! : setClientSearchColumns}
                   placeholder="Select columns"
                 />
               )}

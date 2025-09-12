@@ -97,9 +97,10 @@ export default function UsersTable() {
           searchPlaceholder="Search users..."
           showViewOptions={true}
           // For search
+          manualSearch={true}
           searchValue={search}
           onSearch={onSearch}
-          filterableColumns={filterableColumns}
+          filterableColumns={filterableColumns} // need for both client and server side search
           searchColumns={searchColumns}
           onSearchColumnsChange={setSearchColumns}
           // For server-side pagination

@@ -1,7 +1,7 @@
 "use client";
 
 // This file defines the columns for the main page table.
-import React from "react";
+import React, { useMemo } from "react";
 import { Item } from "@/types/item";
 import { createMainPageColumns } from "./main-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
@@ -37,7 +37,7 @@ export default function MainPageTable({
   // Build columns with handlers
   // onReload is passed to refresh the table after an item is updated
   // handleAddToCartClick is passed to open the AddToCartModal with the correct item ID
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => createMainPageColumns(handleAddToCartClick, onReload),
     [handleAddToCartClick, onReload]
   );
@@ -47,6 +47,23 @@ export default function MainPageTable({
     console.log("Confirmed add-to-cart for ID:", id);
     // Modal will close itself after onConfirm resolves
   }, []);
+
+  // Get filterable columns from the columns definition
+  // Type guard to check if column has accessorKey and header
+  function hasAccessorKeyAndHeader(col: any): col is { accessorKey: string; header?: string } {
+    return typeof col.accessorKey === "string";
+  }
+
+  const filterableColumns = useMemo(
+    () =>
+      columns
+        .filter(hasAccessorKeyAndHeader)
+        .map(col => ({
+          key: col.accessorKey,
+          label: typeof col.header === "string" ? col.header : col.accessorKey
+        })),
+    []
+  )
 
   return (
     <>
@@ -61,6 +78,7 @@ export default function MainPageTable({
             searchPlaceholder="Filter items by SKU"
             showViewOptions={true}
             showPagination={true}
+            filterableColumns={filterableColumns} // need for both client and server side search
           />
           <AddToCartModal
             open={open}
