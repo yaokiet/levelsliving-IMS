@@ -1,29 +1,45 @@
 "use client";
 
 // This file defines the columns for the main page table.
-
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Item } from "@/types/item";
 import { createMainPageColumns } from "./main-page-columns";
 import { ReusableTable } from "@/components/table/reusable/reusable-table";
-import { getAllItems } from "@/lib/api/itemsApi";
 import { AddToCartModal } from "@/components/ui/modal/add-to-cart-modal";
 
-export default function MainPageTable() {
-  const [data, setData] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+interface MainPageTableProps {
+  data: Item[];
+  loading?: boolean;
+  onReload?: () => void | Promise<void>;
+}
+
+/**
+ * A table component for the main page, showing a list of items.
+ *
+ * @param {Item[]} data The list of items to display.
+ * @param {boolean} [loading=false] If true, display a "Loading..." message instead of the table.
+ * @param {() => void | Promise<void>} [onReload] A callback to be called when item is edited successfully
+ */
+export default function MainPageTable({
+  data,
+  loading = false,
+  onReload,
+}: MainPageTableProps) {
   const [open, setOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<number | null>(null);
 
+  // Handler for when "Add to Cart" is clicked in a row
   const handleAddToCartClick = React.useCallback((id: number) => {
     setSelectedId(id);
     setOpen(true);
   }, []);
 
-  // Build columns with the click handler
-  const columns = React.useMemo(
-    () => createMainPageColumns(handleAddToCartClick),
-    [handleAddToCartClick]
+  // Build columns with handlers
+  // onReload is passed to refresh the table after an item is updated
+  // handleAddToCartClick is passed to open the AddToCartModal with the correct item ID
+  const columns = useMemo(
+    () => createMainPageColumns(handleAddToCartClick, onReload),
+    [handleAddToCartClick, onReload]
   );
 
   // Replace with your real cart logic
@@ -32,18 +48,22 @@ export default function MainPageTable() {
     // Modal will close itself after onConfirm resolves
   }, []);
 
-  // Fetch items when the component mounts
-  useEffect(() => {
-    try {
-      getAllItems().then((items) => {
-        console.log("Fetched items:", items);
-        setData(items);
-        setLoading(false);
-      });
-    } catch (error) {
-      console.error("Error fetching items:", error);
-    }
-  }, []);
+  // Get filterable columns from the columns definition
+  // Type guard to check if column has accessorKey and header
+  function hasAccessorKeyAndHeader(col: any): col is { accessorKey: string; header?: string } {
+    return typeof col.accessorKey === "string";
+  }
+
+  const filterableColumns = useMemo(
+    () =>
+      columns
+        .filter(hasAccessorKeyAndHeader)
+        .map(col => ({
+          key: col.accessorKey,
+          label: typeof col.header === "string" ? col.header : col.accessorKey
+        })),
+    []
+  )
 
   return (
     <>
@@ -58,6 +78,7 @@ export default function MainPageTable() {
             searchPlaceholder="Filter items by SKU"
             showViewOptions={true}
             showPagination={true}
+            filterableColumns={filterableColumns} // need for both client and server side search
           />
           <AddToCartModal
             open={open}

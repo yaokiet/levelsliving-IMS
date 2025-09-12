@@ -8,6 +8,7 @@ import { MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +18,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ComponentDetail } from "@/types/item";
+import { useItem } from "@/context/ItemContext";
+import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 import { DataTableColumnHeader } from "../reusable/data-table-column-header";
+import { ItemRemoveComponentModal } from "@/components/ui/item/item-remove-component-modal";
 
 export const columns: ColumnDef<ComponentDetail>[] = [
   // This column is for selecting rows.
@@ -102,28 +106,73 @@ export const columns: ColumnDef<ComponentDetail>[] = [
     id: "actions",
     cell: ({ row }) => {
       const component = row.original;
+      const [editOpen, setEditOpen] = useState(false);
+      const [removeOpen, setRemoveOpen] = useState(false);
+      const [dropdownOpen, setDropdownOpen] = useState(false);
+      // Get parent item from context to pass to remove modal
+      // Refetch function to update table after edit
+      const { item, refetch } = useItem();
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(component.sku)}
-            >
-              Copy Component SKU
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-600">
-              Remove component
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(component.sku)}
+              >
+                Copy Component SKU
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => { setEditOpen(true); setDropdownOpen(false); }}>
+                Edit item
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => { setRemoveOpen(true); setDropdownOpen(false); }}
+                className="text-red-600"
+              >
+                Remove component
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Item Edit Modal */}
+          <ItemEditModal
+            item={component}
+            isOpen={editOpen}
+            setIsOpen={setEditOpen}
+            hideLauncher
+            // After successful edit, refetch the context to update the table
+            // The table will re-render automatically when context updates
+            onUpdated={async () => {
+              await refetch();
+            }}
+          />
+
+          {/* Remove Component Modal (parent from context item) */}
+          {item && (
+            <ItemRemoveComponentModal
+              parent={{ id: item.id, sku: item.sku, item_name: item.item_name }}
+              child={{
+                id: component.id,
+                sku: component.sku,
+                item_name: component.item_name,
+              }}
+              isOpen={removeOpen}
+              setIsOpen={setRemoveOpen}
+              hideLauncher
+              onRemoved={async () => {
+                await refetch();
+              }}
+            />
+          )}
+        </>
       );
     },
   },
