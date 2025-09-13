@@ -40,6 +40,7 @@ CREATE TABLE supplier_item (
     id SERIAL PRIMARY KEY,
     item_id INT REFERENCES item(id) ON DELETE CASCADE NOT NULL,
     supplier_id INT REFERENCES supplier(id) ON DELETE CASCADE NOT NULL,
+    si_sku VARCHAR(32),
     UNIQUE (item_id, supplier_id)
 );
 

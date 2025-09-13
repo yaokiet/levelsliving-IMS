@@ -107,15 +107,15 @@ INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 -- =======================
 -- SUPPLIER_ITEM
 -- =======================
-INSERT INTO supplier_item (id, item_id, supplier_id) VALUES
+INSERT INTO supplier_item (id, item_id, supplier_id, si_sku) VALUES
 -- Component Solutions Inc. supplies all components
-(1, 7, 1), (2, 8, 1), (3, 9, 1), (4, 10, 1), (5, 11, 1), (6, 12, 1),
+(1, 7, 1, NULL), (2, 8, 1, NULL), (3, 9, 1, NULL), (4, 10, 1, NULL), (5, 11, 1, NULL), (6, 12, 1, NULL),
 -- Fine Finish Furnishings supplies assembled furniture
-(7, 1, 2), (8, 2, 2),
+(7, 1, 2, NULL), (8, 2, 2, NULL),
 -- TechSource Electronics supplies peripherals
-(9, 3, 3), (10, 4, 3), (11, 5, 3),
+(9, 3, 3, NULL), (10, 4, 3, NULL), (11, 5, 3, NULL),
 -- Desk Lamps are also supplied by TechSource
-(12, 6, 3);
+(12, 6, 3, NULL);
 
 -- =======================
 -- ITEM_COMPONENT (Bill of Materials)
