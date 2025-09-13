@@ -17,3 +17,23 @@ export function toQueryString(params?: Record<string, any>): string {
   });
   return usp.toString() ? `?${usp.toString()}` : "";
 }
+
+// Clean PDF export function
+export function exportToPDF(htmlContent: string, filename: string = 'document') {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Please allow pop-ups to enable PDF export');
+    return;
+  }
+
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+  
+  // Wait for content to load, then trigger print
+  printWindow.onload = () => {
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
+}

@@ -8,6 +8,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, Printer, Edit } from 'lucide-react';
 import { PurchaseOrderDocument } from '@/components/purchase-order/PurchaseOrderDocument';
+import { exportToPDF } from '@/lib/utils';
+import { generatePurchaseOrderHTML } from '@/lib/pdf-export';
 
 export default function PurchaseOrderDetailPage() {
   const params = useParams();
@@ -16,6 +18,34 @@ export default function PurchaseOrderDetailPage() {
   const [error, setError] = useState<string | null>(null);
 
   const id = typeof params.id === 'string' ? parseInt(params.id) : null;
+
+  const handleDownloadPDF = async () => {
+    if (!purchaseOrder) return;
+    try {
+      const htmlContent = generatePurchaseOrderHTML(purchaseOrder);
+      const filename = `purchase-order-${purchaseOrder.id.toString().padStart(4, '0')}`;
+      exportToPDF(htmlContent, filename);
+    } catch (error) {
+      console.error('Failed to export PDF:', error);
+      // You might want to show a toast notification here
+    }
+  };
+
+  const handlePrint = async () => {
+    if (!purchaseOrder) return;
+    try {
+      const htmlContent = generatePurchaseOrderHTML(purchaseOrder);
+      const printWindow = window.open('', '_blank');
+      if (printWindow) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+      }
+    } catch (error) {
+      console.error('Failed to print:', error);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -72,11 +102,11 @@ export default function PurchaseOrderDetailPage() {
             <Edit className="w-4 h-4 mr-2" />
             Edit
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={handlePrint}>
             <Printer className="w-4 h-4 mr-2" />
             Print
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={handleDownloadPDF}>
             <Download className="w-4 h-4 mr-2" />
             Download PDF
           </Button>

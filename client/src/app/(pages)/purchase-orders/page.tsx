@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, FileText, Download, Eye } from 'lucide-react';
 import Link from 'next/link';
+import { exportPurchaseOrderToPDF, exportAllPurchaseOrdersToPDF } from '@/lib/pdf-export';
 
 export default function PurchaseOrdersPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrderTableRow[]>([]);
@@ -54,6 +55,19 @@ export default function PurchaseOrdersPage() {
     });
   };
 
+  const handleExportPDF = async (purchaseOrder: PurchaseOrderTableRow) => {
+    try {
+      await exportPurchaseOrderToPDF(purchaseOrder);
+    } catch (error) {
+      console.error('Failed to export PDF:', error);
+      // You might want to show a toast notification here
+    }
+  };
+
+  const handleExportAllPDF = () => {
+    exportAllPurchaseOrdersToPDF(purchaseOrders);
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto p-6">
@@ -93,7 +107,7 @@ export default function PurchaseOrdersPage() {
           <p className="text-gray-600 dark:text-gray-400 mt-1">Manage and track purchase orders</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={handleExportAllPDF}>
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
@@ -202,7 +216,7 @@ export default function PurchaseOrdersPage() {
                           View
                         </Button>
                       </Link>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={() => handleExportPDF(po)}>
                         <Download className="w-4 h-4 mr-2" />
                         PDF
                       </Button>
