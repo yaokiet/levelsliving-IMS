@@ -93,7 +93,7 @@ export default function CartPage() {
     return (
         <div className="container mx-auto py-10 px-6">
             <div className="flex flex-col md:flex-row gap-5">
-                <div className="w-full md:w-9/12">
+                <div className="w-full lg:w-8/12">
                     <CartItemsList
                         cartItems={cartItems}
                         onQtyChange={handleQtyChange}
@@ -102,7 +102,7 @@ export default function CartPage() {
                         onSelect={handleSelect}
                     />
                 </div>
-                <div className="w-full md:w-3/12">
+                <div className="w-full lg:w-4/12">
                     <SupplierSelectCard
                         suppliers={suppliers}
                         selectedSupplierId={selectedSupplierId}
