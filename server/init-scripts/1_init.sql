@@ -60,7 +60,8 @@ CREATE TABLE purchase_order (
     id SERIAL PRIMARY KEY,
     supplier_id INT REFERENCES supplier(id) ON DELETE SET NULL,
     user_id INT REFERENCES "user"(id) ON DELETE SET NULL,
-    order_date TIMESTAMP NOT NULL
+    order_date TIMESTAMP NOT NULL,
+    status VARCHAR(20) NOT NULL
 );
 
 -- =======================

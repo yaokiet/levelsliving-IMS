@@ -1,26 +1,62 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from typing import Optional, Iterable, List
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderUpdate, PurchaseOrderRead
+from database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderDetails, PurchaseOrderUpdate, PurchaseOrderRead, PurchaseOrderItemReadCustom
+from database.schemas.pagination import Paginated
 from database.services.purchase_order import (
-    get_purchase_order, get_all_purchase_orders, create_purchase_order, update_purchase_order, delete_purchase_order
+    get_all_purchase_orders,
+    create_purchase_order, 
+    update_purchase_order, 
+    delete_purchase_order,
+    get_purchase_order_details,
 )
 
 router = APIRouter(prefix="/purchase-order", tags=["purchase-order"])
 
-@router.get("/", response_model=list[PurchaseOrderRead])
-def read_purchase_orders(db: Session = Depends(get_db)):
+@router.get("/", response_model=Paginated[PurchaseOrderRead])
+def list_purchase_orders(
+    page: int = Query(1, ge=1, description="Page number (1-based)"),
+    size: int = Query(50, ge=1, le=200, description="Page size"),
+    q: Optional[str] = Query(None, description="Free-text search value"),
+    search_columns: Optional[List[str]] = Query(
+        None,
+        description='Columns to search (repeat param), e.g. ?search_columns=id&search_columns=status',
+    ),
+    sort: Optional[List[str]] = Query(
+        None,
+        description='Sort tokens (repeat param), e.g. ?sort=order_date:desc&sort=id:desc',
+    ),
+    include_total: bool = Query(
+        False,
+        description="If true, run COUNT(*) to include total/pages in meta",
+    ),
+    db: Session = Depends(get_db),
+):
     """
-    Retrieve all purchase orders.
+    Paginated list of purchase orders with meta.
+    Mirrors service signature and returns:
+    {
+      "meta": {...},
+      "data": [PurchaseOrderRead, ...]
+    }
     """
-    return get_all_purchase_orders(db)
+    return get_all_purchase_orders(
+        db,
+        page=page,
+        size=size,
+        q=q,
+        search_columns=search_columns,
+        sort=sort,  
+        include_total=include_total,
+    )
 
-@router.get("/{po_id}", response_model=PurchaseOrderRead)
-def read_purchase_order(po_id: int, db: Session = Depends(get_db)):
+@router.get("/{po_id}", response_model=PurchaseOrderDetails)
+def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
     """
-    Retrieve a purchase order by its ID.
+    Retrieve a purchase order details by its ID.
     """
-    po = get_purchase_order(db, po_id)
+    po = get_purchase_order_details(db, po_id)
     if not po:
         raise HTTPException(status_code=404, detail="Purchase order not found")
     return po

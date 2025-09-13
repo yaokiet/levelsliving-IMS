@@ -129,11 +129,11 @@ INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
 -- =======================
 -- PURCHASE ORDER
 -- =======================
-INSERT INTO purchase_order (id, supplier_id, user_id, order_date) VALUES
+INSERT INTO purchase_order (id, supplier_id, user_id, order_date, status) VALUES
 -- PO to restock components, placed by the admin user
-(1, 1, 1, '2025-08-15 11:30:00'),
+(1, 1, 1, '2025-08-15 11:30:00', 'pending'),
 -- PO to restock electronics, placed by a regular user
-(2, 3, 2, '2025-08-22 16:00:00');
+(2, 3, 2, '2025-08-22 16:00:00', 'pending');
 
 -- =======================
 -- PURCHASE ORDER ITEM
