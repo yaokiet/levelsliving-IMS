@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.v1.router import router as v1_router
+from server.api.v1.router import router as v1_router
 from app.auth.auth_middleware import AuthMiddleware 
 import os
 from dotenv import load_dotenv
