@@ -28,7 +28,7 @@ export default function UsersTable() {
 
   // Get filterable columns from the columns definition
   // Type guard to check if column has accessorKey and header
-  function hasAccessorKeyAndHeader(col: any): col is { accessorKey: string; header?: string } {
+  function hasAccessorKeyAndHeader(col: any): col is { accessorKey: string; header?: string, meta?: { label?: string } } {
     return typeof col.accessorKey === "string";
   }
 
@@ -38,7 +38,7 @@ export default function UsersTable() {
         .filter(hasAccessorKeyAndHeader)
         .map(col => ({
           key: col.accessorKey,
-          label: typeof col.header === "string" ? col.header : col.accessorKey
+          label: col.meta?.label ?? col.accessorKey
         })),
     []
   )

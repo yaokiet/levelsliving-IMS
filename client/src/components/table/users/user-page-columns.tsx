@@ -16,6 +16,7 @@ export const columns: ColumnDef<User>[] = [
         title="ID"
       />
     ),
+    meta: { label: "ID" },
     cell: ({ row }) => {
       const id = row.original.id
       const router = useRouter();
@@ -46,6 +47,7 @@ export const columns: ColumnDef<User>[] = [
         title="Name"
       />
     ),
+    meta: { label: "Name" },
   },
   {
     accessorKey: "email",
@@ -55,6 +57,7 @@ export const columns: ColumnDef<User>[] = [
         title="Email"
       />
     ),
+    meta: { label: "Email" },
   },
   {
     accessorKey: "role",
@@ -64,5 +67,6 @@ export const columns: ColumnDef<User>[] = [
         title="Role"
       />
     ),
+    meta: { label: "Role" },
   },
 ]
