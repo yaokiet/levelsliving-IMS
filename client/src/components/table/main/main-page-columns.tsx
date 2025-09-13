@@ -60,6 +60,7 @@ export const createMainPageColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="SKU" />
     ),
+    meta : { label: "SKU" },
     cell: ({ row }) => {
       const sku = row.getValue("sku") as string;
       const id = row.original.id;
@@ -89,6 +90,7 @@ export const createMainPageColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
+    meta: { label: "Type" },
     cell: ({ row }) => <div>{row.getValue("type")}</div>,
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
@@ -100,6 +102,7 @@ export const createMainPageColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Variant" />
     ),
+    meta: { label: "Variant" },
     cell: ({ row }) => <div>{row.getValue("variant") || "-"}</div>,
   },
   // Quantity column
@@ -108,6 +111,7 @@ export const createMainPageColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Quantity" />
     ),
+    meta: { label: "Quantity" },
     cell: ({ row }) => {
       const qty = row.getValue("qty") as number;
       const threshold = row.original.threshold_qty;
@@ -132,6 +136,7 @@ export const createMainPageColumns = (
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Threshold" />
     ),
+    meta: { label: "Threshold Qty" },
   },
   // Add to cart button column
   {
@@ -198,4 +203,12 @@ export const createMainPageColumns = (
       );
     },
   },
+];
+
+export const mainTableFilterableColumns = [
+  { key: "sku", label: "SKU" },
+  { key: "type", label: "Type" },
+  { key: "variant", label: "Variant" },
+  { key: "qty", label: "Quantity" },
+  { key: "threshold_qty", label: "Threshold Qty" },
 ];
