@@ -6,6 +6,7 @@ import { getAllUsers } from "@/lib/api/userApi"
 import { PaginatedUsers } from "@/types/user"
 import { columns } from "./user-page-columns"
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/react-table'
+import { getFilterableColumns } from "@/lib/utils";
 
 export default function UsersTable() {
   const [data, setData] = useState<PaginatedUsers>({
@@ -26,22 +27,11 @@ export default function UsersTable() {
   });
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  // Get filterable columns from the columns definition
-  // Type guard to check if column has accessorKey and header
-  function hasAccessorKeyAndHeader(col: any): col is { accessorKey: string; header?: string, meta?: { label?: string } } {
-    return typeof col.accessorKey === "string";
-  }
-
+  // For filterable columns in search
   const filterableColumns = useMemo(
-    () =>
-      columns
-        .filter(hasAccessorKeyAndHeader)
-        .map(col => ({
-          key: col.accessorKey,
-          label: col.meta?.label ?? col.accessorKey
-        })),
-    []
-  )
+    () => getFilterableColumns(columns),
+    [columns]
+  );
 
   const fetchUsers = () => {
     setLoading(true)

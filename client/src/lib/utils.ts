@@ -17,3 +17,12 @@ export function toQueryString(params?: Record<string, any>): string {
   });
   return usp.toString() ? `?${usp.toString()}` : "";
 }
+
+export function getFilterableColumns(columns: any[]) {
+  return columns
+    .filter((col) => typeof col.accessorKey === "string")
+    .map((col) => ({
+      key: col.accessorKey,
+      label: col.meta?.label ?? col.accessorKey,
+    }));
+}
