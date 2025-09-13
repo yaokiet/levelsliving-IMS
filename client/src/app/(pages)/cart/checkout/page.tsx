@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/app/_store/redux-store";
 import { CartItem } from "@/types/cart-item";
 
+// Sample checkout page that reads from Redux store
 export default function CheckoutPage() {
     const selectedItems = useSelector((state: RootState) => state.cartCheckout.selectedItems);
     const selectedSupplier = useSelector((state: RootState) => state.cartCheckout.selectedSupplier);
