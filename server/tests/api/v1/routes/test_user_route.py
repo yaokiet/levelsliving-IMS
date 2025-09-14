@@ -1,4 +1,3 @@
-
 BASE_PATH = "/levelsliving/app/api/v1/user"
 
 # GET /
@@ -17,6 +16,7 @@ def test_read_users_ok(client, create_user):
     assert u.email in emails
 
 # GET /me
+# Do this
 
 # GET /{user_id}
 def test_read_user_ok(client, create_user):
