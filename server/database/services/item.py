@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from database.models.item import Item
-from database.models.item_component import ItemComponent
-from database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
+from server.database.models.item import Item
+from server.database.models.item_component import ItemComponent
+from server.database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
 from collections import defaultdict
 
 def get_item(db: Session, item_id: int):

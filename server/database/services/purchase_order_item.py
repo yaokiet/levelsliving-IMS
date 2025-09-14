@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from database.models.purchase_order_item import PurchaseOrderItem
-from database.schemas.purchase_order_item import PurchaseOrderItemCreate, PurchaseOrderItemUpdate
+from server.database.models.purchase_order_item import PurchaseOrderItem
+from server.database.schemas.purchase_order_item import PurchaseOrderItemCreate, PurchaseOrderItemUpdate
 
 def get_purchase_order_item(db: Session, po_id: int, item_id: int):
     return (

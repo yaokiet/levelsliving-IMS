@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from database.models.purchase_order import PurchaseOrder
-from database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderUpdate
+from server.database.models.purchase_order import PurchaseOrder
+from server.database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderUpdate
 
 def get_purchase_order(db: Session, po_id: int):
     return db.query(PurchaseOrder).filter(PurchaseOrder.id == po_id).first()

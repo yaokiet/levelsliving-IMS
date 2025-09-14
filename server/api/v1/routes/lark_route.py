@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from database.services import lark_service
+from server.database.services import lark_service
 
 router = APIRouter(prefix="/lark", tags=["Lark"])
 

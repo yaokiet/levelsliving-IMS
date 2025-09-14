@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from database.models.supplier_item import SupplierItem
-from database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate
+from server.database.models.supplier_item import SupplierItem
+from server.database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate
 
 def get_supplier_item(db: Session, supplier_item_id: int):
     return db.query(SupplierItem).filter(SupplierItem.id == supplier_item_id).first()

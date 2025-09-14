@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.database import get_db
-from database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
-from database.services.supplier_item import (
+from server.database.database import get_db
+from server.database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
+from server.database.services.supplier_item import (
     get_supplier_item, get_all_supplier_items, create_supplier_item, update_supplier_item, delete_supplier_item
 )
 

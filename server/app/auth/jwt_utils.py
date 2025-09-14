@@ -1,7 +1,7 @@
-from database.schemas.auth import AccessTokenData, RefreshTokenData
+from server.database.schemas.auth import AccessTokenData, RefreshTokenData
 from fastapi import Depends, HTTPException, status, Request
 from datetime import datetime, timedelta, timezone
-from app.core.config import SECRET_KEY, ALGORITHM
+from server.app.core.config import SECRET_KEY, ALGORITHM
 from jose import jwt
 
 def create_access_token(data: AccessTokenData, expires_delta: int):

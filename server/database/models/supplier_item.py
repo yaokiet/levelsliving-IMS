@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
-from database.database import Base
+from server.database.database import Base
 
 class SupplierItem(Base):
     __tablename__ = "supplier_item"

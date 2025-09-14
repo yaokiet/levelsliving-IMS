@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.database import get_db
-from database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderUpdate, PurchaseOrderRead
-from database.services.purchase_order import (
+from server.database.database import get_db
+from server.database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderUpdate, PurchaseOrderRead
+from server.database.services.purchase_order import (
     get_purchase_order, get_all_purchase_orders, create_purchase_order, update_purchase_order, delete_purchase_order
 )
 

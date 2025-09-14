@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from server.api.v1.router import router as v1_router
-from app.auth.auth_middleware import AuthMiddleware 
+from server.app.auth.auth_middleware import AuthMiddleware 
 import os
 from dotenv import load_dotenv
-from database.database import Base, engine
+from server.database.database import Base, engine
 
 load_dotenv()
 frontend_origin = os.getenv("FRONTEND_ORIGIN")

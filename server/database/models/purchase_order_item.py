@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey
-from database.database import Base
+from server.database.database import Base
 
 class PurchaseOrderItem(Base):
     __tablename__ = "purchase_order_item"

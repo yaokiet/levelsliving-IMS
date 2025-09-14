@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from database.models.supplier import Supplier
-from database.schemas.supplier import SupplierCreate, SupplierUpdate
+from server.database.models.supplier import Supplier
+from server.database.schemas.supplier import SupplierCreate, SupplierUpdate
 
 def get_supplier(db: Session, supplier_id: int):
     return db.query(Supplier).filter(Supplier.id == supplier_id).first()
