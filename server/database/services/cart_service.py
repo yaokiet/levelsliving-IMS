@@ -5,7 +5,7 @@ from typing import List, Optional
 from database.models.cart import CartItem
 from database.models.item import Item
 from database.models.item_component import ItemComponent # Assuming you have this model
-from database.schemas.cart import CartItemRead
+from database.schemas.cart import CartItemRead, CartItemCreate
 
 def _upsert_cart_item(db: Session, user_id: int, item_id: int, quantity: int):
     """
@@ -40,6 +40,22 @@ def add_item_to_cart(db: Session, user_id: int, item_id: int, quantity: int):
         # It's a simple item, add it directly
         _upsert_cart_item(db, user_id, item_id, quantity)
 
+    db.commit()
+    
+def add_multiple_items_to_cart(db: Session, user_id: int, items: List[CartItemCreate]):
+    """
+    Adds a list of items to the user's cart in a single database transaction.
+    It efficiently upserts each item.
+    """
+    if not items:
+        return # Do nothing if the list is empty
+
+    for item in items:
+        # Reuse the existing upsert logic for each item
+        # This function does not commit, allowing us to commit only once at the end
+        _upsert_cart_item(db, user_id=user_id, item_id=item.item_id, quantity=item.quantity)
+
+    # Commit the transaction once after all items have been processed
     db.commit()
 
 

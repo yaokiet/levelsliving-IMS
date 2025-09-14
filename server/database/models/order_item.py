@@ -19,7 +19,12 @@ class OrderItem(Base):
 
     # Composite PK
     order_id = Column(Integer, ForeignKey("order.order_id", ondelete="CASCADE"), primary_key=True)
-    item_id = Column(Integer, ForeignKey("item.id", ondelete="CASCADE"), primary_key=True)
+
+    #TODO: Set ondelete=RESTRIC to preserve records
+    #TODO: implement soft delete
+    #If an item is linked to any order_item, it should be archived and not deleted, might have to add additional column to track the state of an item
+    #Need to refine item's model, service and route accordingly
+    item_id = Column(Integer, ForeignKey("item.id", ondelete="RESTRICT"), primary_key=True)
 
     qty_requested = Column(Integer, nullable=False)
     tag = Column(ARRAY(Text), nullable=True)         
@@ -42,18 +47,18 @@ class OrderItem(Base):
         return tag_list
 
     # Relationships
-    # Many OrderItem -> one Order
+    # Many OrderItem -> one Order (N -> 1)
     order = relationship(
         "Order",
         back_populates="order_items",
-        lazy="joined",                   # cheap to join on single-order views
+        lazy="joined",                   
     )
 
-    # Many OrderItem -> one Item
+    # Many OrderItem -> one Item (N -> 1)
     item = relationship(
         "Item",
         back_populates="order_items",
-        lazy="joined",                   # enables Order -> OrderItem -> Item eager chains
+        lazy="joined",                   
         passive_deletes=True,
     )
 

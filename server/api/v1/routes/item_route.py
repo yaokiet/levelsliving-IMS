@@ -1,19 +1,37 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional, Iterable, List
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents
+from database.schemas.pagination import Paginated
+from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
 from database.services.item import (
-    get_item, get_all_items, create_item, update_item, delete_item, get_item_with_components
+    get_item, get_all_items, create_item, update_item, delete_item, get_item_with_components, get_lowest_children
 )
 
 router = APIRouter(prefix="/item", tags=["item"])
 
-@router.get("/", response_model=list[ItemRead])
-def read_items(db: Session = Depends(get_db)):
+@router.get("/", response_model=Paginated[ItemRead])
+def read_items(
+    page: int = Query(1, ge=1),
+    size: int = Query(50, ge=1, le=200),
+    q: Optional[str] = None,
+    search_columns: Optional[List[str]] = Query(None, description="Repeat param, e.g. ?search_columns=sku&search_columns=item_name"),
+    sort: Optional[List[str]] = Query(None, description='Repeat param, e.g. ?sort=item_name:asc&sort=id:desc'),
+    include_total: bool = False,
+    db: Session = Depends(get_db),
+):
     """
-    Retrieve all items.
+    Paginated Items with optional free-text search and whitelisted sorting.
     """
-    return get_all_items(db)
+    return get_all_items(
+        db,
+        page=page,
+        size=size,
+        q=q,
+        search_columns=search_columns,
+        sort=sort,
+        include_total=include_total,
+    )
 
 @router.get("/{item_id}", response_model=ItemRead)
 def read_item(item_id: int, db: Session = Depends(get_db)):
@@ -62,3 +80,17 @@ def get_item_details(item_id: int, db: Session = Depends(get_db)):
     if not item:
         raise HTTPException(status_code=404, detail="Item not found")
     return item
+
+@router.get("/lowest-children/{item_id}", response_model=list[LowestChildDetail])
+def read_lowest_children(item_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve all lowest-level child items for a given item, calculating
+    the total quantity required for each. If the item has no children,
+    it returns itself with a quantity of 1.
+    """
+    lowest_children = get_lowest_children(db, item_id=item_id)
+
+    if lowest_children is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return lowest_children

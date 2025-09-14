@@ -39,3 +39,9 @@ class ComponentDetail(ItemRead):
 
 class ItemWithComponents(ItemRead):
     components: List[ComponentDetail] = []
+    
+class LowestChildDetail(BaseModel):
+    id: int
+    sku: str
+    item_name: str
+    total_qty_required: int

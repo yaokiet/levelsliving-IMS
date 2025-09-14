@@ -107,15 +107,15 @@ INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 -- =======================
 -- SUPPLIER_ITEM
 -- =======================
-INSERT INTO supplier_item (id, item_id, supplier_id) VALUES
+INSERT INTO supplier_item (id, item_id, supplier_id, si_sku) VALUES
 -- Component Solutions Inc. supplies all components
-(1, 7, 1), (2, 8, 1), (3, 9, 1), (4, 10, 1), (5, 11, 1), (6, 12, 1),
+(1, 7, 1, NULL), (2, 8, 1, NULL), (3, 9, 1, NULL), (4, 10, 1, NULL), (5, 11, 1, NULL), (6, 12, 1, NULL),
 -- Fine Finish Furnishings supplies assembled furniture
-(7, 1, 2), (8, 2, 2),
+(7, 1, 2, NULL), (8, 2, 2, NULL),
 -- TechSource Electronics supplies peripherals
-(9, 3, 3), (10, 4, 3), (11, 5, 3),
+(9, 3, 3, NULL), (10, 4, 3, NULL), (11, 5, 3, NULL),
 -- Desk Lamps are also supplied by TechSource
-(12, 6, 3);
+(12, 6, 3, NULL);
 
 -- =======================
 -- ITEM_COMPONENT (Bill of Materials)
@@ -129,11 +129,11 @@ INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
 -- =======================
 -- PURCHASE ORDER
 -- =======================
-INSERT INTO purchase_order (id, supplier_id, user_id, order_date) VALUES
+INSERT INTO purchase_order (id, supplier_id, user_id, order_date, status) VALUES
 -- PO to restock components, placed by the admin user
-(1, 1, 1, '2025-08-15 11:30:00'),
+(1, 1, 1, '2025-08-15 11:30:00', 'pending'),
 -- PO to restock electronics, placed by a regular user
-(2, 3, 2, '2025-08-22 16:00:00');
+(2, 3, 2, '2025-08-22 16:00:00', 'pending');
 
 -- =======================
 -- PURCHASE ORDER ITEM
@@ -378,3 +378,44 @@ INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, 
 -- USER SESSIONS
 -- =======================
 
+
+-- =======================================================
+-- SELF-CONTAINED 3-LEVEL HIERARCHY EXAMPLE (IDs 101-109)
+-- =======================================================
+
+-- STEP 1: Define ALL necessary items with explicit IDs to guarantee they exist.
+
+INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUES
+-- Level 1: Final Product
+(101, 'CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
+
+-- Level 2: Sub-Assemblies
+(102, 'ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
+(103, 'ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
+
+-- Level 3: All Raw Components for this specific test item
+(104, 'SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
+(105, 'BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
+(106, 'FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
+(107, 'GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
+(108, 'CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
+(109, 'BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
+
+
+-- STEP 2: Define the relationships using these new, guaranteed-to-exist IDs.
+
+INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
+-- Level 1 -> Level 2 relationships
+(101, 102, 1), -- Premium Chair (101) -> Seat Assembly (102)
+(101, 103, 1), -- Premium Chair (101) -> Base Assembly (103)
+
+-- Level 2 -> Level 3 relationships
+-- Seat Assembly (102) requires:
+(102, 104, 1), -- -> Premium Seat Cushion (104)
+(102, 105, 1), -- -> Premium Backrest Frame (105)
+(102, 106, 2), -- -> Premium Upholstery Fabric (106)
+
+-- Base Assembly (103) requires:
+(103, 107, 1), -- -> Premium Gas Lift (107)
+(103, 108, 1), -- -> Premium Casters (108)
+(103, 109, 1); -- -> Premium Base Star (109)

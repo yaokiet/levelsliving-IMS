@@ -1,6 +1,6 @@
 import { apiFetch } from "./apiClient";
 import { API_PATHS } from "./apiConfig";
-import { Item, ItemWithComponents, ItemCreate, ItemUpdate } from "@/types/item";
+import { Item, ItemWithComponents, ItemCreate, ItemUpdate, LowestChildDetail } from "@/types/item";
 
 export function getAllItems() {
   return apiFetch<Item[]>(API_PATHS.item);
@@ -31,3 +31,7 @@ export function updateExistingItem(itemId: number, payload: ItemUpdate) {
 
 
 // To implement API for retrieving the child details
+export function getLowestChildren(itemId: number) {
+  const path = `${API_PATHS.item}/lowest-children/${itemId}`;
+  return apiFetch<LowestChildDetail[]>(path);
+}

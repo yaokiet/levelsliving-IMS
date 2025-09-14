@@ -1,19 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database.database import get_db
+from database.schemas.pagination import PageMeta, Paginated
 from database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
 from database.services.supplier_item import (
-    get_supplier_item, get_all_supplier_items, create_supplier_item, update_supplier_item, delete_supplier_item
+    get_supplier_item, get_supplier_items, create_supplier_item, update_supplier_item, delete_supplier_item
 )
 
 router = APIRouter(prefix="/supplier-item", tags=["supplier-item"])
 
-@router.get("/", response_model=list[SupplierItemRead])
-def read_supplier_items(db: Session = Depends(get_db)):
+@router.get("/", response_model=Paginated[SupplierItemRead])
+def read_supplier_items(
+    page: int = Query(1, ge=1, description="Page number (1-based)"),
+    size: int = Query(50, ge=1, le=200, description="Page size"),
+    include_total: bool = False,
+    db: Session = Depends(get_db)):
     """
     Retrieve all supplier-item relationships.
     """
-    return get_all_supplier_items(db)
+    return get_supplier_items(db)
 
 @router.get("/{supplier_item_id}", response_model=SupplierItemRead)
 def read_supplier_item(supplier_item_id: int, db: Session = Depends(get_db)):

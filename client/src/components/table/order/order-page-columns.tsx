@@ -145,3 +145,9 @@ export const orderItemColumns: ColumnDef<OrderItem>[] = [
   { accessorKey: "custom", header: "Comments" },
   { accessorKey: "value", header: "Value" },
 ];
+
+export const orderTableFilterableColumns = [
+  { key: "name", label: "Customer Name" },
+  { key: "status", label: "Status" },
+  { key: "contact", label: "Contact Number" },
+];

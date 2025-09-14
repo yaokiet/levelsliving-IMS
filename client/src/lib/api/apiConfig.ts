@@ -18,6 +18,10 @@ export const API_PATHS = {
     purchase_order_by_id: (purchaseOrderId: number | string) => `${API_PREFIX}/purchase-order/${purchaseOrderId}`,
     // // Add more as needed
 
+    // Supplier endpoints
+    supplier: `${API_PREFIX}/supplier`,
+    supplier_by_id: (supplierId: number | string) => `${API_PREFIX}/supplier/${supplierId}`,
+
     // Item endpoints
     update_existing_item: (itemId: number | string) => `${API_PREFIX}/item/${itemId}`,
     create_new_item: `${API_PREFIX}/item/create`,
@@ -28,4 +32,10 @@ export const API_PATHS = {
     create_item_component: () => `${API_PREFIX}/item-component`,
     remove_item_component: (parentId: number, childId: number) =>
         `${API_PREFIX}/item-component/${parentId}/${childId}`,
+
+    //Cart endpoints
+    cart: `${API_PREFIX}/cart`,
+    cart_item: (itemId: number | string) => `${API_PREFIX}/cart/${itemId}`,
+    cart_bulk_add: `${API_PREFIX}/cart/bulk-add/`,
+
 };

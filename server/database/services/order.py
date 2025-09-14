@@ -4,7 +4,7 @@ from datetime import date, datetime
 from decimal import Decimal
 
 
-from sqlalchemy import or_, func
+from sqlalchemy import Integer, String, or_, func
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from database.models.order import Order
@@ -120,10 +120,11 @@ def list_orders_with_items(
     page: int = 1,
     size: int = 50,
     *,
-    status: Optional[str] = None,
+    q: Optional[str] = None,
+    search_columns: Optional[List[str]] = None,
+    # status: Optional[str] = None,
     date_from: Optional[str | date | datetime] = None,
     date_to: Optional[str | date | datetime] = None,   # exclusive end
-    q: Optional[str] = None,                            # search name/contact
     sort: Optional[Iterable[str]] = None,               # e.g. ["order_date:desc","order_id:desc"]
     include_total: bool = False,                        # run COUNT(*) if True
     max_page_size: int = 200,
@@ -132,18 +133,35 @@ def list_orders_with_items(
     page, size = clamp_page_size(page, size, max_page_size=max_page_size)
 
     base = db.query(Order)
-
-    # Filters
-    if status:
-        base = base.filter(Order.status == status)
-    d_from, d_to = to_datetime(date_from), to_datetime(date_to)
-    if d_from:
-        base = base.filter(Order.order_date >= d_from)
-    if d_to:
-        base = base.filter(Order.order_date < d_to)  # exclusive end
-    if q:
+    
+    # Search filter
+    SEARCHABLE_COLUMNS = {"name", "contact", "status"}
+    
+    if q and search_columns:
         like = f"%{q.strip()}%"
-        base = base.filter(or_(Order.name.ilike(like), Order.contact.ilike(like)))
+        filters = []
+        for col in search_columns:
+            if col in SEARCHABLE_COLUMNS and hasattr(Order, col):
+                column = getattr(Order, col)
+                if hasattr(column, "type"):
+                    if isinstance(column.type, String):
+                        filters.append(column.ilike(like))
+                    elif isinstance(column.type, Integer) and q.isdigit():
+                        filters.append(column == int(q))
+        if filters:
+            base = base.filter(or_(*filters))
+
+    # Status Filters
+    # if status:
+    #     base = base.filter(Order.status == status)
+    # d_from, d_to = to_datetime(date_from), to_datetime(date_to)
+    # if d_from:
+    #     base = base.filter(Order.order_date >= d_from)
+    # if d_to:
+    #     base = base.filter(Order.order_date < d_to)  # exclusive end
+    # if q:
+    #     like = f"%{q.strip()}%"
+    #     base = base.filter(or_(Order.name.ilike(like), Order.contact.ilike(like)))
 
     # Sort (whitelisted)
     allowed = {
@@ -156,7 +174,7 @@ def list_orders_with_items(
     # Optional exact totals
     total = pages = None
     if include_total:
-        total = db.query(func.count(Order.order_id)).select_from(base.subquery()).scalar()
+        total = db.query(func.count()).select_from(base.subquery()).scalar()
         pages = (total + size - 1) // size if total else 0
 
     # Fetch page (size+1 → has_next) with eager loading (no row explosion)
@@ -221,7 +239,7 @@ def list_orders_with_items(
         has_prev=page > 1,
         has_next=has_next,
         sort_tokens=sort,
-        filters={"status": status, "date_from": date_from, "date_to": date_to, "q": q},
+        filters={"date_from": date_from, "date_to": date_to, "q": q, "search_columns": search_columns},
         total=total,
         pages=pages,
     )

@@ -35,23 +35,28 @@ import { ColumnMultiSelect } from "./column-multi-select";
 interface ReusableTableProps<TData extends Record<string, any>, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  searchKey?: string;
-  searchPlaceholder?: string;
-  showViewOptions?: boolean;
+  // Search filter (Server Side)
+  searchKey?: string; // searchKey is the column key to search on
+  searchPlaceholder?: string; 
+  searchColumns?: string[];
+  onSearchColumnsChange?: (cols: string[]) => void;
+   // Search filter (Client Side)
+  searchValue?: string;
+  onSearch?: (value: string) => void;
+  // View options
+  showViewOptions?: boolean; 
   showPagination?: boolean;
-  filterKey?: string;
+  // Dropdown filter
+  filterKey?: string; // filterKey is the column key for filtering the dropdown
   filterLabel?: string;
   filterOptions?: string[];
   filterValue?: string;
+  filterableColumns?: { key: string; label: string }[];
+  // For child rows
   renderSubRows?: (row: any, colSpan: number) => React.ReactNode;
+  // For passing in styling
   className?: string;
   containerClassName?: string;
-  // For search
-  searchValue?: string;
-  onSearch?: (value: string) => void;
-  filterableColumns?: { key: string; label: string }[];
-  searchColumns?: string[];
-  onSearchColumnsChange?: (cols: string[]) => void;
   // For server-side pagination
   manualPagination?: boolean;
   pageCount?: number;
@@ -222,33 +227,6 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
                 />
               )}
             </div>
-            {filterKey && (
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium" htmlFor={`filter-${filterKey}`}>
-                  Filter {filterLabel} column
-                </label>
-                <DropdownFilterSelect
-                  filterKey={filterKey}
-                  // label={filterLabel}
-                  options={computedFilterOptions}
-                  value={currentFilterValue || "__all__"}
-                  onChange={(value) => {
-                    setColumnFilters((prev) => {
-                      if (value === "__all__") {
-                        return prev.filter((f) => f.id !== filterKey);
-                      }
-                      const found = prev.find((f) => f.id === filterKey);
-                      if (found) {
-                        return prev.map((f) =>
-                          f.id === filterKey ? { ...f, value } : f
-                        );
-                      }
-                      return [...prev, { id: filterKey, value }];
-                    });
-                  }}
-                />
-              </div>
-            )}
             {showViewOptions && (
               <div className="flex-shrink-0">
                 <DataTableViewFilterOptions table={table} />
@@ -320,7 +298,7 @@ export function ReusableTable<TData extends Record<string, any>, TValue>({
             </TableBody>
           </Table>
         </div>
-        {/* Pagination */}
+        {/* Pagination Client-side */}
         {showPagination && (
           <div className="py-4 flex justify-end">
             <DataTablePagination table={table} />
