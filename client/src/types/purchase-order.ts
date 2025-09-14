@@ -4,10 +4,31 @@ export interface PurchaseOrder {
   supplier_id: number;
   user_id: number;
   order_date: string;
+  status?: 'pending' | 'ordered' | 'received' | 'cancelled';
+}
+
+// Paginated API Response structure
+export interface PaginatedResponse<T> {
+  meta: {
+    page: number;
+    size: number;
+    has_prev: boolean;
+    has_next: boolean;
+    sort: string[];
+    filters: Record<string, any>;
+    total: number | null;
+    pages: number | null;
+  };
+  data: T[];
 }
 
 // Extended Purchase Order with related data
 export interface PurchaseOrderWithDetails extends PurchaseOrder {
+  supplier_name: string;
+  supplier_email: string;
+  supplier_phone: string;
+  supplier_description: string;
+  po_items: PurchaseOrderItemDetail[];
   supplier?: {
     id: number;
     name: string;
@@ -22,6 +43,16 @@ export interface PurchaseOrderWithDetails extends PurchaseOrder {
     full_name: string;
   };
   items?: PurchaseOrderItem[];
+}
+
+// Purchase Order Item Detail as returned by API
+export interface PurchaseOrderItemDetail {
+  item_id: number;
+  sku: string;
+  item_name: string;
+  variant: string;
+  ordered_qty: number;
+  supplier_item_id: number;
 }
 
 export interface PurchaseOrderItem {

@@ -6,7 +6,20 @@ import type { Supplier, SupplierCreate, SupplierUpdate } from "@/types/supplier"
  * Get all suppliers
  */
 export async function getAllSuppliers(): Promise<Supplier[]> {
-    return apiFetch<Supplier[]>(API_PATHS.supplier);
+    try {
+        const result = await apiFetch<any>(API_PATHS.supplier);
+        
+        // Handle paginated response structure
+        if (result && typeof result === 'object' && 'data' in result) {
+            return Array.isArray(result.data) ? result.data : [];
+        }
+        
+        // Handle direct array response
+        return Array.isArray(result) ? result : [];
+    } catch (error) {
+        console.error('Error in getAllSuppliers:', error);
+        return [];
+    }
 }
 
 /**

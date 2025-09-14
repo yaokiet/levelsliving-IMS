@@ -36,6 +36,8 @@ export function exportToPDF(htmlContent: string, filename: string = 'document') 
       printWindow.close();
     }, 250);
   };
+}
+
 export function getFilterableColumns(columns: any[]) {
   return columns
     .filter((col) => typeof col.accessorKey === "string")

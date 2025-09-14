@@ -7,7 +7,8 @@ import type {
   PurchaseOrderResponse,
   CreatePurchaseOrderRequest,
   UpdatePurchaseOrderRequest,
-  PurchaseOrderTableRow
+  PurchaseOrderTableRow,
+  PaginatedResponse
 } from '@/types/purchase-order';
 import type { Supplier } from '@/types/supplier';
 
@@ -15,7 +16,20 @@ import type { Supplier } from '@/types/supplier';
  * Get all purchase orders (basic data only)
  */
 export async function getAllPurchaseOrders(): Promise<PurchaseOrder[]> {
-  return apiFetch<PurchaseOrder[]>(API_PATHS.purchase_order);
+  try {
+    const result = await apiFetch<PaginatedResponse<PurchaseOrder> | PurchaseOrder[]>(API_PATHS.purchase_order);
+    
+    // Handle paginated response structure
+    if (result && typeof result === 'object' && 'data' in result) {
+      return Array.isArray(result.data) ? result.data : [];
+    }
+    
+    // Handle direct array response
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error('Error in getAllPurchaseOrders:', error);
+    return [];
+  }
 }
 
 /**
@@ -96,24 +110,27 @@ export async function deletePurchaseOrder(id: number): Promise<void> {
  */
 export async function getPurchaseOrdersForTable(): Promise<PurchaseOrderTableRow[]> {
   try {
-    const [purchaseOrders, suppliers] = await Promise.all([
+    const [purchaseOrdersResponse, suppliersResponse] = await Promise.all([
       getAllPurchaseOrders(),
       getAllSuppliers()
     ]);
     
-    console.log('Purchase Orders:', purchaseOrders);
-    console.log('Suppliers:', suppliers);
+    // Ensure we have arrays
+    const purchaseOrders = Array.isArray(purchaseOrdersResponse) ? purchaseOrdersResponse : [];
+    const suppliers = Array.isArray(suppliersResponse) ? suppliersResponse : [];
+    
+    if (purchaseOrders.length === 0) {
+      return [];
+    }
     
     // Create a map for quick supplier lookup
     const supplierMap = new Map<number, Supplier>();
     suppliers.forEach(supplier => {
-      console.log(`Mapping supplier ${supplier.id}: ${supplier.name}`);
       supplierMap.set(supplier.id, supplier);
     });
     
     return purchaseOrders.map(po => {
       const supplier = supplierMap.get(po.supplier_id);
-      console.log(`PO ${po.id} - supplier_id: ${po.supplier_id}, found supplier:`, supplier);
       
       return {
         id: po.id,
@@ -122,7 +139,7 @@ export async function getPurchaseOrdersForTable(): Promise<PurchaseOrderTableRow
         user_name: `User ${po.user_id}`, // Would need user API to get actual name
         total_items: 0, // Would need items API to calculate
         total_cost: 0, // Would need items API to calculate
-        status: 'pending' as const
+        status: po.status || 'pending' as const
       };
     });
   } catch (error) {
@@ -130,6 +147,8 @@ export async function getPurchaseOrdersForTable(): Promise<PurchaseOrderTableRow
     if (error instanceof Error && error.message.includes('Not authenticated')) {
       throw new Error('Authentication required to access purchase orders');
     }
-    throw error;
+    
+    // For other errors, return empty array to prevent UI crashes
+    return [];
   }
 }

@@ -20,9 +20,10 @@ export default function PurchaseOrdersPage() {
       try {
         setLoading(true);
         const tableData = await getPurchaseOrdersForTable();
-        setPurchaseOrders(tableData);
+        setPurchaseOrders(Array.isArray(tableData) ? tableData : []);
       } catch (err) {
         console.error('Purchase orders loading error:', err);
+        setPurchaseOrders([]); // Ensure it's always an array
         if (err instanceof Error) {
           if (err.message.includes('Not authenticated') || err.message.includes('Session expired')) {
             setError('Please log in to view purchase orders');
@@ -65,6 +66,10 @@ export default function PurchaseOrdersPage() {
   };
 
   const handleExportAllPDF = () => {
+    if (purchaseOrders.length === 0) {
+      console.warn('No purchase orders available to export');
+      return;
+    }
     exportAllPurchaseOrdersToPDF(purchaseOrders);
   };
 
@@ -135,7 +140,7 @@ export default function PurchaseOrdersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatCurrency(purchaseOrders.reduce((sum, po) => sum + po.total_cost, 0))}
+              {formatCurrency(purchaseOrders.reduce((sum, po) => sum + (po.total_cost || 0), 0))}
             </div>
           </CardContent>
         </Card>
@@ -155,7 +160,7 @@ export default function PurchaseOrdersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {purchaseOrders.reduce((sum, po) => sum + po.total_items, 0)}
+              {purchaseOrders.reduce((sum, po) => sum + (po.total_items || 0), 0)}
             </div>
           </CardContent>
         </Card>
@@ -167,7 +172,7 @@ export default function PurchaseOrdersPage() {
           <CardTitle>Purchase Orders</CardTitle>
         </CardHeader>
         <CardContent>
-          {purchaseOrders.length === 0 ? (
+          {!Array.isArray(purchaseOrders) || purchaseOrders.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No purchase orders found</h3>

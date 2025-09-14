@@ -195,6 +195,71 @@ export function generatePurchaseOrderHTML(purchaseOrder: PurchaseOrderWithDetail
             margin-bottom: 2rem;
           }
           
+          .items-table {
+            width: 100%;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            border-collapse: collapse;
+            overflow: hidden;
+          }
+          
+          .items-table th {
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            border-bottom: 1px solid #e5e7eb;
+          }
+          
+          .items-table th.text-right {
+            text-align: right;
+          }
+          
+          .items-table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: #1a1a1a;
+            border-bottom: 1px solid #e5e7eb;
+          }
+          
+          .items-table td.text-right {
+            text-align: right;
+            font-weight: 500;
+          }
+          
+          .items-table td.font-mono {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+          }
+          
+          .items-table td.variant {
+            color: #6b7280;
+          }
+          
+          .items-table tr:last-child td {
+            border-bottom: none;
+          }
+          
+          .items-summary {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+          }
+          
+          .summary-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+          }
+          
+          .summary-value {
+            font-weight: 600;
+            color: #1a1a1a;
+          }
+          
           .items-placeholder {
             background: #f8fafc;
             padding: 2rem;
@@ -300,7 +365,7 @@ export function generatePurchaseOrderHTML(purchaseOrder: PurchaseOrderWithDetail
                   </div>
                   <div class="info-row">
                     <span class="info-label">Status:</span>
-                    <span class="status-badge">Pending</span>
+                    <span class="status-badge">${purchaseOrder.status}</span>
                   </div>
                 </div>
               </div>
@@ -309,11 +374,11 @@ export function generatePurchaseOrderHTML(purchaseOrder: PurchaseOrderWithDetail
               <div>
                 <h3 class="section-title">Supplier</h3>
                 <div class="supplier-card">
-                  <h4 class="supplier-name">${purchaseOrder.supplier?.name || `Supplier ${purchaseOrder.supplier_id}`}</h4>
+                  <h4 class="supplier-name">${purchaseOrder.supplier_name || purchaseOrder.supplier?.name || `Supplier ${purchaseOrder.supplier_id}`}</h4>
                   <div class="supplier-details">
-                    ${purchaseOrder.supplier?.description ? `<p><span class="detail-label">Description:</span> ${purchaseOrder.supplier.description}</p>` : ''}
-                    ${purchaseOrder.supplier?.email ? `<p><span class="detail-label">Email:</span> ${purchaseOrder.supplier.email}</p>` : ''}
-                    ${purchaseOrder.supplier?.contact_number ? `<p><span class="detail-label">Phone:</span> ${purchaseOrder.supplier.contact_number}</p>` : ''}
+                    ${(purchaseOrder.supplier_description || purchaseOrder.supplier?.description) ? `<p><span class="detail-label">Description:</span> ${purchaseOrder.supplier_description || purchaseOrder.supplier?.description}</p>` : ''}
+                    ${(purchaseOrder.supplier_email || purchaseOrder.supplier?.email) ? `<p><span class="detail-label">Email:</span> ${purchaseOrder.supplier_email || purchaseOrder.supplier?.email}</p>` : ''}
+                    ${(purchaseOrder.supplier_phone || purchaseOrder.supplier?.contact_number) ? `<p><span class="detail-label">Phone:</span> ${purchaseOrder.supplier_phone || purchaseOrder.supplier?.contact_number}</p>` : ''}
                   </div>
                 </div>
               </div>
@@ -322,10 +387,39 @@ export function generatePurchaseOrderHTML(purchaseOrder: PurchaseOrderWithDetail
             <!-- Items Section -->
             <div class="info-section">
               <h3 class="section-title">Items</h3>
-              <div class="items-placeholder">
-                <p>Items data not available</p>
-                <p>The purchase order items require additional API endpoints to display full details.</p>
-              </div>
+              ${purchaseOrder.po_items && purchaseOrder.po_items.length > 0 ? `
+                <table class="items-table">
+                  <thead>
+                    <tr>
+                      <th>SKU</th>
+                      <th>Item Name</th>
+                      <th>Variant</th>
+                      <th class="text-right">Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${purchaseOrder.po_items.map(item => `
+                      <tr>
+                        <td class="font-mono">${item.sku}</td>
+                        <td>${item.item_name}</td>
+                        <td class="variant">${item.variant}</td>
+                        <td class="text-right">${item.ordered_qty}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+                <div class="items-summary">
+                  <div class="summary-card">
+                    <span>Total Items: </span>
+                    <span class="summary-value">${purchaseOrder.po_items.reduce((sum, item) => sum + item.ordered_qty, 0)}</span>
+                  </div>
+                </div>
+              ` : `
+                <div class="items-placeholder">
+                  <p>No items found</p>
+                  <p>This purchase order does not contain any items.</p>
+                </div>
+              `}
             </div>
 
             <!-- Terms & Conditions -->
@@ -352,6 +446,11 @@ export function generatePurchaseOrderHTML(purchaseOrder: PurchaseOrderWithDetail
 }
 
 function generateSummaryHTML(purchaseOrders: PurchaseOrderTableRow[]): string {
+  // Safety check
+  if (!Array.isArray(purchaseOrders)) {
+    throw new Error('Purchase orders must be an array');
+  }
+
   const tableRows = purchaseOrders.map(po => `
     <tr>
       <td style="padding: 0.75rem; border-bottom: 1px solid #e2e8f0;">#${po.id.toString().padStart(4, '0')}</td>
@@ -366,8 +465,8 @@ function generateSummaryHTML(purchaseOrders: PurchaseOrderTableRow[]): string {
     </tr>
   `).join('');
 
-  const totalItems = purchaseOrders.reduce((sum, po) => sum + po.total_items, 0);
-  const totalCost = purchaseOrders.reduce((sum, po) => sum + po.total_cost, 0);
+  const totalItems = purchaseOrders.reduce((sum, po) => sum + (po.total_items || 0), 0);
+  const totalCost = purchaseOrders.reduce((sum, po) => sum + (po.total_cost || 0), 0);
 
   return `
     <!DOCTYPE html>

@@ -63,7 +63,7 @@ export function PurchaseOrderDocument({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Status:</span>
-                  <Badge variant="secondary">Pending</Badge>
+                  <Badge variant="secondary">{purchaseOrder.status}</Badge>
                 </div>
               </div>
             </div>
@@ -73,32 +73,85 @@ export function PurchaseOrderDocument({
               <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Supplier</h3>
               <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                 <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  {purchaseOrder.supplier?.name || `Supplier ${purchaseOrder.supplier_id}`}
+                  {purchaseOrder.supplier_name || purchaseOrder.supplier?.name || `Supplier ${purchaseOrder.supplier_id}`}
                 </h4>
                 <div className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                  {purchaseOrder.supplier?.description && (
-                    <p><span className="font-medium">Description:</span> {purchaseOrder.supplier.description}</p>
+                  {(purchaseOrder.supplier_description || purchaseOrder.supplier?.description) && (
+                    <p><span className="font-medium">Description:</span> {purchaseOrder.supplier_description || purchaseOrder.supplier?.description}</p>
                   )}
-                  {purchaseOrder.supplier?.email && (
-                    <p><span className="font-medium">Email:</span> {purchaseOrder.supplier.email}</p>
+                  {(purchaseOrder.supplier_email || purchaseOrder.supplier?.email) && (
+                    <p><span className="font-medium">Email:</span> {purchaseOrder.supplier_email || purchaseOrder.supplier?.email}</p>
                   )}
-                  {purchaseOrder.supplier?.contact_number && (
-                    <p><span className="font-medium">Phone:</span> {purchaseOrder.supplier.contact_number}</p>
+                  {(purchaseOrder.supplier_phone || purchaseOrder.supplier?.contact_number) && (
+                    <p><span className="font-medium">Phone:</span> {purchaseOrder.supplier_phone || purchaseOrder.supplier?.contact_number}</p>
                   )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Items Placeholder */}
+          {/* Items Table */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Items</h3>
-            <div className="bg-gray-50 dark:bg-gray-800 p-8 rounded-lg text-center">
-              <p className="text-gray-600 dark:text-gray-400 mb-2">Items data not available</p>
-              <p className="text-sm text-gray-500 dark:text-gray-500">
-                The purchase order items require additional API endpoints to display full details.
-              </p>
-            </div>
+            {purchaseOrder.po_items && purchaseOrder.po_items.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <thead className="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
+                        SKU
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
+                        Item Name
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
+                        Variant
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
+                        Quantity
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white dark:bg-gray-900">
+                    {purchaseOrder.po_items.map((item, index) => (
+                      <tr key={item.item_id} className={index !== purchaseOrder.po_items.length - 1 ? 'border-b border-gray-200 dark:border-gray-700' : ''}>
+                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 font-mono">
+                          {item.sku}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                          {item.item_name}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">
+                          {item.variant}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 text-right font-medium">
+                          {item.ordered_qty}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                
+                {/* Summary */}
+                <div className="mt-4 flex justify-end">
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">Total Items: </span>
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">
+                        {purchaseOrder.po_items.reduce((sum, item) => sum + item.ordered_qty, 0)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-50 dark:bg-gray-800 p-8 rounded-lg text-center">
+                <p className="text-gray-600 dark:text-gray-400 mb-2">No items found</p>
+                <p className="text-sm text-gray-500 dark:text-gray-500">
+                  This purchase order does not contain any items.
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Notes/Terms */}
