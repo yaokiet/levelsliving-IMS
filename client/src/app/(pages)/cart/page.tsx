@@ -38,6 +38,15 @@ export default function CartPage() {
     function fetchCartItems() {
         getCartItems().then(data => {
             setCartItems(data);
+            persistedSelectedItems.forEach(item => {
+                const exists = data.find(ci => ci.item_id === item.item_id);
+                if (!exists) {
+                    // If item no longer exists in cart, remove from persisted selection
+                    dispatch(setSelectedItems(
+                        persistedSelectedItems.filter(pi => pi.item_id !== item.item_id)
+                    ));
+                }
+            });
         }).catch(error => {
             console.error("Failed to fetch cart items:", error);
         });
@@ -45,7 +54,14 @@ export default function CartPage() {
 
     function fetchSuppliers() {
         getAllSuppliers().then(data => {
-            setSuppliers(data);
+            setSuppliers(data)
+            if (persistedSelectedSupplier) {
+                const exists = data.find(s => s.id === persistedSelectedSupplier.id);
+                if (!exists) {
+                    // If supplier no longer exists, clear persisted selection
+                    dispatch(setSelectedSupplier(null));
+                }
+            }
         }).catch(error => {
             console.error("Failed to fetch suppliers:", error);
         });
@@ -79,6 +95,9 @@ export default function CartPage() {
         removeCartItem(id).then(() => {
             setCartItems(items => items.filter(item => item.item_id !== id));
             setSelectedIds(ids => ids.filter(sid => sid !== id));
+            dispatch(setSelectedItems(
+                persistedSelectedItems.filter(item => item.item_id !== id)
+            ));
         }).catch(error => {
             console.error("Failed to remove cart item:", error);
         });
@@ -88,38 +107,52 @@ export default function CartPage() {
         setSelectedIds((prev) =>
             checked ? [...prev, id] : prev.filter((sid) => sid !== id)
         );
+        dispatch(setSelectedItems(
+            checked
+                ? [...persistedSelectedItems, cartItems.find(item => item.item_id === id)!]
+                : persistedSelectedItems.filter(item => item.item_id !== id)
+        ));
     };
+
+    const handleSupplierSelect = (id: string) => {
+        setSelectedSupplierId(id);
+        const supplier = suppliers.find(s => s.id === Number(id));
+        dispatch(setSelectedSupplier(supplier || null));
+    }
 
     return (
         <div className="container mx-auto py-10 px-6">
-            <div className="flex flex-col md:flex-row gap-5">
-                <div className="w-full lg:w-8/12">
-                    <CartItemsList
-                        cartItems={cartItems}
-                        onQtyChange={handleQtyChange}
-                        onRemove={handleRemove}
-                        selectedIds={selectedIds}
-                        onSelect={handleSelect}
-                    />
+            {cartItems.length === 0 ? (
+                <div className="text-center text-lg text-muted-foreground">Your cart is empty.</div>
+            ) : (
+                <div className="flex flex-col md:flex-row gap-5">
+                    <div className="w-full lg:w-8/12">
+                        <CartItemsList
+                            cartItems={cartItems}
+                            onQtyChange={handleQtyChange}
+                            onRemove={handleRemove}
+                            selectedIds={selectedIds}
+                            onSelect={handleSelect}
+                        />
+                    </div>
+                    <div className="w-full lg:w-4/12">
+                        <SupplierSelectCard
+                            suppliers={suppliers}
+                            selectedSupplierId={selectedSupplierId}
+                            onSelect={handleSupplierSelect}
+                            poDisabled={selectedIds.length === 0 || !selectedSupplierId}
+                            onPOCreate={() => {
+                                const selectedItems = cartItems.filter(item => selectedIds.includes(item.item_id));
+                                const supplier = suppliers.find(s => s.id === Number(selectedSupplierId));
+                                if (selectedItems.length && supplier) {
+                                    dispatch(setSelectedItems(selectedItems));
+                                    dispatch(setSelectedSupplier(supplier));
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
-                <div className="w-full lg:w-4/12">
-                    <SupplierSelectCard
-                        suppliers={suppliers}
-                        selectedSupplierId={selectedSupplierId}
-                        onSelect={setSelectedSupplierId}
-                        poDisabled={selectedIds.length === 0 || !selectedSupplierId}
-                        onPOCreate={() => {
-                            const selectedItems = cartItems.filter(item => selectedIds.includes(item.item_id));
-                            const supplier = suppliers.find(s => s.id === Number(selectedSupplierId));
-                            if (selectedItems.length && supplier) {
-                                dispatch(setSelectedItems(selectedItems));
-                                dispatch(setSelectedSupplier(supplier));
-                            }
-                        }}
-                    />
-                </div>
-            </div>
-
+            )}
         </div>
     );
 }
