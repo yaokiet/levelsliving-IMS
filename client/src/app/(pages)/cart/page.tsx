@@ -11,10 +11,12 @@ import { SupplierSelectCard } from "@/components/ui/supplier/supplier-select-car
 import { CartItem } from "@/types/cart-item";
 import { Supplier } from "@/types/supplier";
 
-import { getCartItems, updateCartItemQty, removeCartItem } from "@/lib/api/cartApi";
+import { getCartItems, updateCartItemQty, removeCartItem, clearCart } from "@/lib/api/cartApi";
 import { getAllSuppliers } from "@/lib/api/supplierApi";
 
 import debounce from "lodash/debounce";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 export default function CartPage() {
     const dispatch = useDispatch();
@@ -120,6 +122,19 @@ export default function CartPage() {
         dispatch(setSelectedSupplier(supplier || null));
     }
 
+    const handleClearCart = () => {
+        // Clear cart items and selections
+        confirm("Are you sure you want to clear the cart? This action cannot be undone.") && clearCart().then(() => {
+            setCartItems([]);
+            setSelectedIds([]);
+            setSelectedSupplierId(undefined);
+            dispatch(setSelectedItems([]));
+            dispatch(setSelectedSupplier(null));
+        }).catch(error => {
+            console.error("Failed to clear cart:", error);
+        });
+    }
+
     return (
         <div className="container mx-auto py-10 px-6">
             {cartItems.length === 0 ? (
@@ -134,6 +149,14 @@ export default function CartPage() {
                             selectedIds={selectedIds}
                             onSelect={handleSelect}
                         />
+                        <Button
+                            className="mt-2 w-full"
+                            variant={"destructive"}
+                            onClick={handleClearCart}
+                        >
+                            <Trash2 className="w-5 h-5" />
+                            Clear Cart
+                        </Button>
                     </div>
                     <div className="w-full lg:w-4/12">
                         <SupplierSelectCard
