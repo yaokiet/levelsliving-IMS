@@ -28,3 +28,9 @@ export function removeCartItem(itemId: string | number) {
     method: "DELETE",
   });
 }
+
+export function clearCart() {
+  return apiFetch<void>(API_PATHS.cart, {
+    method: "DELETE",
+  });
+}
