@@ -57,6 +57,9 @@ def create_schema(engine):
     import server.database.models
     from server.database.models.user import User
     from server.database.models.item import Item
+    from server.database.models.order import Order          
+    from server.database.models.order_item import OrderItem 
+    from server.database.models.item_component import ItemComponent
 
     Base.metadata.create_all(bind=engine)
     yield
@@ -126,3 +129,23 @@ def create_user(get_test_db):
         get_test_db.refresh(u)
         return u
     return _create_user
+
+@pytest.fixture
+def create_item(get_test_db):
+    from server.database.models.item import Item
+    def _create_item(**overrides):
+        payload = {
+            "sku": overrides.get("sku", f"SKU-{uuid.uuid4().hex[:6]}"),
+            "type": overrides.get("type", "general"),
+            "item_name": overrides.get("item_name", "Sample Item"),
+            "variant": overrides.get("variant", None),
+            "qty": overrides.get("qty", 10),
+            "threshold_qty": overrides.get("threshold_qty", 5),
+        }
+        it = Item(**payload)
+        get_test_db.add(it)
+        get_test_db.commit()
+        get_test_db.refresh(it)
+        return it
+
+    return _create_item
