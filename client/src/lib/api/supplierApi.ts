@@ -7,14 +7,7 @@ import type { Supplier, SupplierCreate, SupplierUpdate } from "@/types/supplier"
  */
 export async function getAllSuppliers(): Promise<Supplier[]> {
     try {
-        const result = await apiFetch<any>(API_PATHS.supplier);
-        
-        // Handle paginated response structure
-        if (result && typeof result === 'object' && 'data' in result) {
-            return Array.isArray(result.data) ? result.data : [];
-        }
-        
-        // Handle direct array response
+        const result = await apiFetch<Supplier[]>(API_PATHS.supplier);
         return Array.isArray(result) ? result : [];
     } catch (error) {
         console.error('Error in getAllSuppliers:', error);

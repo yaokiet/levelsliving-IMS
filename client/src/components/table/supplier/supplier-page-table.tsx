@@ -1,8 +1,9 @@
-import { useState, useEffect, forwardRef, useImperativeHandle } from 'react'
+import { useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react'
 import { Supplier } from "@/types/supplier"
 import { createColumns } from "./supplier-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
 import { getAllSuppliers } from "@/lib/api/supplierApi"
+import { getFilterableColumns } from "@/lib/utils"
 
 export interface SupplierTableRef {
   refreshData: () => Promise<void>
@@ -30,6 +31,11 @@ const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
 
   // Create columns with the refresh callback
   const columns = createColumns(fetchSuppliers)
+
+  const filterableColumns = useMemo(
+    () => getFilterableColumns(columns),
+    [columns]
+  )
 
   useEffect(() => {
     fetchSuppliers()
@@ -65,8 +71,8 @@ const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
     <ReusableTable 
       columns={columns} 
       data={data} 
-      searchKey="name" 
-      searchPlaceholder="Filter suppliers by name"
+      filterableColumns={filterableColumns}
+      searchPlaceholder="Search suppliers..."
       showViewOptions={true}
       showPagination={true}
     />

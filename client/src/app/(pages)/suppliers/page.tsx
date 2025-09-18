@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import SupplierPageTable, { SupplierTableRef } from "@/components/table/supplier/supplier-page-table";
-import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
+import { DialogWithTrigger } from "@/components/table/reusable/dialog-with-trigger";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createSupplier } from "@/lib/api/supplierApi";
@@ -65,7 +65,7 @@ function AddSupplierDialog({ onSupplierAdded }: { onSupplierAdded?: () => void }
   }
 
   return (
-    <ReusableDialog
+    <DialogWithTrigger
       buttonText="Add Supplier"
       dialogTitle="Add New Supplier"
       dialogDescription="Enter supplier details below."
@@ -118,7 +118,7 @@ function AddSupplierDialog({ onSupplierAdded }: { onSupplierAdded?: () => void }
           />
         </div>
       </div>
-    </ReusableDialog>
+    </DialogWithTrigger>
   )
 }
 

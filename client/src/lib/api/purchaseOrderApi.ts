@@ -1,31 +1,32 @@
 import { apiFetch } from './apiClient';
 import { API_PATHS } from './apiConfig';
-import { getAllSuppliers, getSupplier } from './supplierApi';
 import type {
   PurchaseOrder,
   PurchaseOrderWithDetails,
-  PurchaseOrderResponse,
-  CreatePurchaseOrderRequest,
-  UpdatePurchaseOrderRequest,
   PurchaseOrderTableRow,
-  PaginatedResponse
+  PaginatedPurchaseOrders
 } from '@/types/purchase-order';
-import type { Supplier } from '@/types/supplier';
+
+//For now i will leave the comment for the console.log. Later can remove if not needed.
 
 /**
- * Get all purchase orders (basic data only)
+ * Get all purchase orders (returns paginated response with basic data)
  */
 export async function getAllPurchaseOrders(): Promise<PurchaseOrder[]> {
   try {
-    const result = await apiFetch<PaginatedResponse<PurchaseOrder> | PurchaseOrder[]>(API_PATHS.purchase_order);
+    const result = await apiFetch<PaginatedPurchaseOrders>(API_PATHS.purchase_order);
     
-    // Handle paginated response structure
-    if (result && typeof result === 'object' && 'data' in result) {
-      return Array.isArray(result.data) ? result.data : [];
+    console.log('🔍 getAllPurchaseOrders - Raw backend response:', result);
+    
+    // Backend returns paginated response, extract the data array
+    if (result && typeof result === 'object' && 'data' in result && Array.isArray(result.data)) {
+      console.log('✅ getAllPurchaseOrders - Extracted data array:', result.data);
+      console.log('📊 getAllPurchaseOrders - Meta info:', result.meta);
+      return result.data;
     }
     
-    // Handle direct array response
-    return Array.isArray(result) ? result : [];
+    console.warn('⚠️ getAllPurchaseOrders - Unexpected response format:', result);
+    return [];
   } catch (error) {
     console.error('Error in getAllPurchaseOrders:', error);
     return [];
@@ -33,76 +34,23 @@ export async function getAllPurchaseOrders(): Promise<PurchaseOrder[]> {
 }
 
 /**
- * Get a purchase order by ID (basic data only)
- */
-export async function getPurchaseOrder(id: number): Promise<PurchaseOrder> {
-  return apiFetch<PurchaseOrder>(API_PATHS.purchase_order_by_id(id));
-}
-
-/**
- * Get a purchase order with full details (supplier, user, items)
+ * Get a purchase order with full details (supplier, user, items) from backend
  */
 export async function getPurchaseOrderWithDetails(id: number): Promise<PurchaseOrderWithDetails> {
-  const purchaseOrder = await getPurchaseOrder(id);
+  console.log(`🔍 getPurchaseOrderWithDetails - Fetching details for PO ID: ${id}`);
   
-  // Get supplier details
-  let supplier;
-  try {
-    supplier = await getSupplier(purchaseOrder.supplier_id);
-  } catch (error) {
-    console.warn('Failed to fetch supplier details:', error);
-  }
-
-  // Note: User details would need a user API endpoint
-  // For now, we'll just use the basic structure
-  const user = {
-    id: purchaseOrder.user_id,
-    username: `User ${purchaseOrder.user_id}`,
-    email: '',
-    full_name: `User ${purchaseOrder.user_id}`,
-  };
-
-  return {
-    ...purchaseOrder,
-    supplier,
-    user,
-    items: [], // Items would need separate API calls to purchase order items
-  };
-}
-
-/**
- * Create a new purchase order
- */
-export async function createPurchaseOrder(data: CreatePurchaseOrderRequest): Promise<PurchaseOrder> {
-  return apiFetch<PurchaseOrder>(API_PATHS.purchase_order, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
+  // Use the backend endpoint that already joins the tables
+  const result = await apiFetch<PurchaseOrderWithDetails>(API_PATHS.purchase_order_by_id(id));
+  
+  console.log('🔍 getPurchaseOrderWithDetails - Raw backend response:', result);
+  console.log('📦 getPurchaseOrderWithDetails - PO Items count:', result.po_items?.length || 0);
+  console.log('🏢 getPurchaseOrderWithDetails - Supplier info:', {
+    name: result.supplier_name,
+    email: result.supplier_email,
+    phone: result.supplier_phone
   });
-}
-
-/**
- * Update an existing purchase order
- */
-export async function updatePurchaseOrder(id: number, data: UpdatePurchaseOrderRequest): Promise<PurchaseOrder> {
-  return apiFetch<PurchaseOrder>(API_PATHS.purchase_order_by_id(id), {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-}
-
-/**
- * Delete a purchase order
- */
-export async function deletePurchaseOrder(id: number): Promise<void> {
-  await apiFetch<void>(API_PATHS.purchase_order_by_id(id), {
-    method: 'DELETE',
-  });
+  
+  return result;
 }
 
 /**
@@ -110,45 +58,42 @@ export async function deletePurchaseOrder(id: number): Promise<void> {
  */
 export async function getPurchaseOrdersForTable(): Promise<PurchaseOrderTableRow[]> {
   try {
-    const [purchaseOrdersResponse, suppliersResponse] = await Promise.all([
-      getAllPurchaseOrders(),
-      getAllSuppliers()
-    ]);
+    console.log('🔍 getPurchaseOrdersForTable - Fetching data for table...');
     
-    // Ensure we have arrays
-    const purchaseOrders = Array.isArray(purchaseOrdersResponse) ? purchaseOrdersResponse : [];
-    const suppliers = Array.isArray(suppliersResponse) ? suppliersResponse : [];
+    // Get the paginated response from backend
+    const result = await apiFetch<PaginatedPurchaseOrders>(API_PATHS.purchase_order);
     
-    if (purchaseOrders.length === 0) {
+    console.log('🔍 getPurchaseOrdersForTable - Raw backend response:', result);
+    
+    if (!result || !result.data || !Array.isArray(result.data)) {
+      console.warn('⚠️ getPurchaseOrdersForTable - No valid data in response');
       return [];
     }
     
-    // Create a map for quick supplier lookup
-    const supplierMap = new Map<number, Supplier>();
-    suppliers.forEach(supplier => {
-      supplierMap.set(supplier.id, supplier);
-    });
+    console.log(`📋 getPurchaseOrdersForTable - Processing ${result.data.length} purchase orders`);
     
-    return purchaseOrders.map(po => {
-      const supplier = supplierMap.get(po.supplier_id);
-      
+    // Transform the basic purchase order data into table format
+   
+    const tableData = result.data.map(po => {
+      console.log(`🔄 Transforming PO ${po.id}:`, po);
       return {
         id: po.id,
         order_date: po.order_date,
-        supplier_name: supplier?.name || `Unknown Supplier (ID: ${po.supplier_id})`,
-        user_name: `User ${po.user_id}`, // Would need user API to get actual name
-        total_items: 0, // Would need items API to calculate
-        total_cost: 0, // Would need items API to calculate
+        supplier_name: `Supplier ${po.supplier_id}`, // Backend should provide supplier_name
+        user_name: `User ${po.user_id}`, // Backend should provide user_name  
+        total_items: 0, // Backend should provide calculated total_items
+        total_cost: 0, // Backend should provide calculated total_cost
         status: po.status || 'pending' as const
       };
     });
+    
+    console.log('✅ getPurchaseOrdersForTable - Final table data:', tableData);
+    return tableData;
   } catch (error) {
     console.error('Error in getPurchaseOrdersForTable:', error);
     if (error instanceof Error && error.message.includes('Not authenticated')) {
       throw new Error('Authentication required to access purchase orders');
     }
-    
-    // For other errors, return empty array to prevent UI crashes
     return [];
   }
 }

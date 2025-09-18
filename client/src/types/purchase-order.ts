@@ -1,3 +1,6 @@
+import { Supplier } from './supplier';
+import { PageMeta } from './pagination';
+
 // Basic Purchase Order from API
 export interface PurchaseOrder {
   id: number;
@@ -5,44 +8,6 @@ export interface PurchaseOrder {
   user_id: number;
   order_date: string;
   status?: 'pending' | 'ordered' | 'received' | 'cancelled';
-}
-
-// Paginated API Response structure
-export interface PaginatedResponse<T> {
-  meta: {
-    page: number;
-    size: number;
-    has_prev: boolean;
-    has_next: boolean;
-    sort: string[];
-    filters: Record<string, any>;
-    total: number | null;
-    pages: number | null;
-  };
-  data: T[];
-}
-
-// Extended Purchase Order with related data
-export interface PurchaseOrderWithDetails extends PurchaseOrder {
-  supplier_name: string;
-  supplier_email: string;
-  supplier_phone: string;
-  supplier_description: string;
-  po_items: PurchaseOrderItemDetail[];
-  supplier?: {
-    id: number;
-    name: string;
-    description?: string;
-    email?: string;
-    contact_number?: string;
-  };
-  user?: {
-    id: number;
-    username: string;
-    email: string;
-    full_name: string;
-  };
-  items?: PurchaseOrderItem[];
 }
 
 // Purchase Order Item Detail as returned by API
@@ -55,74 +20,65 @@ export interface PurchaseOrderItemDetail {
   supplier_item_id: number;
 }
 
+// Item data structure (can be reused across different contexts)
+export interface ItemData {
+  id: number;
+  name: string;
+  description?: string;
+  category: string;
+  min_stock_level: number;
+  reorder_point: number;
+  current_stock: number;
+}
+
+// Supplier Item data structure (can be reused across different contexts)
+export interface SupplierItemData {
+  id: number;
+  supplier_id: number;
+  item_id: number;
+  supplier_sku: string;
+  cost: number;
+  minimum_order_qty: number;
+  description?: string;
+}
+
+// User data structure (can be reused across different contexts)
+export interface UserData {
+  id: number;
+  username: string;
+  email: string;
+  full_name: string;
+}
+
+// Purchase Order Item with related data
 export interface PurchaseOrderItem {
   purchase_order_id: number;
   item_id: number;
   qty: number;
   supplier_item_id: number;
-  // Related data when fetched with joins
-  item?: {
-    id: number;
-    name: string;
-    description?: string;
-    category: string;
-    min_stock_level: number;
-    reorder_point: number;
-    current_stock: number;
-  };
-  supplier_item?: {
-    id: number;
-    supplier_id: number;
-    item_id: number;
-    supplier_sku: string;
-    cost: number;
-    minimum_order_qty: number;
-    description?: string;
-  };
+  item?: ItemData;
+  supplier_item?: SupplierItemData;
 }
 
-// API Request/Response types
-export interface CreatePurchaseOrderRequest {
-  supplier_id: number;
-  user_id: number;
-  order_date?: string;
+// Extended Purchase Order with all related data
+export interface PurchaseOrderWithDetails extends PurchaseOrder {
+  supplier_name: string;
+  supplier_email: string;
+  supplier_phone: string;
+  supplier_description: string;
+  po_items: PurchaseOrderItemDetail[];
+  supplier?: Supplier;
+  user?: UserData;
+  items?: PurchaseOrderItem[];
 }
 
-export interface UpdatePurchaseOrderRequest {
-  supplier_id?: number;
-  user_id?: number;
-  order_date?: string;
+// Paginated Purchase Order response
+export interface PaginatedPurchaseOrders {
+  meta: PageMeta;
+  data: PurchaseOrder[];
 }
 
-// Response type matches the basic PurchaseOrder
-export interface PurchaseOrderResponse extends PurchaseOrder {}
-
-export interface PurchaseOrderItemResponse {
-  purchase_order_id: number;
-  item_id: number;
-  qty: number;
-  supplier_item_id: number;
-  item: {
-    id: number;
-    name: string;
-    description?: string;
-    category: string;
-    min_stock_level: number;
-    reorder_point: number;
-    current_stock: number;
-  };
-  supplier_item: {
-    id: number;
-    supplier_id: number;
-    item_id: number;
-    supplier_sku: string;
-    cost: number;
-    minimum_order_qty: number;
-    description?: string;
-  };
-}
-
-// Table display types
+// Table display type
 export interface PurchaseOrderTableRow {
   id: number;
   order_date: string;

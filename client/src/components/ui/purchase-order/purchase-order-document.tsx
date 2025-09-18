@@ -3,6 +3,7 @@
 import { PurchaseOrderWithDetails } from '@/types/purchase-order';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { formatDateLong } from '@/lib/utils';
 
 interface PurchaseOrderDocumentProps {
   purchaseOrder: PurchaseOrderWithDetails;
@@ -15,13 +16,6 @@ export function PurchaseOrderDocument({
   showActions = true,
   className = ""
 }: PurchaseOrderDocumentProps) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-SG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   return (
     <Card className={`max-w-4xl mx-auto ${className}`}>
@@ -55,7 +49,7 @@ export function PurchaseOrderDocument({
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Order Date:</span>
-                  <span className="font-medium text-gray-900 dark:text-gray-100">{formatDate(purchaseOrder.order_date)}</span>
+                  <span className="font-medium text-gray-900 dark:text-gray-100">{formatDateLong(purchaseOrder.order_date)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Created By:</span>

@@ -67,6 +67,9 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
       const supplierId = row.getValue("id") as number;
       return <ClickableSupplierID supplierId={supplierId} />;
     },
+    meta: {
+      label: "ID",
+    },
   },
   // Supplier Name column with responsive layout
   {

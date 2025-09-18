@@ -1,30 +1,8 @@
 import { PurchaseOrderTableRow, PurchaseOrderWithDetails } from '@/types/purchase-order';
-import { exportToPDF } from '@/lib/utils';
+import { exportToPDF, formatDate, formatDateLong, formatCurrency } from '@/lib/utils';
 import { getPurchaseOrderWithDetails } from '@/lib/api/purchaseOrderApi';
 
-function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('en-SG', {
-    style: 'currency',
-    currency: 'SGD',
-  }).format(amount);
-}
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-SG', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
 export function generatePurchaseOrderHTML(purchaseOrder: PurchaseOrderWithDetails): string {
-  const formatDateLong = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-SG', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   return `
     <!DOCTYPE html>

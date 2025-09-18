@@ -46,3 +46,26 @@ export function getFilterableColumns(columns: any[]) {
       label: col.meta?.label ?? col.accessorKey,
     }));
 }
+
+export function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-SG', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+export function formatDateLong(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-SG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+export function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('en-SG', {
+    style: 'currency',
+    currency: 'SGD',
+  }).format(amount);
+}

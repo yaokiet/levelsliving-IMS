@@ -6,9 +6,9 @@ import { getPurchaseOrdersForTable } from '@/lib/api/purchaseOrderApi';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, FileText, Download, Eye } from 'lucide-react';
+import { Plus, FileText, Eye } from 'lucide-react';
 import Link from 'next/link';
-import { exportPurchaseOrderToPDF, exportAllPurchaseOrdersToPDF } from '@/lib/pdf-export';
+import { formatDate } from '@/lib/utils';
 
 export default function PurchaseOrdersPage() {
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrderTableRow[]>([]);
@@ -41,36 +41,9 @@ export default function PurchaseOrdersPage() {
     loadPurchaseOrders();
   }, []);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-SG', {
-      style: 'currency',
-      currency: 'SGD',
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-SG', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
-
-  const handleExportPDF = async (purchaseOrder: PurchaseOrderTableRow) => {
-    try {
-      await exportPurchaseOrderToPDF(purchaseOrder);
-    } catch (error) {
-      console.error('Failed to export PDF:', error);
-      // You might want to show a toast notification here
-    }
-  };
-
-  const handleExportAllPDF = () => {
-    if (purchaseOrders.length === 0) {
-      console.warn('No purchase orders available to export');
-      return;
-    }
-    exportAllPurchaseOrdersToPDF(purchaseOrders);
+  const handleError = (error: Error) => {
+    console.error('PDF operation failed:', error);
+    // You can add toast notification here if needed
   };
 
   if (loading) {
@@ -111,20 +84,10 @@ export default function PurchaseOrdersPage() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Purchase Orders</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">Manage and track purchase orders</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleExportAllPDF}>
-            <Download className="w-4 h-4 mr-2" />
-            Export
-          </Button>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            New Purchase Order
-          </Button>
-        </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
@@ -136,31 +99,11 @@ export default function PurchaseOrdersPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(purchaseOrders.reduce((sum, po) => sum + (po.total_cost || 0), 0))}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {purchaseOrders.filter(po => po.status === 'pending').length}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Items</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {purchaseOrders.reduce((sum, po) => sum + (po.total_items || 0), 0)}
             </div>
           </CardContent>
         </Card>
@@ -199,18 +142,9 @@ export default function PurchaseOrdersPage() {
                           {po.status}
                         </Badge>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <div>
-                          <span className="font-medium">Supplier:</span> {po.supplier_name}
-                        </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-1 gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <div>
                           <span className="font-medium">Date:</span> {formatDate(po.order_date)}
-                        </div>
-                        <div>
-                          <span className="font-medium">Items:</span> {po.total_items}
-                        </div>
-                        <div>
-                          <span className="font-medium">Total:</span> {formatCurrency(po.total_cost)}
                         </div>
                       </div>
                     </div>
@@ -221,10 +155,6 @@ export default function PurchaseOrdersPage() {
                           View
                         </Button>
                       </Link>
-                      <Button variant="outline" size="sm" onClick={() => handleExportPDF(po)}>
-                        <Download className="w-4 h-4 mr-2" />
-                        PDF
-                      </Button>
                     </div>
                   </div>
                 </div>

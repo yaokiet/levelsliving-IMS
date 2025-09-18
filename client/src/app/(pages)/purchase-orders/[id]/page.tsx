@@ -6,10 +6,8 @@ import { PurchaseOrderWithDetails } from '@/types/purchase-order';
 import { getPurchaseOrderWithDetails } from '@/lib/api/purchaseOrderApi';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Printer, Edit } from 'lucide-react';
-import { PurchaseOrderDocument } from '@/components/purchase-order/PurchaseOrderDocument';
-import { exportToPDF } from '@/lib/utils';
-import { generatePurchaseOrderHTML } from '@/lib/pdf-export';
+import { PurchaseOrderDocument } from '@/components/ui/purchase-order/purchase-order-document';
+import { PurchaseOrderPdfActions } from '@/components/ui/purchase-order/purchase-order-pdf-actions';
 
 export default function PurchaseOrderDetailPage() {
   const params = useParams();
@@ -19,32 +17,10 @@ export default function PurchaseOrderDetailPage() {
 
   const id = typeof params.id === 'string' ? parseInt(params.id) : null;
 
-  const handleDownloadPDF = async () => {
-    if (!purchaseOrder) return;
-    try {
-      const htmlContent = generatePurchaseOrderHTML(purchaseOrder);
-      const filename = `purchase-order-${purchaseOrder.id.toString().padStart(4, '0')}`;
-      exportToPDF(htmlContent, filename);
-    } catch (error) {
-      console.error('Failed to export PDF:', error);
-      // You might want to show a toast notification here
-    }
-  };
-
-  const handlePrint = async () => {
-    if (!purchaseOrder) return;
-    try {
-      const htmlContent = generatePurchaseOrderHTML(purchaseOrder);
-      const printWindow = window.open('', '_blank');
-      if (printWindow) {
-        printWindow.document.write(htmlContent);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-      }
-    } catch (error) {
-      console.error('Failed to print:', error);
-    }
+  const handleError = (error: Error) => {
+    console.error('PDF operation failed:', error);
+    // You can add toast notification here if needed
+    // toast.error(error.message);
   };
 
   useEffect(() => {
@@ -94,22 +70,14 @@ export default function PurchaseOrderDetailPage() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header with Actions */}
+      {/* Header with PDF Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div></div> {/* Empty div to maintain layout */}
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Edit className="w-4 h-4 mr-2" />
-            Edit
-          </Button>
-          <Button variant="outline" size="sm" onClick={handlePrint}>
-            <Printer className="w-4 h-4 mr-2" />
-            Print
-          </Button>
-          <Button size="sm" onClick={handleDownloadPDF}>
-            <Download className="w-4 h-4 mr-2" />
-            Download PDF
-          </Button>
+          <PurchaseOrderPdfActions 
+            purchaseOrder={purchaseOrder}
+            onError={handleError}
+          />
         </div>
       </div>
 
