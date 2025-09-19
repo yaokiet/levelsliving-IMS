@@ -60,6 +60,7 @@ def create_schema(engine):
     from server.database.models.order import Order          
     from server.database.models.order_item import OrderItem 
     from server.database.models.item_component import ItemComponent
+    from server.database.models.user_session import UserSession
 
     Base.metadata.create_all(bind=engine)
     yield

@@ -172,7 +172,6 @@ def test_get_item_details_not_found(client):
 # # GET /lowest-children/{item_id}
 # for my ref
 #
-# Tree that is being made
 #   PARENT
 #     ├── A  (qty_required = 2)
 #     │     └── C (qty_required = 4)   => C total = 2*4 = 8
