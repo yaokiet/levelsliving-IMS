@@ -90,9 +90,6 @@ export async function getPurchaseOrdersForTable(): Promise<PurchaseOrderTableRow
     return tableData;
   } catch (error) {
     console.error('Error in getPurchaseOrdersForTable:', error);
-    if (error instanceof Error && error.message.includes('Not authenticated')) {
-      throw new Error('Authentication required to access purchase orders');
-    }
     return [];
   }
 }
