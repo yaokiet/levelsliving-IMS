@@ -85,6 +85,5 @@ export interface PurchaseOrderTableRow {
   supplier_name: string;
   user_name: string;
   total_items: number;
-  total_cost: number;
   status: 'pending' | 'ordered' | 'received' | 'cancelled';
 }
