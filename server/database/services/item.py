@@ -16,7 +16,10 @@ from database.services.pagination import (
 def get_item(db: Session, item_id: int):
     return db.query(Item).filter(Item.id == item_id).first()
 
-def get_all_items(
+def get_all_items(db: Session):
+    return db.query(Item).all()
+
+def get_all_items_pagniated(
     db: Session,
     page: int = 1,
     size: int = 50,

@@ -5,13 +5,13 @@ from database.database import get_db
 from database.schemas.pagination import Paginated
 from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
 from database.services.item import (
-    get_item, get_all_items, create_item, update_item, delete_item, get_item_with_components, get_lowest_children
+    get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children
 )
 
 router = APIRouter(prefix="/item", tags=["item"])
 
-@router.get("/", response_model=Paginated[ItemRead])
-def read_items(
+@router.get("/paginated", response_model=Paginated[ItemRead])
+def read_items_paginated(
     page: int = Query(1, ge=1),
     size: int = Query(50, ge=1, le=200),
     q: Optional[str] = None,
@@ -23,7 +23,7 @@ def read_items(
     """
     Paginated Items with optional free-text search and whitelisted sorting.
     """
-    return get_all_items(
+    return get_all_items_pagniated(
         db,
         page=page,
         size=size,
@@ -32,6 +32,13 @@ def read_items(
         sort=sort,
         include_total=include_total,
     )
+
+@router.get("/", response_model=list[ItemRead])
+def read_items(db: Session = Depends(get_db)):
+    """
+    Retrieve all items.
+    """
+    return get_all_items(db)
 
 @router.get("/{item_id}", response_model=ItemRead)
 def read_item(item_id: int, db: Session = Depends(get_db)):
