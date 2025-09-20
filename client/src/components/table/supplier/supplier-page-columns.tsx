@@ -120,6 +120,7 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
       );
     },
     meta: {
+      label: "ID",
       className: "hidden md:table-cell",
     },
   },
