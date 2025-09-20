@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import { PurchaseOrderWithDetails } from '@/types/purchase-order';
 import { getPurchaseOrderWithDetails } from '@/lib/api/purchaseOrderApi';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { PurchaseOrderDocument } from '@/components/ui/purchase-order/purchase-order-document';
 import { PurchaseOrderPdfActions } from '@/components/ui/purchase-order/purchase-order-pdf-actions';
 
