@@ -5,54 +5,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import sessionmaker
+from datetime import datetime, timedelta, timezone
 
-@pytest.fixture(autouse=True, scope="module")
-def _restore_real_roles():
-    """
-    Undo the global role-bypass from the root conftest.py for this module only.
-    We reload jwt_utils to get the original require_role back.
-    """
-    from server.app.auth import jwt_utils
-    importlib.reload(jwt_utils)  # restores real require_role
-    yield
 
-@pytest.fixture(scope="module")
-def app_with_overrides(engine):
-    from server.database.database import get_db
-    from server.api.v1.router import router as v1_router
-    from server.app.auth.auth_middleware import AuthMiddleware
-
-    app = FastAPI()
-
-    # Attach the same middleware as main.py
-    frontend_origin = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
-    app.add_middleware(AuthMiddleware)
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[frontend_origin],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
-    app.include_router(v1_router)
-
-    # Use the test DB
-    SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, future=True)
-    def _override_get_db():
-        db = SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-    app.dependency_overrides[get_db] = _override_get_db
-
-    return app
-
-@pytest.fixture(scope="module")
-def client(app_with_overrides):
-    return TestClient(app_with_overrides)
-    
 BASE_PATH = "/levelsliving/app/api/v1"
 
 # # POST /login
@@ -85,33 +40,137 @@ def test_login_failure_no_user(client):
     assert resp.json()["detail"] == "Invalid credentials"
 
 # POST /refresh
-def test_refresh_token_ok(client, create_user):
-    # Arrange
+def test_refresh_token_ok(client, create_user, get_test_db):
+    # 1) Create user
     u = create_user(email="refreshuser@example.com")
 
-    # Step 1: login to seed DB session and set cookies
-    login_path = client.app.url_path_for("login")            # def name 'login'
+    # 2) Login to create the session row
+    login_path = client.app.url_path_for("login")          # function name 'login'
     r1 = client.post(login_path, json={"email": u.email, "password": "password"})
     assert r1.status_code == 200, r1.text
 
-    # Persist cookies on the client (access_token + refresh_token)
-    client.cookies.update(r1.cookies)
+    # 3) Read the session row to get the EXACT stored refresh token
+    #    Adjust import/model/filters to your project (table/model name may differ)
+    from server.database.models.user_session import UserSession  # <- change if your path/name differs
 
-    # Step 2: call /refresh using the same client (cookies included)
-    refresh_path = client.app.url_path_for("refresh_token")  # def name 'refresh_token'
-    r2 = client.post(refresh_path)
+    sess = (
+        get_test_db.query(UserSession)
+        .filter(UserSession.user_id == u.id)
+        .order_by(UserSession.created_at.desc())
+        .first()
+    )
+    assert sess is not None, "Expected a user session row after login"
+    stored_refresh = sess.refresh_token
+    assert stored_refresh, "Session row has no refresh token stored"
 
-    # Assert
+    # 4) Call /refresh with that exact cookie
+    refresh_path = client.app.url_path_for("refresh_token")  # function name 'refresh_token'
+    r2 = client.post(refresh_path, headers={"Cookie": f"refresh_token={stored_refresh}"})
+
+    # 5) Assert success and new access cookie
     assert r2.status_code == 200, r2.text
     assert r2.json() == {"success": True}
-    # new access token should be set
     assert "access_token" in r2.cookies or any(
         h.lower() == "set-cookie" for h in r2.headers.keys()
     )
 
-def test_refresh_token_failure():
-    pass
+def test_refresh_failure_no_session(client):
+    # Arrange: pick the refresh endpoint
+    refresh_path = client.app.url_path_for("refresh_token")
 
-# # POST /logout
-# def test_logout_ok():
-#     pass
+    # Act: call with a bogus refresh_token cookie (no session in DB)
+    resp = client.post(refresh_path, headers={"Cookie": "refresh_token=nonexistenttoken"})
+
+    # Assert: we hit the 'if not session:' branch
+    assert resp.status_code == 401
+    assert resp.json()["detail"] == "Invalid refresh token"
+
+def test_refresh_failure_expired_session(client, create_user, get_test_db):
+
+    # 1. Create user and login to generate session
+    user = create_user(email="expiredcase@example.com")
+    login_path = client.app.url_path_for("login")
+    r1 = client.post(login_path, json={"email": user.email, "password": "password"})
+    assert r1.status_code == 200, r1.text
+
+    # 2. Get the session row and force it to be expired
+    from server.database.models.user_session import UserSession  # adjust to your model path
+    sess = (
+        get_test_db.query(UserSession)
+        .filter(UserSession.user_id == user.id)
+        .order_by(UserSession.id.desc())
+        .first()
+    )
+    assert sess is not None
+    sess.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)
+    get_test_db.add(sess)
+    get_test_db.commit()
+
+    # 3. Call /refresh with the same refresh token
+    refresh_path = client.app.url_path_for("refresh_token")
+    resp = client.post(
+        refresh_path,
+        headers={"Cookie": f"refresh_token={sess.refresh_token}"}
+    )
+
+    # 4. Assert: expired branch hit
+    assert resp.status_code == 401
+    assert resp.json()["detail"] == "Invalid refresh token"
+    
+def test_refresh_failure_invalid_jwt(client, create_user, get_test_db):
+    # 1. Create user and login to create a valid session
+    user = create_user(email="invalidjwt@example.com")
+    login_path = client.app.url_path_for("login")
+    r1 = client.post(login_path, json={"email": user.email, "password": "password"})
+    assert r1.status_code == 200, r1.text
+
+    # 2. Fetch the session row from DB
+    from server.database.models.user_session import UserSession  # adjust path
+    sess = (
+        get_test_db.query(UserSession)
+        .filter(UserSession.user_id == user.id)
+        .order_by(UserSession.id.desc())
+        .first()
+    )
+    assert sess is not None
+
+    # 3. Replace the refresh_token in DB with a non-JWT string
+    sess.refresh_token = "not-a-valid-jwt"
+    get_test_db.add(sess)
+    get_test_db.commit()
+
+    # 4. Call /refresh with that invalid token
+    refresh_path = client.app.url_path_for("refresh_token")
+    resp = client.post(refresh_path, headers={"Cookie": f"refresh_token={sess.refresh_token}"})
+
+    # 5. Assert: JWT decode fails, so 401 with "Invalid refresh token"
+    assert resp.status_code == 401
+    assert resp.json()["detail"] == "Invalid refresh token"
+
+# POST /logout
+def test_logout_ok(client, create_user, get_test_db):
+    # 1. Create user and log them in -> creates a user_session row + cookies
+    user = create_user(email="logoutcase@example.com")
+    login_path = client.app.url_path_for("login")
+    r1 = client.post(login_path, json={"email": user.email, "password": "password"})
+    assert r1.status_code == 200, r1.text
+
+    refresh_token = r1.cookies.get("refresh_token")
+    assert refresh_token, "Expected refresh_token cookie from login"
+
+    # Ensure session exists in DB
+    from server.database.models.user_session import UserSession
+    sess = get_test_db.query(UserSession).filter_by(refresh_token=refresh_token).first()
+    assert sess is not None
+
+    # 2. Call /logout with the refresh_token cookie
+    logout_path = client.app.url_path_for("logout")  # function name is 'logout'
+    r2 = client.post(logout_path, headers={"Cookie": f"refresh_token={refresh_token}"})
+
+    # 3. Assert: route succeeded
+    assert r2.status_code == 200
+    assert r2.json() == {"success": True}
+
+    # 4. Verify session was deleted
+    sess_after = get_test_db.query(UserSession).filter_by(refresh_token=refresh_token).first()
+    assert sess_after is None
