@@ -81,7 +81,8 @@ export async function getPurchaseOrdersForTable(): Promise<PurchaseOrderTableRow
         order_date: po.order_date,
         supplier_name: `Supplier ${po.supplier_id}`, // Backend should provide supplier_name
         user_name: `User ${po.user_id}`, // Backend should provide user_name  
-        total_items: 0, 
+        total_items: 0, // Backend should provide calculated total_items
+        total_cost: 0, // Backend should provide calculated total_cost
         status: po.status || 'pending' as const
       };
     });
