@@ -1,108 +1,130 @@
 "use client";
 
-import React, { useState } from "react";
-import SupplierPageTable from "@/components/table/supplier/supplier-page-table";
-import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
+import React, { useState, useRef } from "react";
+import SupplierPageTable, { SupplierTableRef } from "@/components/table/supplier/supplier-page-table";
+import { DialogWithTrigger } from "@/components/table/reusable/dialog-with-trigger";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { createSupplier } from "@/lib/api/supplierApi";
 
-// This is the main page export
-export default function SuppliersPage() {
-  // Dialog form state - matching backend schema
+function SuppliersPageContent() {
+  const tableRef = useRef<SupplierTableRef>(null)
+
+  return (
+    <div className="container mx-auto py-10 px-6">
+      <div className="flex gap-4 mb-6">
+        <AddSupplierDialog onSupplierAdded={() => tableRef.current?.refreshData()} />
+      </div>
+      
+      <SupplierPageTable ref={tableRef} />
+    </div>
+  );
+}
+
+function AddSupplierDialog({ onSupplierAdded }: { onSupplierAdded?: () => void }) {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [email, setEmail] = useState("")
-  const [contact_number, setContact_number] = useState("")
+  const [contactNumber, setContactNumber] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleAddSupplier = () => {
+  const handleAddSupplier = async () => {
     // Validate required fields
     if (!name.trim()) {
       alert("Supplier name is required!")
       return
     }
 
-    // Create supplier object matching backend schema
-    const supplierData = {
-      name: name.trim(),
-      description: description.trim() || undefined,
-      email: email.trim() || undefined,
-      contact_number: contact_number.trim() || undefined
-    }
+    setIsLoading(true)
+    
+    try {
+      const supplierData = {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        email: email.trim() || undefined,
+        contact_number: contactNumber.trim() || undefined
+      }
 
-    // Handle adding supplier logic here
-    console.log("Adding supplier:", supplierData)
-    
-    // Reset form
-    setName("")
-    setDescription("")
-    setEmail("")
-    setContact_number("")
-    
-    // You can add the supplier to the data array or make an API call
-    // For now, just show an alert
-    alert(`Supplier "${name}" added successfully!`)
+      await createSupplier(supplierData)
+      
+      // Reset form
+      setName("")
+      setDescription("")
+      setEmail("")
+      setContactNumber("")
+      
+      alert(`Supplier "${name}" added successfully!`)
+      // Refresh the table data
+      onSupplierAdded?.()
+    } catch (error) {
+      console.error("Error creating supplier:", error)
+      alert("Failed to create supplier. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="container mx-auto py-10 px-6">
-      <div className="flex gap-4 mb-6">
-        <ReusableDialog
-          buttonText="Add Supplier"
-          dialogTitle="Add New Supplier"
-          dialogDescription="Enter supplier details below."
-          cancelButtonText="Cancel"
-          confirmButtonText="Add Supplier"
-          onConfirm={handleAddSupplier}
-        >
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Label htmlFor="supplier-name">
-                Name <span className="text-red-500">*</span>
-              </Label>
-              <Input 
-                id="supplier-name" 
-                type="text" 
-                value={name} 
-                onChange={e => setName(e.target.value)}
-                placeholder="Enter supplier name (required)"
-                required
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="supplier-description">Description</Label>
-              <Input 
-                id="supplier-description" 
-                type="text" 
-                value={description} 
-                onChange={e => setDescription(e.target.value)}
-                placeholder="Enter supplier description (optional)"
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="supplier-contact">Contact Number</Label>
-              <Input 
-                id="supplier-contact" 
-                type="text" 
-                value={contact_number} 
-                onChange={e => setContact_number(e.target.value)}
-                placeholder="Enter contact number (optional)"
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="supplier-email">Email</Label>
-              <Input 
-                id="supplier-email" 
-                type="email" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)}
-                placeholder="Enter email address (optional)"
-              />
-            </div>
-          </div>
-        </ReusableDialog>
+    <DialogWithTrigger
+      buttonText="Add Supplier"
+      dialogTitle="Add New Supplier"
+      dialogDescription="Enter supplier details below."
+      cancelButtonText="Cancel"
+      confirmButtonText={isLoading ? "Adding..." : "Add Supplier"}
+      onConfirm={handleAddSupplier}
+    >
+      <div className="grid gap-4">
+        <div className="grid gap-3">
+          <Label htmlFor="supplier-name">
+            Name <span className="text-red-500">*</span>
+          </Label>
+          <Input 
+            id="supplier-name" 
+            type="text" 
+            value={name} 
+            onChange={e => setName(e.target.value)}
+            placeholder="Enter supplier name (required)"
+            required
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="supplier-description">Description</Label>
+          <Input 
+            id="supplier-description" 
+            type="text" 
+            value={description} 
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Enter supplier description (optional)"
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="supplier-contact">Contact Number</Label>
+          <Input 
+            id="supplier-contact" 
+            type="text" 
+            value={contactNumber} 
+            onChange={e => setContactNumber(e.target.value)}
+            placeholder="Enter contact number (optional)"
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label htmlFor="supplier-email">Email</Label>
+          <Input 
+            id="supplier-email" 
+            type="email" 
+            value={email} 
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Enter email address (optional)"
+          />
+        </div>
       </div>
-      
-      <SupplierPageTable />
-    </div>
+    </DialogWithTrigger>
+  )
+}
+
+// This is the main page export
+export default function SuppliersPage() {
+  return (
+    <SuppliersPageContent />
   );
 }
