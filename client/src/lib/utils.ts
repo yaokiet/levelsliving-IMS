@@ -40,10 +40,9 @@ export function exportToPDF(htmlContent: string, filename: string = 'document') 
 
 export function getFilterableColumns(columns: any[]) {
   return columns
-    .filter((col) => typeof col.accessorKey === "string" && col.meta?.label)
+    .filter((col) => typeof col.accessorKey === "string")
     .map((col) => ({
       key: col.accessorKey,
-      label: col.meta.label,
     }));
 }
 
