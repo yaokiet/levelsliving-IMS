@@ -35,7 +35,7 @@ export function createColumns(): ColumnDef<Supplier>[] {
         return <ClickableSupplierID supplierId={supplierId} />;
       },
       meta: {
-        label: "id",
+        label: "ID",
       },
     },
     // Supplier Name column with responsive layout
@@ -72,7 +72,7 @@ export function createColumns(): ColumnDef<Supplier>[] {
         );
       },
       meta: {
-        label: "name",
+        label: "Name",
       },
     },
     // Description column (hidden on small screens)
@@ -91,6 +91,7 @@ export function createColumns(): ColumnDef<Supplier>[] {
       },
       meta: {
         className: "hidden md:table-cell",
+        label: "Description",
       },
     },
     // Contact Number column (hidden on small screens)
@@ -104,7 +105,7 @@ export function createColumns(): ColumnDef<Supplier>[] {
         return <span>{value || "No contact"}</span>;
       },
       meta: {
-        label: "contact_number",
+        label: "Contact Number",
         className: "hidden lg:table-cell",
       },
     },
@@ -123,7 +124,7 @@ export function createColumns(): ColumnDef<Supplier>[] {
         );
       },
       meta: {
-        label: "email",
+        label: "Email",
         className: "hidden lg:table-cell",
       },
     },

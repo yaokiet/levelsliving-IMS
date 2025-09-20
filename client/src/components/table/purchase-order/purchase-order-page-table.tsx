@@ -24,11 +24,7 @@ const PurchaseOrderPageTable = forwardRef<PurchaseOrderTableRef>((props, ref) =>
     } catch (error) {
       console.error("Error fetching purchase orders:", error)
       if (error instanceof Error) {
-        if (error.message.includes('Not authenticated') || error.message.includes('Session expired')) {
-          setError('Please log in to view purchase orders')
-        } else {
           setError(error.message)
-        }
       } else {
         setError("Failed to load purchase orders. Please try again.")
       }

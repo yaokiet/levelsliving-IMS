@@ -36,7 +36,7 @@ export function createColumns(): ColumnDef<PurchaseOrderTableRow>[] {
         return <ClickablePurchaseOrderID purchaseOrderId={purchaseOrderId} />;
       },
       meta: {
-        label: "id",
+        label: "ID",
       },
     },
     // Order Date column
@@ -56,7 +56,7 @@ export function createColumns(): ColumnDef<PurchaseOrderTableRow>[] {
         return <span>{formatDate(dateValue)}</span>;
       },
       meta: {
-        label: "order_date",
+        label: "Order Date",
       },
     },
     // Status column
@@ -84,7 +84,7 @@ export function createColumns(): ColumnDef<PurchaseOrderTableRow>[] {
         );
       },
       meta: {
-        label: "status",
+        label: "Status",
       },
     },
   ];
