@@ -135,6 +135,11 @@ INSERT INTO purchase_order (id, supplier_id, user_id, order_date, status) VALUES
 -- PO to restock electronics, placed by a regular user
 (2, 3, 2, '2025-08-22 16:00:00', 'pending');
 
+SELECT setval(
+  pg_get_serial_sequence('purchase_order', 'id'),
+  COALESCE((SELECT MAX(id) FROM purchase_order), 0)
+);
+
 -- =======================
 -- PURCHASE ORDER ITEM
 -- =======================

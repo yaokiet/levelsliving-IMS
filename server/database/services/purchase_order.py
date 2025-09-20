@@ -11,13 +11,23 @@ from database.models.purchase_order_item import PurchaseOrderItem
 from database.models.item import Item
 from database.models.supplier import Supplier
 
-from database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderDetails, PurchaseOrderUpdate, PurchaseOrderItemReadCustom
+from database.schemas.purchase_order_item import PurchaseOrderItemCreate
+
+from database.schemas.purchase_order import (
+    PurchaseOrderCreate, 
+    PurchaseOrderDetails, 
+    PurchaseOrderUpdate, 
+    PurchaseOrderItemReadCustom, 
+    PurchaseOrderCreateWithItems
+)
 
 from database.services.pagination import (
     clamp_page_size,
     parse_sort,
     build_meta,
 )
+
+from database.services.purchase_order_item import create_purchase_order_item
 
 def get_purchase_order(db: Session, po_id: int) -> Optional[PurchaseOrder]:
     """Return a single PurchaseOrder ORM object, or None."""
@@ -156,18 +166,31 @@ def get_purchase_order_details(db: Session, po_id: int) -> Optional[PurchaseOrde
         "po_items": lines,
     }
 
-def create_purchase_order(db: Session, payload: PurchaseOrderCreate) -> PurchaseOrder:
-    """Create a PO from the payload and return the ORM row."""
-    po = PurchaseOrder(
-        supplier_id=payload.supplier_id,
-        user_id=payload.user_id,
-        order_date=payload.order_date,  # DB default (now) applies if None
-        status=payload.status,
-    )
-    db.add(po)
-    db.commit()
-    db.refresh(po)
-    return po
+def create_purchase_order(db: Session, payload: PurchaseOrderCreateWithItems):
+    with db.begin():  
+        po = PurchaseOrder(
+            supplier_id=payload.supplier_id,
+            user_id=payload.user_id,
+            order_date=payload.order_date,
+            status=payload.status,
+        )
+        db.add(po)
+        db.flush()  
+
+        for line in payload.po_items:
+            create_purchase_order_item(
+                db,
+                PurchaseOrderItemCreate(
+                    purchase_order_id=po.id,
+                    item_id=line.item_id,
+                    qty=line.qty,
+                    supplier_item_id=line.supplier_item_id,
+                ),
+                autocommit=False,  # don't commit inside
+                refresh=False,     # no per-line refresh needed
+            )
+
+    return get_purchase_order_details(db, po.id)
 
 
 def update_purchase_order(db: Session, po_id: int, payload: PurchaseOrderUpdate) -> Optional[PurchaseOrder]:

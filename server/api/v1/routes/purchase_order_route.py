@@ -2,8 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from typing import Optional, Iterable, List
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.schemas.purchase_order import PurchaseOrderCreate, PurchaseOrderDetails, PurchaseOrderUpdate, PurchaseOrderRead, PurchaseOrderItemReadCustom
+
+from database.schemas.purchase_order import (
+    PurchaseOrderCreateWithItems, 
+    PurchaseOrderDetails, 
+    PurchaseOrderUpdate, 
+    PurchaseOrderRead, 
+    PurchaseOrderItemReadCustom
+)
 from database.schemas.pagination import Paginated
+
 from database.services.purchase_order import (
     get_all_purchase_orders,
     create_purchase_order, 
@@ -61,10 +69,11 @@ def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Purchase order not found")
     return po
 
-@router.post("/", response_model=PurchaseOrderRead)
-def create_new_purchase_order(payload: PurchaseOrderCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=PurchaseOrderDetails)
+def create_new_purchase_order(payload: PurchaseOrderCreateWithItems, db: Session = Depends(get_db)):
     """
-    Create a new purchase order.
+    Create a new purchase order **and its items** in a single transaction.
+    Returns the full PO details payload.
     """
     return create_purchase_order(db, payload)
 
