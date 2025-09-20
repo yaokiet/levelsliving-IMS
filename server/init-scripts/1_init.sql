@@ -14,7 +14,7 @@ CREATE TABLE "user" (
 -- =======================
 CREATE TABLE supplier (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(64) UNIQUE NOT NULL,
+    name VARCHAR(64) NOT NULL,
     description VARCHAR(64),
     email VARCHAR(254),
     contact_number VARCHAR(20)
