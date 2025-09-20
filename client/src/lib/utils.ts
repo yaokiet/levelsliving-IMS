@@ -43,6 +43,7 @@ export function getFilterableColumns(columns: any[]) {
     .filter((col) => typeof col.accessorKey === "string")
     .map((col) => ({
       key: col.accessorKey,
+      label: col.meta?.label ?? col.accessorKey,
     }));
 }
 
