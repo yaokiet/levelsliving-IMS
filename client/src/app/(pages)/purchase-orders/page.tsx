@@ -1,168 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { PurchaseOrderTableRow } from '@/types/purchase-order';
-import { getPurchaseOrdersForTable } from '@/lib/api/purchaseOrderApi';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Plus, FileText, Eye } from 'lucide-react';
-import Link from 'next/link';
-import { formatDate } from '@/lib/utils';
+import { useRef } from 'react';
+import PurchaseOrderPageTable, { PurchaseOrderTableRef } from "@/components/table/purchase-order/purchase-order-page-table";
 
 export default function PurchaseOrdersPage() {
-  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrderTableRow[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadPurchaseOrders = async () => {
-      try {
-        setLoading(true);
-        const tableData = await getPurchaseOrdersForTable();
-        setPurchaseOrders(Array.isArray(tableData) ? tableData : []);
-      } catch (err) {
-        console.error('Purchase orders loading error:', err);
-        setPurchaseOrders([]); // Ensure it's always an array
-        if (err instanceof Error) {
-          if (err.message.includes('Not authenticated') || err.message.includes('Session expired')) {
-            setError('Please log in to view purchase orders');
-          } else {
-            setError(err.message);
-          }
-        } else {
-          setError('Failed to load purchase orders');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPurchaseOrders();
-  }, []);
-
-  const handleError = (error: Error) => {
-    console.error('PDF operation failed:', error);
-    // You can add toast notification here if needed
-  };
-
-  if (loading) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading purchase orders...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto p-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center">
-              <p className="text-red-600 mb-4">Error: {error}</p>
-              <Button onClick={() => window.location.reload()}>
-                Try Again
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const tableRef = useRef<PurchaseOrderTableRef>(null);
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Purchase Orders</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Manage and track purchase orders</p>
-        </div>
+    <div className="container mx-auto py-10 px-6">
+      <div className="flex flex-col space-y-4 mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Purchase Orders</h1>
+        <p className="text-gray-600 dark:text-gray-400">Manage and track purchase orders</p>
       </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{purchaseOrders.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {purchaseOrders.filter(po => po.status === 'pending').length}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Purchase Orders List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Purchase Orders</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {!Array.isArray(purchaseOrders) || purchaseOrders.length === 0 ? (
-            <div className="text-center py-8">
-              <FileText className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No purchase orders found</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">Get started by creating your first purchase order.</p>
-              <Button>
-                <Plus className="w-4 h-4 mr-2" />
-                Create Purchase Order
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {purchaseOrders.map((po) => (
-                <div
-                  key={po.id}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800"
-                >
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
-                          PO #{po.id.toString().padStart(4, '0')}
-                        </h3>
-                        <Badge variant="secondary">
-                          {po.status}
-                        </Badge>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-1 gap-2 text-sm text-gray-600 dark:text-gray-400">
-                        <div>
-                          <span className="font-medium">Date:</span> {formatDate(po.order_date)}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Link href={`/purchase-orders/${po.id}`}>
-                        <Button variant="outline" size="sm">
-                          <Eye className="w-4 h-4 mr-2" />
-                          View
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      
+      <PurchaseOrderPageTable ref={tableRef} />
     </div>
   );
 }

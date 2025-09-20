@@ -67,9 +67,7 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
       const supplierId = row.getValue("id") as number;
       return <ClickableSupplierID supplierId={supplierId} />;
     },
-    meta: {
-      label: "ID",
-    },
+    
   },
   // Supplier Name column with responsive layout
   {
@@ -104,6 +102,9 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
         </div>
       );
     },
+    meta: {
+      label: "name",
+    },
   },
   // Description column (hidden on small screens)
   {
@@ -120,7 +121,7 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
       );
     },
     meta: {
-      label: "ID",
+      
       className: "hidden md:table-cell",
     },
   },
@@ -135,6 +136,7 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
       return <span>{value || "No contact"}</span>;
     },
     meta: {
+      label: "contact_number",
       className: "hidden lg:table-cell",
     },
   },
@@ -153,65 +155,8 @@ export function createColumns(onSupplierDeleted?: () => void): ColumnDef<Supplie
       );
     },
     meta: {
+      label: "email",
       className: "hidden lg:table-cell",
-    },
-  },
-  // Actions column
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const supplier = row.original;
-      const router = useRouter();
-
-      const handleDelete = async () => {
-        if (window.confirm(`Are you sure you want to delete supplier "${supplier.name}"?`)) {
-          try {
-            await deleteSupplier(supplier.id);
-            alert("Supplier deleted successfully!");
-            // Refresh the table data
-            onSupplierDeleted?.();
-          } catch (error) {
-            console.error("Error deleting supplier:", error);
-            alert("Failed to delete supplier. Please try again.");
-          }
-        }
-      };
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(supplier.name)}
-            >
-              Copy Supplier Name
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => router.push(`/suppliers/${supplier.id}`)}
-            >
-              View Details
-            </DropdownMenuItem>
-            <DropdownMenuItem>Edit supplier</DropdownMenuItem>
-            <DropdownMenuItem 
-              className="text-red-600"
-              onClick={handleDelete}
-            >
-              Remove supplier
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-    meta: {
-      className: "w-[50px]",
     },
   },
 ];
