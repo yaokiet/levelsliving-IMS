@@ -1,19 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Eye, FileText, Download } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/table/reusable/data-table-column-header";
 import type { PurchaseOrderTableRow } from "@/types/purchase-order";
 import { formatDate } from "@/lib/utils";
@@ -35,29 +25,6 @@ function ClickablePurchaseOrderID({ purchaseOrderId }: { purchaseOrderId: number
 
 export function createColumns(): ColumnDef<PurchaseOrderTableRow>[] {
   return [
-    // Select checkbox column
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     // Purchase Order ID column (clickable)
     {
       accessorKey: "id",
@@ -67,6 +34,9 @@ export function createColumns(): ColumnDef<PurchaseOrderTableRow>[] {
       cell: ({ row }) => {
         const purchaseOrderId = row.getValue("id") as number;
         return <ClickablePurchaseOrderID purchaseOrderId={purchaseOrderId} />;
+      },
+      meta: {
+        label: "id",
       },
     },
     // Order Date column
