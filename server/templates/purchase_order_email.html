@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Purchase Order {{ po.id }}</title>
+</head>
+<body style="font-family: sans-serif; margin: 2em;">
+    <h2>New Purchase Order: #{{ po.id }}</h2>
+    <p>Dear {{ supplier.name }},</p> 
+    <p>Please find the details of our latest purchase order below. A PDF copy is also attached for your records.</p>
+    <hr>
+    <h3>Order Details</h3>
+    <ul>
+        <li><strong>PO Number:</strong> {{ po.id }}</li>
+        <li><strong>Order Date:</strong> {{ po.order_date.strftime('%Y-%m-%d') }}</li>
+        <li><strong>Status:</strong> {{ po.status }}</li>
+    </ul>
+    <h3>Items Requested</h3>
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead style="background-color: #f2f2f2;">
+            <tr>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">SKU</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Item Name</th>
+                <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in po.po_items %}
+            <tr>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ item.item.sku }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd;">{{ item.item.item_name }}</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">{{ item.qty }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <p>Thank you,</p>
+    <p><strong>{{ settings.mail_from_name }}</strong></p>
+</body>
+</html>

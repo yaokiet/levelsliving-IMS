@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, BackgroundTasks, UploadFile, File, Form
 from typing import Optional, Iterable, List
 from sqlalchemy.orm import Session
 from database.database import get_db
-
+import json
 from database.schemas.purchase_order import (
     PurchaseOrderCreateWithItems, 
     PurchaseOrderDetails, 
@@ -19,6 +19,8 @@ from database.services.purchase_order import (
     delete_purchase_order,
     get_purchase_order_details,
 )
+
+from database.services.email_service import send_purchase_order_email
 
 router = APIRouter(prefix="/purchase-order", tags=["purchase-order"])
 
@@ -69,13 +71,37 @@ def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Purchase order not found")
     return po
 
+# @router.post("/", response_model=PurchaseOrderDetails)
+# def create_new_purchase_order(payload: PurchaseOrderCreateWithItems, db: Session = Depends(get_db)):
+#     """
+#     Create a new purchase order **and its items** in a single transaction.
+#     Returns the full PO details payload.
+#     """
+#     return create_purchase_order(db, payload)
+
 @router.post("/", response_model=PurchaseOrderDetails)
-def create_new_purchase_order(payload: PurchaseOrderCreateWithItems, db: Session = Depends(get_db)):
+async def create_new_purchase_order(
+    payload: PurchaseOrderCreateWithItems, # We now accept a clean JSON body
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
     """
-    Create a new purchase order **and its items** in a single transaction.
-    Returns the full PO details payload.
+    Create a new purchase order and its items from a JSON payload.
+
+    Upon successful creation, it sends a confirmation email to the supplier
+    in a background task.
     """
-    return create_purchase_order(db, payload)
+    # 1. Create the purchase order in the database
+    new_po = create_purchase_order(db, payload)
+
+    # 2. Add the email sending task to the background (without the PDF)
+    background_tasks.add_task(
+        send_purchase_order_email,
+        po_id = new_po['id']
+    )
+
+    # 3. Return the response to the user immediately
+    return new_po
 
 @router.put("/{po_id}", response_model=PurchaseOrderRead)
 def update_existing_purchase_order(po_id: int, payload: PurchaseOrderUpdate, db: Session = Depends(get_db)):
