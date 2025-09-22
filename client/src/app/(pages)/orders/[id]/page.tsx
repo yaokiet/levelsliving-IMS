@@ -3,9 +3,30 @@
 import React from "react";
 import { OrderProvider, useOrder } from "@/context/orderContext";
 import { OrderInfoCard } from "@/components/ui/order/order-info-card";
+import { Item } from "@/types/item";
+import { getAllItems } from "@/lib/api/itemsApi";
+import MainPageTable from "@/components/table/main/main-page-table";
 
 function OrderDetailsContent() {
   const { order, loading, error } = useOrder();
+  const [data, setData] = React.useState<Item[]>([]);
+  const [dataLoading, setDataLoading] = React.useState(true);
+
+  const loadItems = React.useCallback(async () => {
+    setDataLoading(true);
+    try {
+      const items = await getAllItems();
+      setData(items);
+    } catch (e) {
+      console.error("Error fetching items:", e);
+    }
+    finally {
+      setDataLoading(false);
+    }
+  }, []);
+  React.useEffect(() => {
+    loadItems();
+  }, [loadItems]);
 
   if (loading) {
     return <div className="container mx-auto py-10 px-6">Loading...</div>;
@@ -38,42 +59,11 @@ function OrderDetailsContent() {
           { label: "Postal Code", key: "postal_code" },
         ]}
       />
+      <MainPageTable data={data} loading={dataLoading} onReload={loadItems} />
     </div>
   )
 }
 
-// function OrderDetailsContent() {
-//   // Get the order ID from the route params
-//   const params = useParams();
-//   const orderId = params?.id ? Number(params.id) : null;
-//   const order = mockOrderItems.find((o) => o.id === orderId);
-//   const { item, loading } = useItem();
-
-//   const data: ComponentDetail[] = item?.components || [];
-
-//   if (!order) {
-//     return (
-//       <div className="container mx-auto py-10 px-6 text-red-500">
-//         Order not found.
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <div className="container mx-auto py-10 px-6">
-//         <OrderInfoCard orderItem={order} />
-      
-//       <ReusableTable
-//         columns={columns}
-//         data={data}
-//         showViewOptions={true}
-//         showPagination={true}
-//       />
-//       </div>
-//     </>
-//   );
-// }
 
 // This is the main page export
 export default function OrderDetailsPage() {
