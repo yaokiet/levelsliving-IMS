@@ -4,34 +4,35 @@ import React from "react";
 import { OrderProvider, useOrder } from "@/context/orderContext";
 import { OrderInfoCard } from "@/components/ui/order/order-info-card";
 import { Item } from "@/types/item";
-import { getAllItems } from "@/lib/api/itemsApi";
-import MainPageTable from "@/components/table/main/main-page-table";
+import { getItemByOrderId } from "@/lib/api/itemsApi";
+import OrderPageTable from "@/components/table/main/order-page-table";
 
 function OrderDetailsContent() {
   const { order, loading, error } = useOrder();
   const [data, setData] = React.useState<Item[]>([]);
   const [dataLoading, setDataLoading] = React.useState(true);
-
+  console.log(order);
   const loadItems = React.useCallback(async () => {
     setDataLoading(true);
+
     try {
-      const items = await getAllItems();
-      setData(items);
+      if (order?.order_id) {
+        const items = await getItemByOrderId(order.order_id);
+        setData(Array.isArray(items) ? items : [items]);
+      }
     } catch (e) {
       console.error("Error fetching items:", e);
-    }
-    finally {
+    } finally {
       setDataLoading(false);
     }
-  }, []);
+  }, [order]);
   React.useEffect(() => {
     loadItems();
-  }, [loadItems]);
+  }, [loadItems, order]);
 
   if (loading) {
     return <div className="container mx-auto py-10 px-6">Loading...</div>;
   }
-
 
   if (error) {
     return (
@@ -59,11 +60,10 @@ function OrderDetailsContent() {
           { label: "Postal Code", key: "postal_code" },
         ]}
       />
-      <MainPageTable data={data} loading={dataLoading} onReload={loadItems} />
+      <OrderPageTable data={data} loading={dataLoading} onReload={loadItems} />
     </div>
-  )
+  );
 }
-
 
 // This is the main page export
 export default function OrderDetailsPage() {

@@ -35,3 +35,9 @@ export function getLowestChildren(itemId: number) {
   const path = `${API_PATHS.item}/lowest-children/${itemId}`;
   return apiFetch<LowestChildDetail[]>(path);
 }
+
+// Get item by order ID
+export function getItemByOrderId(orderId: number) {
+  const path = `${API_PATHS.item}/by-order/${orderId}`;
+  return apiFetch<Item[]>(path);
+}

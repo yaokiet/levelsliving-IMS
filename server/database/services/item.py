@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from database.models.item import Item
 from database.models.item_component import ItemComponent
+from database.models.order_item import OrderItem
 from database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
 from collections import defaultdict
 
@@ -15,6 +16,18 @@ from database.services.pagination import (
 
 def get_item(db: Session, item_id: int):
     return db.query(Item).filter(Item.id == item_id).first()
+
+def get_item_by_order_id(db: Session, order_id: int):
+    # Step 1: Get all item_ids for the given order_id
+    item_ids = db.query(OrderItem.item_id).filter(OrderItem.order_id == order_id).all()
+    item_ids = [row[0] for row in item_ids]  # flatten list of tuples
+
+    if not item_ids:
+        return []
+
+    # Step 2: Get all items with those item_ids
+    items = db.query(Item).filter(Item.id.in_(item_ids)).all()
+    return items
 
 def get_all_items(db: Session):
     return db.query(Item).all()

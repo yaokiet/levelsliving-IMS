@@ -5,7 +5,7 @@ from database.database import get_db
 from database.schemas.pagination import Paginated
 from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
 from database.services.item import (
-    get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children
+    get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children, get_item_by_order_id
 )
 
 router = APIRouter(prefix="/item", tags=["item"])
@@ -39,6 +39,16 @@ def read_items(db: Session = Depends(get_db)):
     Retrieve all items.
     """
     return get_all_items(db)
+
+@router.get("/by-order/{order_id}", response_model=list[ItemRead])
+def get_item_by_order(order_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve an item by its associated order ID.
+    """
+    items = get_item_by_order_id(db, order_id)
+    if not items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return items
 
 @router.get("/{item_id}", response_model=ItemRead)
 def read_item(item_id: int, db: Session = Depends(get_db)):
