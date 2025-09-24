@@ -1,5 +1,5 @@
 import requests
-from config import settings
+from server.config import settings
 
 # simple in-memory cache for the token
 _tenant_access_token = None

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
-from database.database import Base
+from server.database.database import Base
 
 class CartItem(Base):
     """

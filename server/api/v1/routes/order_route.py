@@ -5,14 +5,14 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from database.database import get_db
-from database.schemas.pagination import Paginated
-from database.schemas.order import (
+from server.database.database import get_db
+from server.database.schemas.pagination import Paginated
+from server.database.schemas.order import (
     OrderUpdate,
     OrderRead,
     OrderDetails
 )
-from database.services.order import (
+from server.database.services.order import (
     get_order,
     update_order,
     delete_order,

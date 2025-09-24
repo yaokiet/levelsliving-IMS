@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, CheckConstraint
 from sqlalchemy.orm import relationship
-from database.database import Base
+from server.database.database import Base
 
 class User(Base):
     __tablename__ = "user"

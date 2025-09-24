@@ -1,10 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from database.database import get_db
-from database.schemas.pagination import PageMeta, Paginated
-from database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
-from database.services.supplier_item import (
+
+# <<<<<<< backend_testing
+from server.database.database import get_db
+from server.database.schemas.pagination import PageMeta, Paginated
+from server.database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
+from server.database.services.supplier_item import (
     get_supplier_item, get_supplier_items, create_supplier_item, update_supplier_item, delete_supplier_item
+# =======
+# from database.database import get_db
+# from database.schemas.pagination import PageMeta, Paginated
+# from database.schemas.supplier_item import SupplierItemCreate, SupplierItemUpdate, SupplierItemRead
+# from database.services.supplier_item import (
+#     get_supplier_item, get_supplier_items, create_supplier_item, update_supplier_item, delete_supplier_item
+# >>>>>>> main
 )
 
 router = APIRouter(prefix="/supplier-item", tags=["supplier-item"])

@@ -1,8 +1,16 @@
+# <<<<<<< backend_testing
 from __future__ import annotations
 
 from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint, Index, String
 from sqlalchemy.orm import relationship
-from database.database import Base
+from server.database.database import Base
+# =======
+# from __future__ import annotations
+
+# from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint, Index, String
+# from sqlalchemy.orm import relationship
+# from database.database import Base
+# >>>>>>> main
 
 class SupplierItem(Base):
     __tablename__ = "supplier_item"

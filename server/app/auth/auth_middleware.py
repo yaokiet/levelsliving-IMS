@@ -1,5 +1,5 @@
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.core.config import SECRET_KEY, ALGORITHM
+from server.app.core.config import SECRET_KEY, ALGORITHM
 from fastapi.responses import JSONResponse
 from fastapi import Request
 from jose import jwt, JWTError

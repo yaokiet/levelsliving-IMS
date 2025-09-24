@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from database.models.order_item import OrderItem
-from database.schemas.order_item import OrderItemCreate, OrderItemUpdate
+from server.database.models.order_item import OrderItem
+from server.database.schemas.order_item import OrderItemCreate, OrderItemUpdate
 
 def get_order_item(db: Session, order_id: int, item_id: int):
     return (

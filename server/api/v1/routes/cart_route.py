@@ -2,9 +2,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 
-from database.database import get_db
-from database.schemas.cart import CartItemCreate, CartItemRead, CartItemUpdate, CartBulkCreate
-from database.services import cart_service
+from server.database.database import get_db
+from server.database.schemas.cart import CartItemCreate, CartItemRead, CartItemUpdate, CartBulkCreate
+from server.database.services import cart_service
 
 router = APIRouter(prefix="/cart", tags=["cart"])
 

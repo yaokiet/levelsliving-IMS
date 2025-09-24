@@ -1,14 +1,14 @@
-from database.schemas.user import UserCreate, UserUpdate
-from database.schemas.auth import LoginRequest
-from database.models.user import User
+from server.database.schemas.user import UserCreate, UserUpdate
+from server.database.schemas.auth import LoginRequest
+from server.database.models.user import User
 from sqlalchemy.orm import Session
 from passlib.hash import bcrypt
 from typing import Optional, List
 from sqlalchemy import Integer, String, or_, func
 from typing import Optional, Dict, Any, List, Iterable
 
-from database.services.pagination import build_meta
-from database.services.pagination import (
+from server.database.services.pagination import build_meta
+from server.database.services.pagination import (
     clamp_page_size,
     parse_sort,
     build_meta,
