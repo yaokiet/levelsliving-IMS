@@ -8,7 +8,8 @@ import {
   Container,
   Gauge,
   Files,
-  Users
+  Users,
+  FileText
 } from "lucide-react";
 import Link from "next/link";
 
@@ -56,6 +57,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       name: "Orders",
       url: "/orders",
       icon: Truck,
+    },
+    {
+      name: "Purchase Orders",
+      url: "/purchase-orders",
+      icon: FileText,
     },
   ];
 

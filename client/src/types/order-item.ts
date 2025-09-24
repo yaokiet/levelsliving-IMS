@@ -12,6 +12,7 @@ export interface OrderItem {
     postal_code: string,
     subRows: Item[],
     status: string,
+    order_id: number,
     // order_status: string,
 }
 

@@ -18,6 +18,26 @@ export function toQueryString(params?: Record<string, any>): string {
   return usp.toString() ? `?${usp.toString()}` : "";
 }
 
+// Clean PDF export function
+export function exportToPDF(htmlContent: string, filename: string = 'document') {
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Please allow pop-ups to enable PDF export');
+    return;
+  }
+
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+  
+  // Wait for content to load, then trigger print
+  printWindow.onload = () => {
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 250);
+  };
+}
+
 export function getFilterableColumns(columns: any[]) {
   return columns
     .filter((col) => typeof col.accessorKey === "string")
@@ -25,4 +45,27 @@ export function getFilterableColumns(columns: any[]) {
       key: col.accessorKey,
       label: col.meta?.label ?? col.accessorKey,
     }));
+}
+
+export function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-SG', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+export function formatDateLong(dateString: string) {
+  return new Date(dateString).toLocaleDateString('en-SG', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+export function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('en-SG', {
+    style: 'currency',
+    currency: 'SGD',
+  }).format(amount);
 }

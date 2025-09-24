@@ -53,7 +53,7 @@ export function SupplierSelectCard({
     };
 
     return (
-        <Card className="flex flex-col p-6 w-full max-w-sm h-full max-h-[600px]">
+        <Card className="flex flex-col p-6 w-full min-w-sm h-full max-h-[600px]">
             <div className="font-semibold text-lg mb-4">Select Supplier</div>
             <div className="mb-2">
                 <DataTableSearch

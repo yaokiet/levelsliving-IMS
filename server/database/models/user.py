@@ -18,7 +18,13 @@ class User(Base):
         back_populates="user",
         passive_deletes=True,
     )
-    # purchase_orders = relationship("PurchaseOrder", back_populates="user")
+
+    purchase_orders = relationship(
+        "PurchaseOrder",
+        back_populates="user",
+        passive_deletes=True,
+        lazy="selectin",
+    )
 
     __table_args__ = (
         CheckConstraint("role IN ('admin', 'user')", name="check_user_role"),

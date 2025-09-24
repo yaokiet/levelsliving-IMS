@@ -12,15 +12,29 @@ def get_purchase_order_item(db: Session, po_id: int, item_id: int):
 def get_all_purchase_order_items(db: Session):
     return db.query(PurchaseOrderItem).all()
 
-def create_purchase_order_item(db: Session, payload: PurchaseOrderItemCreate):
-    existing = get_purchase_order_item(db, payload.purchase_order_id, payload.item_id)
-    if existing:
-        return existing
-    db_po_item = PurchaseOrderItem(**payload.dict())
-    db.add(db_po_item)
-    db.commit()
-    db.refresh(db_po_item)
-    return db_po_item
+def create_purchase_order_item(
+    db: Session,
+    payload: PurchaseOrderItemCreate,
+    *,
+    autocommit: bool = True,
+    refresh: bool = True,
+) -> PurchaseOrderItem:
+    """
+    Create a single PurchaseOrderItem. By default commits & refreshes.
+    Set autocommit=False when composing into a larger transaction.
+    """
+    poi = PurchaseOrderItem(
+        purchase_order_id=payload.purchase_order_id,
+        item_id=payload.item_id,
+        qty=payload.qty,
+        supplier_item_id=payload.supplier_item_id,
+    )
+    db.add(poi)
+    if autocommit:
+        db.commit()
+    if refresh:
+        db.refresh(poi)
+    return poi
 
 def update_purchase_order_item(db: Session, po_id: int, item_id: int, payload: PurchaseOrderItemUpdate):
     db_po_item = get_purchase_order_item(db, po_id, item_id)

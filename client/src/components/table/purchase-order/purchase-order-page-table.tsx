@@ -1,36 +1,40 @@
 import { useState, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react'
-import { Supplier } from "@/types/supplier"
-import { createColumns } from "./supplier-page-columns"
+import { PurchaseOrderTableRow } from "@/types/purchase-order"
+import { createColumns } from "./purchase-order-page-columns"
 import { ReusableTable } from "@/components/table/reusable/reusable-table"
-import { getAllSuppliers } from "@/lib/api/supplierApi"
+import { getPurchaseOrdersForTable } from "@/lib/api/purchaseOrderApi"
 import { getFilterableColumns } from "@/lib/utils"
 
-export interface SupplierTableRef {
+export interface PurchaseOrderTableRef {
   refreshData: () => Promise<void>
 }
 
-const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
-  const [data, setData] = useState<Supplier[]>([])
+const PurchaseOrderPageTable = forwardRef<PurchaseOrderTableRef>((props, ref) => {
+  const [data, setData] = useState<PurchaseOrderTableRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchSuppliers = async () => {
+  const fetchPurchaseOrders = async () => {
     try {
       setLoading(true)
       setError(null)
-      const suppliers = await getAllSuppliers()
-      console.log("Fetched suppliers:", suppliers)
-      setData(suppliers)
+      const purchaseOrders = await getPurchaseOrdersForTable()
+      console.log("Fetched purchase orders:", purchaseOrders)
+      setData(purchaseOrders)
     } catch (error) {
-      console.error("Error fetching suppliers:", error)
-      setError("Failed to load suppliers. Please try again.")
+      console.error("Error fetching purchase orders:", error)
+      if (error instanceof Error) {
+          setError(error.message)
+      } else {
+        setError("Failed to load purchase orders. Please try again.")
+      }
     } finally {
       setLoading(false)
     }
   }
 
-  // Create columns with the refresh callback
-  const columns = createColumns(fetchSuppliers)
+  // Create columns
+  const columns = createColumns()
 
   const filterableColumns = useMemo(
     () => getFilterableColumns(columns),
@@ -38,19 +42,20 @@ const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
   )
 
   useEffect(() => {
-    fetchSuppliers()
+    fetchPurchaseOrders()
   }, [])
 
   // Expose the refresh function to parent components
   useImperativeHandle(ref, () => ({
-    refreshData: fetchSuppliers
+    refreshData: fetchPurchaseOrders
   }))
   
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <div className="text-lg">Loading suppliers...</div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="text-lg mt-2">Loading purchase orders...</div>
         </div>
       </div>
     )
@@ -72,13 +77,13 @@ const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
       columns={columns} 
       data={data} 
       filterableColumns={filterableColumns}
-      searchPlaceholder="Search suppliers..."
+      searchPlaceholder="Search purchase orders..."
       showViewOptions={true}
       showPagination={true}
     />
   )
 })
 
-SupplierPageTable.displayName = 'SupplierPageTable'
+PurchaseOrderPageTable.displayName = 'PurchaseOrderPageTable'
 
-export default SupplierPageTable
+export default PurchaseOrderPageTable

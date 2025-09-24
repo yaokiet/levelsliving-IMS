@@ -21,9 +21,9 @@ INSERT INTO "user" (name, role, email, password_hash) VALUES
 -- SUPPLIERS
 -- =======================
 INSERT INTO supplier (name, description, email, contact_number) VALUES
-('Component Solutions Inc.', 'Supplier for raw furniture components', 'sales@componentsolutions.com', '+1-800-555-0101'),
-('Fine Finish Furnishings', 'Supplier for assembled furniture', 'contact@finefinish.com', '+65 6789 1234'),
-('TechSource Electronics', 'Distributor of computer peripherals', 'orders@techsource.sg', '+65 6222 3333');
+('Component Solutions Inc.', 'Supplier for raw furniture components', 'ykleong.2022@scis.smu.edu.sg', '+1-800-555-0101'),
+('Fine Finish Furnishings', 'Supplier for assembled furniture', 'ykleong.2022@scis.smu.edu.sg', '+65 6789 1234'),
+('TechSource Electronics', 'Distributor of computer peripherals', 'ykleong.2022@scis.smu.edu.sg', '+65 6222 3333');
 
 -- =======================
 -- ITEMS
@@ -107,15 +107,15 @@ INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 -- =======================
 -- SUPPLIER_ITEM
 -- =======================
-INSERT INTO supplier_item (id, item_id, supplier_id) VALUES
+INSERT INTO supplier_item (id, item_id, supplier_id, si_sku) VALUES
 -- Component Solutions Inc. supplies all components
-(1, 7, 1), (2, 8, 1), (3, 9, 1), (4, 10, 1), (5, 11, 1), (6, 12, 1),
+(1, 7, 1, NULL), (2, 8, 1, NULL), (3, 9, 1, NULL), (4, 10, 1, NULL), (5, 11, 1, NULL), (6, 12, 1, NULL),
 -- Fine Finish Furnishings supplies assembled furniture
-(7, 1, 2), (8, 2, 2),
+(7, 1, 2, NULL), (8, 2, 2, NULL),
 -- TechSource Electronics supplies peripherals
-(9, 3, 3), (10, 4, 3), (11, 5, 3),
+(9, 3, 3, NULL), (10, 4, 3, NULL), (11, 5, 3, NULL),
 -- Desk Lamps are also supplied by TechSource
-(12, 6, 3);
+(12, 6, 3, NULL);
 
 -- =======================
 -- ITEM_COMPONENT (Bill of Materials)
@@ -129,11 +129,16 @@ INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
 -- =======================
 -- PURCHASE ORDER
 -- =======================
-INSERT INTO purchase_order (id, supplier_id, user_id, order_date) VALUES
+INSERT INTO purchase_order (id, supplier_id, user_id, order_date, status) VALUES
 -- PO to restock components, placed by the admin user
-(1, 1, 1, '2025-08-15 11:30:00'),
+(1, 1, 1, '2025-08-15 11:30:00', 'pending'),
 -- PO to restock electronics, placed by a regular user
-(2, 3, 2, '2025-08-22 16:00:00');
+(2, 3, 2, '2025-08-22 16:00:00', 'pending');
+
+SELECT setval(
+  pg_get_serial_sequence('purchase_order', 'id'),
+  COALESCE((SELECT MAX(id) FROM purchase_order), 0)
+);
 
 -- =======================
 -- PURCHASE ORDER ITEM

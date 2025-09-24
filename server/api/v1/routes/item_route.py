@@ -1,12 +1,46 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import Optional, Iterable, List
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+
+# <<<<<<< backend_testing
 from server.database.database import get_db
+from server.database.schemas.pagination import Paginated
 from server.database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
 from server.database.services.item import (
-    get_item, get_all_items, create_item, update_item, delete_item, get_item_with_components, get_lowest_children
+    get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children, get_item_by_order_id
+# =======
+# from database.database import get_db
+# from database.schemas.pagination import Paginated
+# from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
+# from database.services.item import (
+#     get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children, get_item_by_order_id
+# >>>>>>> main
 )
 
 router = APIRouter(prefix="/item", tags=["item"])
+
+@router.get("/paginated", response_model=Paginated[ItemRead])
+def read_items_paginated(
+    page: int = Query(1, ge=1),
+    size: int = Query(50, ge=1, le=200),
+    q: Optional[str] = None,
+    search_columns: Optional[List[str]] = Query(None, description="Repeat param, e.g. ?search_columns=sku&search_columns=item_name"),
+    sort: Optional[List[str]] = Query(None, description='Repeat param, e.g. ?sort=item_name:asc&sort=id:desc'),
+    include_total: bool = False,
+    db: Session = Depends(get_db),
+):
+    """
+    Paginated Items with optional free-text search and whitelisted sorting.
+    """
+    return get_all_items_pagniated(
+        db,
+        page=page,
+        size=size,
+        q=q,
+        search_columns=search_columns,
+        sort=sort,
+        include_total=include_total,
+    )
 
 @router.get("/", response_model=list[ItemRead])
 def read_items(db: Session = Depends(get_db)):
@@ -14,6 +48,16 @@ def read_items(db: Session = Depends(get_db)):
     Retrieve all items.
     """
     return get_all_items(db)
+
+@router.get("/by-order/{order_id}", response_model=list[ItemRead])
+def get_item_by_order(order_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve an item by its associated order ID.
+    """
+    items = get_item_by_order_id(db, order_id)
+    if not items:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return items
 
 @router.get("/{item_id}", response_model=ItemRead)
 def read_item(item_id: int, db: Session = Depends(get_db)):

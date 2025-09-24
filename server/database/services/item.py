@@ -1,14 +1,137 @@
 from sqlalchemy.orm import Session
+
+# <<<<<<< backend_testing
 from server.database.models.item import Item
 from server.database.models.item_component import ItemComponent
+from server.database.models.order_item import OrderItem
 from server.database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
+# =======
+# from database.models.item import Item
+# from database.models.item_component import ItemComponent
+# from database.models.order_item import OrderItem
+# from database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
+# >>>>>>> main
+
 from collections import defaultdict
+
+from typing import Any, Dict, List, Optional, Iterable
+from sqlalchemy import or_, func, String, Integer
+
+from server.database.services.pagination import (
+    clamp_page_size,
+    parse_sort,
+    build_meta,
+)
 
 def get_item(db: Session, item_id: int):
     return db.query(Item).filter(Item.id == item_id).first()
 
+def get_item_by_order_id(db: Session, order_id: int):
+    # Step 1: Get all item_ids for the given order_id
+    item_ids = db.query(OrderItem.item_id).filter(OrderItem.order_id == order_id).all()
+    item_ids = [row[0] for row in item_ids]  # flatten list of tuples
+
+    if not item_ids:
+        return []
+
+    # Step 2: Get all items with those item_ids
+    items = db.query(Item).filter(Item.id.in_(item_ids)).all()
+    return items
+
 def get_all_items(db: Session):
     return db.query(Item).all()
+
+def get_all_items_pagniated(
+    db: Session,
+    page: int = 1,
+    size: int = 50,
+    *,
+    q: Optional[str] = None,
+    search_columns: Optional[List[str]] = None,
+    sort: Optional[Iterable[str]] = None,  # e.g. ["item_name:asc","id:desc"]
+    include_total: bool = False,
+    max_page_size: int = 200,
+) -> Dict[str, Any]:
+    """
+    Paginated list of Items with free-text search + whitelisted sort.
+    Returns {"meta": {...}, "data": [ {item fields...} ]}.
+    """
+    page, size = clamp_page_size(page, size, max_page_size=max_page_size)
+
+    base = db.query(Item)
+
+    # Free-text search across chosen columns (OR semantics)
+    SEARCHABLE_COLUMNS = {"id", "sku", "type", "item_name", "variant"}
+    if q and search_columns:
+        like = f"%{q.strip()}%"
+        filters = []
+        # accept comma-separated or repeated params
+        if isinstance(search_columns, str):
+            search_columns = [c.strip() for c in search_columns.split(",") if c.strip()]
+        for col in search_columns:
+            if col in SEARCHABLE_COLUMNS and hasattr(Item, col):
+                column = getattr(Item, col)
+                # string vs integer handling
+                if hasattr(column, "type"):
+                    if isinstance(column.type, String):
+                        filters.append(column.ilike(like))
+                    elif isinstance(column.type, Integer) and q.isdigit():
+                        filters.append(column == int(q))
+        if filters:
+            base = base.filter(or_(*filters))
+
+    # Sort (whitelisted only)
+    allowed = {
+        "id":            Item.id,
+        "sku":           Item.sku,
+        "type":          Item.type,
+        "item_name":     Item.item_name,
+        "variant":       Item.variant,
+        "qty":           Item.qty,
+        "threshold_qty": Item.threshold_qty,
+    }
+    order_by = parse_sort(sort, allowed, [Item.item_name.asc(), Item.id.asc()])
+
+    # Optional exact totals
+    total = pages = None
+    if include_total:
+        total = db.query(func.count()).select_from(base.subquery()).scalar() or 0
+        pages = max(1, (total + size - 1) // size)
+
+    # Fetch page (size+1 → has_next)
+    rows: List[Item] = (
+        base.order_by(*order_by)
+            .limit(size + 1)
+            .offset((page - 1) * size)
+            .all()
+    )
+    has_next = len(rows) > size
+    items = rows[:size]
+
+    # Shape payload (flat—no relationships here)
+    data: List[Dict[str, Any]] = []
+    for it in items:
+        data.append({
+            "id": it.id,
+            "sku": it.sku,
+            "type": it.type,
+            "item_name": it.item_name,
+            "variant": it.variant,
+            "qty": it.qty,
+            "threshold_qty": it.threshold_qty,
+        })
+
+    meta = build_meta(
+        page=page,
+        size=size,
+        has_prev=page > 1,
+        has_next=has_next,
+        sort_tokens=sort,
+        filters={"q": q, "search_columns": search_columns},
+        total=total,
+        pages=pages,
+    )
+    return {"meta": meta, "data": data}
 
 def create_item(db: Session, item: ItemCreate):
     db_item = Item(**item.dict())

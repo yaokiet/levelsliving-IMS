@@ -4,7 +4,7 @@ import { Supplier } from "@/types/supplier";
 
 interface CartCheckoutState {
     selectedItems: CartItem[];
-    selectedSupplier?: Supplier;
+    selectedSupplier?: Supplier | null;
 }
 
 const initialState: CartCheckoutState = {
@@ -19,7 +19,7 @@ export const cartCheckoutSlice = createSlice({
         setSelectedItems: (state, action: PayloadAction<CartItem[]>) => {
             state.selectedItems = action.payload;
         },
-        setSelectedSupplier: (state, action: PayloadAction<Supplier>) => {
+        setSelectedSupplier: (state, action: PayloadAction<Supplier | null>) => {
             state.selectedSupplier = action.payload;
         },
         clearCheckout: (state) => {
