@@ -1,0 +1,17 @@
+{
+  "name": "levelsliving-ims",
+  "version": "1.0.0",
+  "description": "monorepo with client and server with single CI pipeline for deploying into digital ocean",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.5.2"
+  },
+  "dependencies": {
+    "wait-on": "^9.0.1"
+  }
+}

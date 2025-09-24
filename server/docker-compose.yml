@@ -5,6 +5,8 @@ services:
   db:
     image: postgres:16-alpine # Use a lightweight PostgreSQL image
     restart: always           # Always restart if it stops
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: levelsliving
       POSTGRES_PASSWORD: password
