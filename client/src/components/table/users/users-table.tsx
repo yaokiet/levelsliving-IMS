@@ -77,7 +77,6 @@ export default function UsersTable() {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mb-4">Users</h2>
       {loading ? (
         <div>Loading users...</div>
       ) : (
