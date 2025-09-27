@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sqlalchemy import Column, Integer, BigInteger, String, DateTime
 from sqlalchemy.orm import relationship
-from server.database.database import Base
+from database.database import Base
 
 class Order(Base):
     __tablename__ = "order"

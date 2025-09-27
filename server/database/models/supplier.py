@@ -1,12 +1,7 @@
 from sqlalchemy import Column, Integer, String
 
-# <<<<<<< backend_testing
 from sqlalchemy.orm import relationship
-from server.database.database import Base
-# =======
-# from sqlalchemy.orm import relationship
-# from database.database import Base
-# >>>>>>> main
+from database.database import Base
 
 class Supplier(Base):
     __tablename__ = "supplier"

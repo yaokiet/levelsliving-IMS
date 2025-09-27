@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from server.database.database import get_db
-from server.database.schemas.item_component import (
+from database.database import get_db
+from database.schemas.item_component import (
     ItemComponentCreate,
     ItemComponentUpdate,
     ItemComponentRead,
 )
-from server.database.services.item_component import (
+from database.services.item_component import (
     get_item_component,
     get_all_item_components,
     create_item_component,

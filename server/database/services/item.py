@@ -1,23 +1,16 @@
 from sqlalchemy.orm import Session
 
-# <<<<<<< backend_testing
-from server.database.models.item import Item
-from server.database.models.item_component import ItemComponent
-from server.database.models.order_item import OrderItem
-from server.database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
-# =======
-# from database.models.item import Item
-# from database.models.item_component import ItemComponent
-# from database.models.order_item import OrderItem
-# from database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
-# >>>>>>> main
+from database.models.item import Item
+from database.models.item_component import ItemComponent
+from database.models.order_item import OrderItem
+from database.schemas.item import ItemCreate, ItemUpdate, ItemComponentRead, ItemWithComponents
 
 from collections import defaultdict
 
 from typing import Any, Dict, List, Optional, Iterable
 from sqlalchemy import or_, func, String, Integer
 
-from server.database.services.pagination import (
+from database.services.pagination import (
     clamp_page_size,
     parse_sort,
     build_meta,

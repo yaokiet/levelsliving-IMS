@@ -2,46 +2,26 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status, Background
 from typing import Optional, Iterable, List
 from sqlalchemy.orm import Session
 
-# <<<<<<< backend_testing
-from server.database.database import get_db
+from database.database import get_db
 import json
-from server.database.schemas.purchase_order import (
+from database.schemas.purchase_order import (
     PurchaseOrderCreateWithItems, 
     PurchaseOrderDetails, 
     PurchaseOrderUpdate, 
     PurchaseOrderRead, 
     PurchaseOrderItemReadCustom
 )
-from server.database.schemas.pagination import Paginated
+from database.schemas.pagination import Paginated
 
-from server.database.services.purchase_order import (
+from database.services.purchase_order import (
     get_all_purchase_orders,
     create_purchase_order, 
     update_purchase_order, 
     delete_purchase_order,
     get_purchase_order_details,
-# =======
-# from database.database import get_db
-# import json
-# from database.schemas.purchase_order import (
-#     PurchaseOrderCreateWithItems, 
-#     PurchaseOrderDetails, 
-#     PurchaseOrderUpdate, 
-#     PurchaseOrderRead, 
-#     PurchaseOrderItemReadCustom
-# )
-# from database.schemas.pagination import Paginated
-
-# from database.services.purchase_order import (
-#     get_all_purchase_orders,
-#     create_purchase_order, 
-#     update_purchase_order, 
-#     delete_purchase_order,
-#     get_purchase_order_details,
-# >>>>>>> main
 )
 
-from server.database.services.email_service import send_purchase_order_email
+from database.services.email_service import send_purchase_order_email
 
 router = APIRouter(prefix="/purchase-order", tags=["purchase-order"])
 

@@ -1,16 +1,16 @@
 from fastapi import APIRouter, HTTPException, Response, Depends, Cookie
-from server.app.auth.jwt_utils import create_access_token, create_refresh_token
-from server.app.core.config import ACCESS_TOKEN_EXPIRE_SECONDS, REFRESH_TOKEN_EXPIRE_SECONDS, SECRET_KEY, ALGORITHM
+from app.auth.jwt_utils import create_access_token, create_refresh_token
+from app.core.config import ACCESS_TOKEN_EXPIRE_SECONDS, REFRESH_TOKEN_EXPIRE_SECONDS, SECRET_KEY, ALGORITHM
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
-from server.database.services.user_session import create_user_session, delete_user_session, get_user_session
-from server.database.services.user import get_user, verify_user
-from server.database.schemas.user_session import UserSessionCreate
-from server.database.schemas.auth import AccessTokenData, RefreshTokenData, LoginRequest
-from server.database.schemas.user import UserRead
-from server.database.database import get_db
+from database.services.user_session import create_user_session, delete_user_session, get_user_session
+from database.services.user import get_user, verify_user
+from database.schemas.user_session import UserSessionCreate
+from database.schemas.auth import AccessTokenData, RefreshTokenData, LoginRequest
+from database.schemas.user import UserRead
+from database.database import get_db
 
 import secrets
 
