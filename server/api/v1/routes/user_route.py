@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, HTTPException, Request, Query
-from server.app.auth.jwt_utils import require_role
+from app.auth.jwt_utils import require_role
 from sqlalchemy.orm import Session
-from server.database.database import get_db
-from server.database.schemas.user import UserCreate, UserUpdate, UserRead
-from server.database.services.user import get_user, get_all_users, create_user, update_user, delete_user
+from database.database import get_db
+from database.schemas.user import UserCreate, UserUpdate, UserRead
+from database.services.user import get_user, get_all_users, create_user, update_user, delete_user
 from typing import Optional, List
-from server.database.schemas.pagination import Paginated
-from server.app.utils.query_params import parse_query_list
+from database.schemas.pagination import Paginated
+from app.utils.query_params import parse_query_list
 
 router = APIRouter(prefix="/user", tags=["user"])
 

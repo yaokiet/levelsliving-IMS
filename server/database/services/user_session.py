@@ -1,6 +1,6 @@
-from server.database.schemas.user_session import UserSessionCreate
-from server.database.models.user_session import UserSession
-from server.app.core.config import REFRESH_TOKEN_EXPIRE_SECONDS
+from database.schemas.user_session import UserSessionCreate
+from database.models.user_session import UserSession
+from app.core.config import REFRESH_TOKEN_EXPIRE_SECONDS
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 

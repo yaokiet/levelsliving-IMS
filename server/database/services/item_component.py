@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from server.database.models.item_component import ItemComponent
-from server.database.schemas.item_component import ItemComponentCreate, ItemComponentUpdate
+from database.models.item_component import ItemComponent
+from database.schemas.item_component import ItemComponentCreate, ItemComponentUpdate
 
 
 def get_item_component(db: Session, parent_id: int, child_id: int):

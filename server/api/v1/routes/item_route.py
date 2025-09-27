@@ -2,19 +2,12 @@ from typing import Optional, Iterable, List
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-# <<<<<<< backend_testing
-from server.database.database import get_db
-from server.database.schemas.pagination import Paginated
-from server.database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
-from server.database.services.item import (
+from database.database import get_db
+from database.schemas.pagination import Paginated
+from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
+from database.services.item import (
     get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children, get_item_by_order_id
-# =======
-# from database.database import get_db
-# from database.schemas.pagination import Paginated
-# from database.schemas.item import ItemCreate, ItemUpdate, ItemRead, ItemWithComponents, LowestChildDetail
-# from database.services.item import (
-#     get_item, get_all_items, get_all_items_pagniated, create_item, update_item, delete_item, get_item_with_components, get_lowest_children, get_item_by_order_id
-# >>>>>>> main
+
 )
 
 router = APIRouter(prefix="/item", tags=["item"])

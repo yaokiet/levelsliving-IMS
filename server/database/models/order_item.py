@@ -12,7 +12,7 @@ from sqlalchemy import (
     ARRAY,
 )
 from sqlalchemy.orm import relationship, validates
-from server.database.database import Base
+from database.database import Base
 
 class OrderItem(Base):
     __tablename__ = "order_item"

@@ -2,10 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import insert
 from typing import List, Optional
 
-from server.database.models.cart import CartItem
-from server.database.models.item import Item
-from server.database.models.item_component import ItemComponent # Assuming you have this model
-from server.database.schemas.cart import CartItemRead, CartItemCreate
+from database.models.cart import CartItem
+from database.models.item import Item
+from database.models.item_component import ItemComponent # Assuming you have this model
+from database.schemas.cart import CartItemRead, CartItemCreate
 
 def _upsert_cart_item(db: Session, user_id: int, item_id: int, quantity: int):
     """
