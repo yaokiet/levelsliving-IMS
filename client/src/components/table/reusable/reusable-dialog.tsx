@@ -17,6 +17,7 @@ interface ReusableDialogProps {
         | Response
         | Promise<void | boolean | { status: number } | Response>;
     children?: React.ReactNode;
+    confirmButtonDisabled?: boolean;
 }
 export function ReusableDialog({
     open,
@@ -27,6 +28,7 @@ export function ReusableDialog({
     confirmButtonText,
     onConfirm,
     children,
+    confirmButtonDisabled = false,
 }: ReusableDialogProps) {
     const [submitting, setSubmitting] = useState(false);
 
@@ -82,7 +84,7 @@ export function ReusableDialog({
                         </DialogClose>
                     )}
                     {confirmButtonText && (
-                        <Button type="button" onClick={handleConfirm} disabled={submitting}>
+                        <Button type="button" onClick={handleConfirm} disabled={submitting || confirmButtonDisabled}>
                             {submitting ? "Please wait..." : confirmButtonText}
                         </Button>
                     )}
