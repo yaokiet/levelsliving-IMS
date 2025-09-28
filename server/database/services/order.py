@@ -1,5 +1,5 @@
 # services/orders.py
-from typing import Optional, Dict, Any, List, Iterable
+from typing import Optional, Dict, Any, List, Iterable, Union
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -123,8 +123,8 @@ def list_orders_with_items(
     q: Optional[str] = None,
     search_columns: Optional[List[str]] = None,
     # status: Optional[str] = None,
-    date_from: Optional[str | date | datetime] = None,
-    date_to: Optional[str | date | datetime] = None,   # exclusive end
+    date_from: Optional[Union[str, date, datetime]] = None,
+    date_to: Optional[Union[str, date, datetime]] = None,   # exclusive end
     sort: Optional[Iterable[str]] = None,               # e.g. ["order_date:desc","order_id:desc"]
     include_total: bool = False,                        # run COUNT(*) if True
     max_page_size: int = 200,
