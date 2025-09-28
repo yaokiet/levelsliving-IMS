@@ -51,7 +51,7 @@ def test_refresh_token_ok(client, create_user, get_test_db):
 
     # 3) Read the session row to get the EXACT stored refresh token
     #    Adjust import/model/filters to your project (table/model name may differ)
-    from server.database.models.user_session import UserSession  # <- change if your path/name differs
+    from database.models import UserSession  # <- change if your path/name differs
 
     sess = (
         get_test_db.query(UserSession)
@@ -94,7 +94,7 @@ def test_refresh_failure_expired_session(client, create_user, get_test_db):
     assert r1.status_code == 200, r1.text
 
     # 2. Get the session row and force it to be expired
-    from server.database.models.user_session import UserSession  # adjust to your model path
+    from database.models import UserSession  # adjust to your model path
     sess = (
         get_test_db.query(UserSession)
         .filter(UserSession.user_id == user.id)
@@ -125,7 +125,7 @@ def test_refresh_failure_invalid_jwt(client, create_user, get_test_db):
     assert r1.status_code == 200, r1.text
 
     # 2. Fetch the session row from DB
-    from server.database.models.user_session import UserSession  # adjust path
+    from database.models import UserSession  # adjust path
     sess = (
         get_test_db.query(UserSession)
         .filter(UserSession.user_id == user.id)
@@ -159,7 +159,7 @@ def test_logout_ok(client, create_user, get_test_db):
     assert refresh_token, "Expected refresh_token cookie from login"
 
     # Ensure session exists in DB
-    from server.database.models.user_session import UserSession
+    from database.models import UserSession
     sess = get_test_db.query(UserSession).filter_by(refresh_token=refresh_token).first()
     assert sess is not None
 

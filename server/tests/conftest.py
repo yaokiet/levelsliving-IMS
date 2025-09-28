@@ -20,7 +20,7 @@ def _bypass_roles():
     Globally override jwt_utils.require_role to always allow.
     Runs before any tests and before FastAPI app import.
     """
-    from server.app.auth import jwt_utils
+    from app.auth import jwt_utils
 
     def _always_allow(_role: str):
         # return a no-op dependency
@@ -53,16 +53,10 @@ def engine(postgre_container_url):
 @pytest.fixture(scope="session", autouse=True)
 def create_schema(engine):
     # putting the import here so it uses the newly generated postgresql url
-    from server.database.database import Base
-    import server.database.models
-    from server.database.models.user import User
-    from server.database.models.item import Item
-    from server.database.models.order import Order          
-    from server.database.models.order_item import OrderItem 
-    from server.database.models.item_component import ItemComponent
-    from server.database.models.user_session import UserSession
+    from database.database import Base
+    import database.models  # Ensure all models are registered
 
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine, checkfirst=True)
     yield
     Base.metadata.drop_all(bind=engine)
 
@@ -87,8 +81,8 @@ def get_test_db(engine):
 def app_with_overrides(engine):
     from fastapi import FastAPI
     from sqlalchemy.orm import sessionmaker
-    from server.database.database import get_db
-    from server.api.v1.router import router as v1_router
+    from database.database import get_db
+    from api.v1.router import router as v1_router
     
     app = FastAPI()
     app.include_router(
@@ -115,7 +109,7 @@ def client(app_with_overrides):
 
 @pytest.fixture
 def create_user(get_test_db):
-    from server.database.models.user import User
+    from database.models import User
     def _create_user(
         name="Test User",
         email=None,
@@ -133,7 +127,7 @@ def create_user(get_test_db):
 
 @pytest.fixture
 def create_item(get_test_db):
-    from server.database.models.item import Item
+    from database.models import Item
     def _create_item(**overrides):
         payload = {
             "sku": overrides.get("sku", f"SKU-{uuid.uuid4().hex[:6]}"),

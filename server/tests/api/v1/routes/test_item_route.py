@@ -115,8 +115,8 @@ def test_delete_item_not_found(client):
 # # GET /details/{item_id}
 def test_get_item_details_ok(client, get_test_db):
     # Arrange: create parent, child, and link via ItemComponent
-    from server.database.models.item import Item
-    from server.database.models.item_component import ItemComponent
+    from database.models import Item
+    from database.models import ItemComponent
 
     parent = Item(
         sku=f"P-{uuid.uuid4().hex[:6]}",
@@ -178,8 +178,8 @@ def test_get_item_details_not_found(client):
 #     └── B  (qty_required = 3)        => B total = 3
 #
 def test_lowest_children_ok(client, get_test_db):
-    from server.database.models.item import Item
-    from server.database.models.item_component import ItemComponent
+    from database.models import Item
+    from database.models import ItemComponent
 
     parent = Item(sku=f"P-{uuid.uuid4().hex[:6]}", type="general", item_name="Parent", variant=None, qty=1, threshold_qty=1)
     a      = Item(sku=f"A-{uuid.uuid4().hex[:6]}", type="part",    item_name="A",      variant=None, qty=1, threshold_qty=1)
