@@ -108,6 +108,7 @@ export function UserAddModal({
                 open={open}
                 onOpenChange={handleOpenChange}
                 dialogTitle={dialogTitle ?? "Create New User"}
+                dialogDescription="Fill in the details to create a new user"
                 confirmButtonText={confirmButtonText ?? "Create User"}
                 cancelButtonText="Cancel"
                 onConfirm={onConfirm}
