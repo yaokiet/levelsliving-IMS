@@ -14,3 +14,7 @@ pydantic-settings
 fastapi-mail
 jinja2
 python-multipart
+pytest==8.4.2
+pytest-cov
+testcontainers[postgres]
+httpx==0.28.1
