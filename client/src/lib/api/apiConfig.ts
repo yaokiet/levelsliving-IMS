@@ -21,6 +21,7 @@ export const API_PATHS = {
     // Supplier endpoints
     supplier: `${API_PREFIX}/supplier`,
     supplier_by_id: (supplierId: number | string) => `${API_PREFIX}/supplier/${supplierId}`,
+    supplier_search_by_items: `${API_PREFIX}/supplier/by-items`,
 
     // Item endpoints
     item: `${API_PREFIX}/item`,

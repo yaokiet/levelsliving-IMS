@@ -111,6 +111,14 @@ def delete_cart_item(db: Session, *, user_id: int, item_id: int) -> Optional[Car
 
 
 def clear_user_cart(db: Session, user_id: int):
+    """
+    Deletes all items from a user's cart without committing the session.
+    This allows it to be part of a larger database transaction.
+    """
+    # This just stages the deletion. The actual commit will happen in the endpoint.
+    db.query(CartItem).filter(CartItem.user_id == user_id).delete(synchronize_session=False)
+    
+def delete_cart(db: Session, user_id: int):
     """Deletes all items from a user's cart."""
     db.query(CartItem).filter(CartItem.user_id == user_id).delete()
     db.commit()
