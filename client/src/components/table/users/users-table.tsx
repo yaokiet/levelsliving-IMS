@@ -1,79 +1,61 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
 import { ReusableTable } from "../reusable/reusable-table"
-import { getAllUsers } from "@/lib/api/userApi"
 import { PaginatedUsers } from "@/types/user"
 import { columns } from "./user-page-columns"
 import { OnChangeFn, PaginationState, SortingState } from '@tanstack/react-table'
-import { getFilterableColumns } from "@/lib/utils";
 
-export default function UsersTable() {
-  const [data, setData] = useState<PaginatedUsers>({
-    meta: {
-      total: 0, page: 1, size: 10,
-      has_prev: false,
-      has_next: false,
-      sort: [],
-      filters: undefined
-    }, data: []
-  })
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState("")
-  const [searchColumns, setSearchColumns] = useState<string[]>(["name"])
-  const [pagination, setPagination] = useState({
-    pageIndex: 0, //initial page index
-    pageSize: 10, //default page size
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+interface UsersTableProps {
+  loading?: boolean;
+  fetchUsers?: () => void;
+  data: PaginatedUsers;
+  search: string;
+  setSearch: (search: string) => void;
+  searchColumns: string[];
+  setSearchColumns: (cols: string[]) => void;
+  pagination: PaginationState;
+  setPagination: (updaterOrValue: PaginationState | ((old: PaginationState) => PaginationState)) => void;
+  sorting: SortingState;
+  setSorting: (updaterOrValue: SortingState | ((old: SortingState) => SortingState)) => void;
+  onSearch?: (value: string) => void;
+  filterableColumns?: {
+    key: any;
+    label: any;
+  }[];
+  handlePaginationChange?: OnChangeFn<PaginationState>;
+  handleSortingChange?: OnChangeFn<SortingState>;
+}
 
-  // For filterable columns in search
-  const filterableColumns = useMemo(
-    () => getFilterableColumns(columns),
-    [columns]
-  );
-
-  const fetchUsers = () => {
-    setLoading(true)
-    getAllUsers({
-      q: search, search_columns: searchColumns,
-      page: pagination.pageIndex + 1,
-      size: pagination.pageSize,
-      sort: sorting.map(
-        (s) => `${s.id}:${s.desc ? "desc" : "asc"}`
-      )
-    }).then(res => {
-      setData(res)
-      setLoading(false)
-    }).catch(error => {
-      console.error("Error fetching users:", error)
-      setLoading(false)
-    })
-  }
-
-  const handlePaginationChange: OnChangeFn<PaginationState> = (updaterOrValue) => {
+export default function UsersTable({
+  loading = false,
+  fetchUsers = () => { },
+  data,
+  search,
+  setSearch,
+  searchColumns,
+  setSearchColumns,
+  pagination,
+  setPagination,
+  sorting,
+  setSorting,
+  onSearch = (value: string) => { setSearch(value) },
+  filterableColumns = [],
+  handlePaginationChange = (updaterOrValue) => {
     setPagination((prev) =>
       typeof updaterOrValue === "function"
         ? updaterOrValue(prev)
         : updaterOrValue
-    );
-  };
-
-  const handleSortingChange: OnChangeFn<SortingState> = (updaterOrValue) => {
+    )
+  },
+  handleSortingChange = (updaterOrValue) => {
     setSorting((prev) =>
-      typeof updaterOrValue === "function" ? updaterOrValue(prev) : updaterOrValue
-    );
-  };
-
-  const onSearch = (value: string) => {
-    if (value !== search) {
-      setSearch(value)
-    }
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(prev)
+        : updaterOrValue
+    )
   }
-
-  useEffect(() => {
-    fetchUsers()
-  }, [search, pagination.pageIndex, pagination.pageSize, sorting])
+}: UsersTableProps
+) {
 
   return (
     <>
@@ -81,7 +63,7 @@ export default function UsersTable() {
         <div>Loading users...</div>
       ) : (
         <ReusableTable
-          columns={columns}
+          columns={columns(fetchUsers)}
           data={data.data}
           searchPlaceholder="Search users..."
           showViewOptions={true}
