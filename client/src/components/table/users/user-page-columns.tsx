@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button"
 import { MoreHorizontal } from "lucide-react"
 import { useState } from "react"
 import { UserEditModal } from "@/components/ui/user/user-edit-modal"
+import { UserDeleteModal } from "@/components/ui/user/user-delete-modal"
 
 // Define columns for the users table
 export const columns = (
-  onItemUpdated?: () => void | Promise<void>
+  onUserUpdated?: () => void | Promise<void>
 ): ColumnDef<User>[] => [
     {
       accessorKey: "id",
@@ -83,6 +84,7 @@ export const columns = (
         const user = row.original;
         const [editOpen, setEditOpen] = useState(false);
         const [dropdownOpen, setDropdownOpen] = useState(false);
+        const [deleteOpen, setDeleteOpen] = useState(false);
 
         return (
           <>
@@ -104,7 +106,7 @@ export const columns = (
                 <DropdownMenuItem onClick={() => { setEditOpen(true); setDropdownOpen(false); }}>
                   Edit user
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => { (true); setDropdownOpen(false); }} className="text-red-600">
+                <DropdownMenuItem onClick={() => { setDeleteOpen(true); setDropdownOpen(false); }} className="text-red-600">
                   Delete user
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -114,7 +116,14 @@ export const columns = (
               user={user}
               isOpen={editOpen}
               setIsOpen={setEditOpen}
-              onUpdated={onItemUpdated}
+              onUpdated={onUserUpdated}
+            />
+            <UserDeleteModal
+              userId={String(user.id)}
+              userName={user.name}
+              isOpen={deleteOpen}
+              setIsOpen={setDeleteOpen}
+              onDeleted={onUserUpdated}
             />
           </>
         );
