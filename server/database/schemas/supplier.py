@@ -1,5 +1,5 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional, List
 
 class SupplierBase(BaseModel):
     name: str
@@ -21,3 +21,7 @@ class SupplierRead(SupplierBase):
 
     class Config:
         orm_mode = True
+        
+class SupplierSearchByItems(BaseModel):
+    item_ids: List[int] = Field(..., min_items=1, description="A list of item IDs to search for.")
+

@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 from pydantic import BaseModel, Field
+from datetime import date
 
 from database.schemas.purchase_order_item import PurchaseOrderItemReadCustom, PurchaseOrderItemInput
 
@@ -46,3 +47,8 @@ class PurchaseOrderCreateWithItems(BaseModel):
     order_date: Optional[datetime] = None
     status: str = "pending"
     po_items: List[PurchaseOrderItemInput] = Field(default_factory=list)
+
+class PurchaseOrderCreateFromCart(BaseModel):
+    supplier_id: int = Field(..., gt=0)
+    status: Optional[str] = "Pending"
+    order_date: date = Field(default_factory=date.today)

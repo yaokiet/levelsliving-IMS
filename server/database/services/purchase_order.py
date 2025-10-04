@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Iterable
 from datetime import date, datetime
+from fastapi import HTTPException, status
 
 from sqlalchemy import func, or_, String, Integer
 from sqlalchemy.orm import Session, joinedload, selectinload, load_only
@@ -10,15 +11,17 @@ from database.models.purchase_order import PurchaseOrder
 from database.models.purchase_order_item import PurchaseOrderItem
 from database.models.item import Item
 from database.models.supplier import Supplier
+from database.models.supplier_item import SupplierItem
+from database.models.cart import CartItem
 
 from database.schemas.purchase_order_item import PurchaseOrderItemCreate
-
 from database.schemas.purchase_order import (
     PurchaseOrderCreate, 
     PurchaseOrderDetails, 
     PurchaseOrderUpdate, 
     PurchaseOrderItemReadCustom, 
-    PurchaseOrderCreateWithItems
+    PurchaseOrderCreateWithItems,
+    PurchaseOrderCreateFromCart
 )
 
 from database.services.pagination import (
@@ -27,7 +30,8 @@ from database.services.pagination import (
     build_meta,
 )
 
-from database.services.purchase_order_item import create_purchase_order_item
+from database.services.cart_service import clear_user_cart
+
 
 def get_purchase_order(db: Session, po_id: int) -> Optional[PurchaseOrder]:
     """Return a single PurchaseOrder ORM object, or None."""
@@ -166,30 +170,69 @@ def get_purchase_order_details(db: Session, po_id: int) -> Optional[PurchaseOrde
         "po_items": lines,
     }
 
-def create_purchase_order(db: Session, payload: PurchaseOrderCreateWithItems):
-    with db.begin():  
+def create_purchase_order_from_cart_service(
+    db: Session, payload: PurchaseOrderCreateFromCart, user_id: int
+):
+    """
+    Creates a PO and PO Items from a user's cart, then clears the cart.
+    This entire process is a single database transaction.
+    """
+    with db.begin():  # This ensures the whole block is one atomic transaction
+        # 1. Fetch all items from the user's cart
+        cart_items = db.query(CartItem).filter(CartItem.user_id == user_id).all()
+
+        if not cart_items:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot create a purchase order from an empty cart.",
+            )
+
+        item_ids = [item.item_id for item in cart_items]
+        print("item ids",item_ids)
+        print("supplier_id", payload.supplier_id)
+        
+        # 1b. Fetch all relevant SupplierItem records in one efficient query
+        supplier_item_mappings = db.query(SupplierItem).filter(
+            SupplierItem.supplier_id == payload.supplier_id,
+            SupplierItem.item_id.in_(item_ids)
+        ).all()
+        print("supplier item mappings",supplier_item_mappings)
+
+        # 1c. Create a lookup map for fast access: {item_id: supplier_item_id}
+        supplier_item_map = {sim.item_id: sim.id for sim in supplier_item_mappings}
+        print("supplier item map",supplier_item_map)
+        # --------------------------------------------------------------------
+
+        # 2. Create the PurchaseOrder header
         po = PurchaseOrder(
             supplier_id=payload.supplier_id,
-            user_id=payload.user_id,
+            user_id=user_id,
             order_date=payload.order_date,
             status=payload.status,
         )
         db.add(po)
-        db.flush()  
+        
+        # 3. Flush the session to get the po.id
+        db.flush()
 
-        for line in payload.po_items:
-            create_purchase_order_item(
-                db,
-                PurchaseOrderItemCreate(
-                    purchase_order_id=po.id,
-                    item_id=line.item_id,
-                    qty=line.qty,
-                    supplier_item_id=line.supplier_item_id,
-                ),
-                autocommit=False,  # don't commit inside
-                refresh=False,     # no per-line refresh needed
+        # 4. Create PurchaseOrderItems from the cart items
+        for cart_line in cart_items:
+            # Look up the supplier_item_id from our map.
+            # .get() safely returns None if the mapping doesn't exist.
+            supplier_item_id = supplier_item_map.get(cart_line.item_id)
+            
+            po_item = PurchaseOrderItem(
+                purchase_order_id=po.id,
+                item_id=cart_line.item_id,
+                qty=cart_line.quantity, # Note: Ensure your CartItem model has a 'qty' attribute
+                supplier_item_id=supplier_item_id # <-- ASSIGN THE MAPPED ID HERE
             )
+            db.add(po_item)
 
+        # 5. Clear the user's cart
+        clear_user_cart(db, user_id)
+
+    db.refresh(po) 
     return get_purchase_order_details(db, po.id)
 
 
