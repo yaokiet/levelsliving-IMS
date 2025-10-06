@@ -8,7 +8,7 @@ interface DialogWithTriggerProps {
     dialogDescription?: string;
     cancelButtonText?: string;
     confirmButtonText?: string;
-    onConfirm?: () => void;
+    onConfirm?: () => Promise<boolean> | boolean;
     children?: React.ReactNode;
 }
 
@@ -23,6 +23,20 @@ export function DialogWithTrigger({
 }: DialogWithTriggerProps) {
     const [open, setOpen] = useState(false);
 
+    const handleConfirm = async () => {
+        if (!onConfirm) {
+            setOpen(false);
+            return;
+        }
+        try {
+            const result = await onConfirm();
+            // close only if callback indicates success (truthy)
+            if (result) setOpen(false);
+        } catch {
+            // don't close on thrown error
+        }
+    };
+    
     return (
         <>
             <DialogTriggerButton onClick={() => setOpen(true)}>
@@ -35,7 +49,7 @@ export function DialogWithTrigger({
                 dialogDescription={dialogDescription}
                 cancelButtonText={cancelButtonText}
                 confirmButtonText={confirmButtonText}
-                onConfirm={onConfirm}
+                onConfirm={handleConfirm}
             >
                 {children}
             </ReusableDialog>
