@@ -10,6 +10,7 @@ interface DialogWithTriggerProps {
     confirmButtonText?: string;
     onConfirm?: () => Promise<boolean> | boolean;
     children?: React.ReactNode;
+    confirmButtonDisabled?: boolean;
 }
 
 export function DialogWithTrigger({
@@ -20,6 +21,7 @@ export function DialogWithTrigger({
     confirmButtonText,
     onConfirm,
     children,
+    confirmButtonDisabled = false,
 }: DialogWithTriggerProps) {
     const [open, setOpen] = useState(false);
 
@@ -50,6 +52,7 @@ export function DialogWithTrigger({
                 cancelButtonText={cancelButtonText}
                 confirmButtonText={confirmButtonText}
                 onConfirm={handleConfirm}
+                confirmButtonDisabled={confirmButtonDisabled}
             >
                 {children}
             </ReusableDialog>
