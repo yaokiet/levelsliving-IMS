@@ -1,43 +1,38 @@
-version: '3.8' # Specify the Docker Compose file format version
+version: '3.8'
 
 services:
-  # PostgreSQL Database Service
   db:
-    image: postgres:16-alpine # Use a lightweight PostgreSQL image
-    restart: always           # Always restart if it stops
-    env_file:
-      - .env
+    image: postgres:16-alpine
+    restart: always
     environment:
       POSTGRES_DB: levelsliving
       POSTGRES_PASSWORD: password
     volumes:
-      # - pg_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
     ports:
-      - "5432:5432" # Map host port 5432 to container port 5432 (optional for FastAPI, useful for PGAdmin4)
+      - "5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
       retries: 5
+    networks:
+      - appnet
 
-  # FastAPI Application Service
-  server: # Changed service name from 'web' to 'server' as per your original request
-    build: . # Build the image from the Dockerfile in the current directory
+  server:
+    build: .
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "8000:8000" # Map host port 8000 to container port 8000
+      - "8000:8000"
     environment:
-      # Pass the DATABASE_URL to your FastAPI application
-      # 'db' is the service name of your PostgreSQL container, Docker Compose creates a network alias for it.
-      DATABASE_URL: postgresql://postgres:password@db:5432/levelsliving 
-      SECRET_KEY: ${SECRET_KEY} # Ensure SECRET_KEY is set in your .env file
-      # You can also load these from an .env file if preferred:
-      # DATABASE_URL: ${DATABASE_URL} # Requires DATABASE_URL defined in your project's .env
-    restart: always # Always restart if it stops
+      DATABASE_URL: postgresql://postgres:password@db:5432/levelsliving
+      SECRET_KEY: ${SECRET_KEY}
+    restart: always
     volumes:
-      - .:/app # Mount your local code into the container for live reloading (development)
+      - .:/app
+    networks:
+      - appnet
 
   pgadmin:
     image: dpage/pgadmin4
@@ -51,7 +46,14 @@ services:
       - db
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - appnet
 
 volumes:
-  pg_data: # Define the named volume for PostgreSQL data persistence
+  pg_data:
   pgadmin_data:
+
+networks:
+  appnet:
+    # external: true
+    driver: bridge

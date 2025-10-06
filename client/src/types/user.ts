@@ -7,7 +7,23 @@ export interface User {
   role: string
 }
 
+export interface UserCreate extends Omit<User, "id"> {
+  password: string;
+}
+
+export type UserUpdate = Partial<Omit<User, "id">> & {
+  password?: string;
+};
+
 export interface PaginatedUsers {
   meta: PageMeta;
   data: User[];
 }
+
+export type UserFormState = {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+  confirmPassword: string;
+};
