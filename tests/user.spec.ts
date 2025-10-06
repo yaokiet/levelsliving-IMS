@@ -1,7 +1,4 @@
-import { test, expect, request } from '@playwright/test';
+// user creation 
+// user edit 
 
-test('login page is shown', async ({ page }) => {
-  await page.goto('http://localhost:3000'); 
-
-  await expect(page.locator('body')).toContainText('Dashboard');
-});
+// WARNING, FRONTEND NOT FINISHED. FINISH TEST AFTER

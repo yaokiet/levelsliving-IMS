@@ -1,4 +1,4 @@
-import test, { expect } from "@playwright/test"
+import { test, expect } from "@playwright/test"
 
 
 test.describe.serial('item flow', () => {
@@ -18,7 +18,7 @@ test.describe.serial('item flow', () => {
         };
     });
 
-    // - item creation 
+    // item creation 
     test('create new item', async ({ page }) => {
         await page.goto(ITEM_DETAILS_URL)
 
@@ -48,7 +48,7 @@ test.describe.serial('item flow', () => {
     })
 
 
-    // - item edit
+    // item edit
     test('edit new item', async ({ page }) => {
         await page.goto(ITEM_DETAILS_URL)
 
@@ -71,8 +71,8 @@ test.describe.serial('item flow', () => {
         await page.getByRole('button', { name: /(save)/i }).click();
 
         await page.waitForLoadState('networkidle');
-        await modal.waitFor({ state: 'hidden' }); 
-        
+        await modal.waitFor({ state: 'hidden' });
+
         await page.getByPlaceholder('Filter items by SKU').fill(newSKU);
         await page.getByRole('button', { name: /search/i }).click();
 
