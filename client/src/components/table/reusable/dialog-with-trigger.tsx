@@ -50,6 +50,7 @@ export function DialogWithTrigger({
                 cancelButtonText={cancelButtonText}
                 confirmButtonText={confirmButtonText}
                 onConfirm={handleConfirm}
+                confirmButtonDisabled={!onConfirm}
             >
                 {children}
             </ReusableDialog>
