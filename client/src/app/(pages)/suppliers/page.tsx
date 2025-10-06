@@ -6,6 +6,7 @@ import { DialogWithTrigger } from "@/components/table/reusable/dialog-with-trigg
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { createSupplier } from "@/lib/api/supplierApi";
+import { toast } from "sonner";
 
 function SuppliersPageContent() {
   const tableRef = useRef<SupplierTableRef>(null)
@@ -32,7 +33,7 @@ function AddSupplierDialog({ onSupplierAdded }: { onSupplierAdded?: () => void }
     // Validate required fields
     if (!name.trim()) {
       alert("Supplier name is required!")
-      return
+      return false
     }
 
     setIsLoading(true)
@@ -53,12 +54,16 @@ function AddSupplierDialog({ onSupplierAdded }: { onSupplierAdded?: () => void }
       setEmail("")
       setContactNumber("")
       
-      alert(`Supplier "${name}" added successfully!`)
+      toast.success("Success!", {
+        description: `Supplier ${name} added successfully.`,
+      });
       // Refresh the table data
-      onSupplierAdded?.()
+      onSupplierAdded?.();
+      return true
     } catch (error) {
       console.error("Error creating supplier:", error)
       alert("Failed to create supplier. Please try again.")
+      return false
     } finally {
       setIsLoading(false)
     }
