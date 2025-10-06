@@ -5,6 +5,7 @@ import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { Button } from "@/components/ui/button";
 import { updateUser } from "@/lib/api/userApi"; 
 import type { User, UserFormState } from "@/types/user";
+import { toast } from "sonner";
 
 interface UserEditModalProps {
   user: User;
@@ -95,6 +96,9 @@ export function UserEditModal({
       setSubmitting(true);
       await updateUser(String(user.id), payload);
       await onUpdated?.();
+      toast.success("Success!", {
+        description: `User ${form.name} updated successfully.`,
+      });
       return { status: 200 };
     } catch (e: unknown) {
       const fallback = "An error occurred while updating the user.";
