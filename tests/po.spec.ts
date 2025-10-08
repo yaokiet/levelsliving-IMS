@@ -134,13 +134,19 @@ test.describe.serial('purchase order flow', () => {
 
         await parentRow.getByRole('button', { name: /add to cart/i }).click();
         const addParentModal = page.getByRole('dialog');
-        
-        await expect(addParentModal).toContainText(childItem1.name);
-        await expect(addParentModal).toContainText(childItem1.sku);
-        await expect(modal.locator(`input[id^="qty-"]`).nth(1)).toHaveValue(childItem1.componentQuantity.toString());
-        await expect(addParentModal).toContainText(childItem2.name);
-        await expect(addParentModal).toContainText(childItem2.sku);
-        await expect(modal.locator(`input[id^="qty-"]`).nth(0)).toHaveValue(childItem2.componentQuantity.toString());
+
+        const childItem1Line = addParentModal.locator('.grid.grid-cols-3.items-center.gap-4', {
+            hasText: `SKU: ${childItem1.sku}`,
+        });
+        await expect(
+            childItem1Line.getByRole('spinbutton')
+        ).toHaveValue(childItem1.componentQuantity.toString());
+        const childItem2Line = addParentModal.locator('.grid.grid-cols-3.items-center.gap-4', {
+            hasText: `SKU: ${childItem2.sku}`,
+        });
+        await expect(
+            childItem2Line.getByRole('spinbutton')
+        ).toHaveValue(childItem2.componentQuantity.toString());
 
         await addParentModal.locator('[data-slot="dialog-footer"]')
             .getByRole('button', { name: /add to cart/i })
