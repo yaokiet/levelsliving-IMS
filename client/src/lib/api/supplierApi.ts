@@ -15,6 +15,19 @@ export async function getAllSuppliers(): Promise<Supplier[]> {
     }
 }
 
+export async function getSuppliersByItemIds(itemIds: number[]): Promise<Supplier[]> {
+    if (itemIds.length === 0) {
+        return [];
+    }   
+    return apiFetch<Supplier[]>(API_PATHS.supplier_search_by_items, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ item_ids: itemIds }),
+    });
+}
+
 /**
  * Get a supplier by ID
  */

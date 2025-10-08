@@ -141,6 +141,6 @@ def clear_cart(request: Request, db: Session = Depends(get_db)):
             detail="Not authenticated",
         )
     user_id = user_payload["user_id"]
-    cart_service.clear_user_cart(db, user_id=user_id)
+    cart_service.delete_cart(db, user_id=user_id)
     return {"message": "Cart cleared successfully."}
 
