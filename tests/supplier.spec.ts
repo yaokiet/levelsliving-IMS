@@ -8,7 +8,7 @@ test.describe.serial('supplier flow', () => {
     test.beforeAll(() => {
         const stamp = new Date().toISOString().replace(/\D/g, '').slice(0, 10); // YYYYMMDDHH
         supplier = {
-            name: `test-${stamp}`,
+            name: `test-supplier-${stamp}`,
             description: `Testing supplier profile`,
             contactNumber: '+65 9999 9999',
             email: 'testsupplier@gmail.com'
@@ -30,7 +30,6 @@ test.describe.serial('supplier flow', () => {
 
         await page.getByRole('button', { name: /(add supplier)/i }).click();
 
-        // await page.waitForLoadState('networkidle');
         await modal.waitFor({ state: 'hidden' });
 
         await page.getByPlaceholder('Search suppliers...').fill(supplier.name);
@@ -45,15 +44,33 @@ test.describe.serial('supplier flow', () => {
     })
 
     // supplier edit
-    // WARNING, FRONTEND NOT FINISHED. FINISH TEST AFTER
-    // test('edit supplier', async ({ page }) => {
-    //     await page.goto(SUPPLIER_URL)
+    test('edit supplier', async ({ page }) => {
+        await page.goto(SUPPLIER_URL)
 
-    //     await page.getByPlaceholder('Search suppliers...').fill(supplier.name);
-    //     await page.getByRole('button', { name: /search/i }).click();
+        await page.getByPlaceholder('Search suppliers...').fill(supplier.name);
+        await page.getByRole('button', { name: /search/i }).click();
 
-    //     const row = page.getByRole('row', { name: new RegExp(`\\b${supplier.name}\\b`, 'i') });
-    // })
+        const row = page.getByRole('row', { name: new RegExp(`\\b${supplier.name}\\b`, 'i') });
+        await expect(row).toBeVisible();
+        await expect(row).toContainText(supplier.name);
+        await expect(row).toContainText(supplier.description);
+        await expect(row).toContainText(supplier.contactNumber);
+        await expect(row).toContainText(supplier.email);
+        
+        const btn = row.getByRole('button');
+        await expect(btn).toBeVisible();
+        await btn.click();
+
+        const title = page.locator('[data-slot="card-title"]').first();
+        await expect(title).toContainText(supplier.name);
+
+        const editBtn = page.getByRole('button', { name: /^Edit$/ });
+        await expect(editBtn).toBeVisible();
+        await expect(editBtn).toBeEnabled();
+        await editBtn.click();
+
+        // wait for frontend to be finished
+    })
 
 })
 

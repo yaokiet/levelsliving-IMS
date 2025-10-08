@@ -13,5 +13,16 @@
   },
   "dependencies": {
     "wait-on": "^9.0.1"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yaokiet/levelsliving-IMS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yaokiet/levelsliving-IMS/issues"
+  },
+  "homepage": "https://github.com/yaokiet/levelsliving-IMS#readme"
 }
