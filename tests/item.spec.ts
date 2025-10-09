@@ -24,6 +24,8 @@ test.describe.serial('item flow', () => {
 
         await page.getByRole('button', { name: /add item/i }).click();
 
+        const modal = page.getByRole('dialog');
+
         await page.getByLabel('Item Name').fill(item.name);
         await page.getByLabel('Item SKU').fill(item.sku);
         await page.getByLabel('Variant').fill(item.variant);
@@ -33,7 +35,7 @@ test.describe.serial('item flow', () => {
 
         await page.getByRole('button', { name: /(create item)/i }).click();
 
-        await page.waitForLoadState('networkidle');
+        await modal.waitFor({ state: 'hidden' });
 
         await page.getByPlaceholder('Filter items by SKU').fill(item.sku);
         await page.getByRole('button', { name: /search/i }).click();

@@ -103,6 +103,7 @@ INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 ('SCRW-PK-03', 'Component', 'Screw Pack', 'Wood', 160, 40),
 ('DESK-TOP-02', 'Component', 'Desk Tabletop', 'Walnut Veneer', 15, 5),
 ('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6);
+('DESK-LEG-02-2', 'Component', 'Desk Leg Set 2', 'Fixed', 25, 6);
 
 -- =======================
 -- SUPPLIER_ITEM
