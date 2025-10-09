@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Item } from "@/types/item";
 import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
+import { LinkSupplierModal } from "@/components/ui/item/link-to-supplier-modal"
 
 // Importing of Data Table Components (For easier reuse)
 import { DataTableColumnHeader } from "../reusable/data-table-column-header";
@@ -163,7 +165,14 @@ export const createMainPageColumns = (
     cell: ({ row }) => {
       const item = row.original;
       const [editOpen, setEditOpen] = useState(false);
+      const [linkSupplierOpen, setLinkSupplierOpen] = useState(false); // 2. Add state for the new modal
       const [dropdownOpen, setDropdownOpen] = useState(false);
+
+      const handleSuccess = async () => {
+        // You can add success notifications (toasts) here
+        toast.success("Supplier linked successfully");
+        await onItemUpdated?.();
+      };
 
       return (
         <>
@@ -180,6 +189,11 @@ export const createMainPageColumns = (
                 onClick={() => navigator.clipboard.writeText(item.sku)}
               >
                 Copy SKU
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => { setLinkSupplierOpen(true); setDropdownOpen(false); }}
+              >
+                Link to Supplier
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => { setEditOpen(true); setDropdownOpen(false); }}>
@@ -198,6 +212,13 @@ export const createMainPageColumns = (
             setIsOpen={setEditOpen}
             hideLauncher
             onUpdated={onItemUpdated}
+          />
+
+          <LinkSupplierModal
+            item={item}
+            isOpen={linkSupplierOpen}
+            setIsOpen={setLinkSupplierOpen}
+            onSuccess={handleSuccess}
           />
         </>
       );
