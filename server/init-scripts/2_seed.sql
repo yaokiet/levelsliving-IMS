@@ -102,8 +102,34 @@ INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 ('SCRW-PK-02', 'Component', 'Screw Pack', 'M4', 180, 50),
 ('SCRW-PK-03', 'Component', 'Screw Pack', 'Wood', 160, 40),
 ('DESK-TOP-02', 'Component', 'Desk Tabletop', 'Walnut Veneer', 15, 5),
-('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6);
-('DESK-LEG-02-2', 'Component', 'Desk Leg Set 2', 'Fixed', 25, 6);
+('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6),
+('DESK-LEG-02-2', 'Component', 'Desk Leg Set 2', 'Fixed', 25, 6),('DESK-FRM-03', 'Component', 'Desk Frame', 'Adjustable', 20, 5),
+('CABLE-ETH-01', 'Electronics', 'Ethernet Cable', 'Cat6 2m', 50, 20),
+('CABLE-ETH-02', 'Electronics', 'Ethernet Cable', 'Cat6 5m', 40, 15),
+('ADAPTER-001', 'Electronics', 'USB-C to HDMI Adapter', NULL, 25, 10),
+('ADAPTER-002', 'Electronics', 'USB-C to Ethernet Adapter', NULL, 20, 8),
+('SWITCH-001', 'Electronics', 'Network Switch', '8-Port Gigabit', 10, 5),
+('ROUTER-001', 'Electronics', 'Wi-Fi Router', 'AX3000', 8, 4),
+('CAMERA-001', 'Electronics', 'Security Camera', 'Indoor 1080p', 12, 6),
+('CAMERA-002', 'Electronics', 'Security Camera', 'Outdoor 4K', 6, 3),
+('MIC-001', 'Electronics', 'USB Microphone', 'Condenser', 10, 5),
+('STAND-MIC-01', 'Component', 'Microphone Stand', 'Adjustable', 25, 10),
+('STAND-MON-01', 'Component', 'Monitor Stand', 'Wood', 15, 5),
+('STAND-LAP-01', 'Component', 'Laptop Stand', 'Aluminum', 20, 8),
+('EXT-CORD-01', 'Electronics', 'Extension Cord', '3m', 30, 10),
+('EXT-CORD-02', 'Electronics', 'Extension Cord', '5m', 25, 10),
+('PLANT-001', 'Furniture', 'Artificial Plant', 'Medium', 15, 5),
+('PLANT-002', 'Furniture', 'Artificial Plant', 'Large', 10, 5),
+('CLOCK-001', 'Decor', 'Wall Clock', 'Round White', 10, 4),
+('RUG-001', 'Decor', 'Office Rug', 'Grey', 8, 3),
+('PAINT-001', 'Decor', 'Wall Art', 'Abstract', 6, 2),
+('CABINET-003', 'Furniture', 'Storage Cabinet', 'Wood', 6, 3),
+('CABINET-004', 'Furniture', 'Filing Cabinet', 'Metal', 5, 2),
+('CUSHION-001', 'Decor', 'Throw Cushion', 'Blue', 20, 10),
+('TRAY-001', 'Office Supply', 'Desk Organizer Tray', 'Plastic', 25, 10),
+('BIND-001', 'Office Supply', 'File Binder', 'A4', 40, 15),
+('PAPER-001', 'Office Supply', 'Printing Paper', 'A4 Ream', 60, 20),
+('WHITEBOARD-001', 'Office Supply', 'Whiteboard', 'Magnetic 90x60cm', 8, 4);
 
 -- =======================
 -- SUPPLIER_ITEM

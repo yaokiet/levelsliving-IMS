@@ -7,7 +7,6 @@ import {
   Truck,
   Container,
   Gauge,
-  Files,
   Users,
   FileText
 } from "lucide-react";
@@ -42,11 +41,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       name: "Inventory",
       url: "/item-details",
       icon: Warehouse,
-    },
-    {
-      name: "Reports",
-      url: "/reports",
-      icon: Files,
     },
     {
       name: "Suppliers",

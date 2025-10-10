@@ -1,16 +1,16 @@
 import { test, expect } from "@playwright/test"
 
-// add item to cart and checkout (expect url to be pdf page)
-// add items to cart and no matching supplier (button disabled)
-
-// add item to cart, validate multiple child components 
 test.describe.serial('purchase order flow', () => {
     const CART_URL = "http://localhost:3000/cart"
     const ITEM_DETAILS_URL = "http://localhost:3000/item-details"
+    const SUPPLIER_URL = "http://localhost:3000/suppliers"
 
     let parentItem: { name: string; sku: string; variant: string; type: string; qty: string; threshold: string };
+
     let childItem1: { name: string; sku: string; variant: string; type: string; qty: string; threshold: string; componentQuantity: string };
     let childItem2: { name: string; sku: string; variant: string; type: string; qty: string; threshold: string; componentQuantity: string };
+
+    let supplier: { name: string; description: string; contactNumber: string; email: string };
 
     test.beforeAll(() => {
         const stamp = new Date().toISOString().replace(/\D/g, '').slice(0, 10); // YYYYMMDDHH
@@ -42,10 +42,17 @@ test.describe.serial('purchase order flow', () => {
             threshold: '15',
             componentQuantity: '89'
         };
+
+        supplier = {
+            name: `test-supplier-PO-${stamp}`,
+            description: `Testing supplier profile for PO`,
+            contactNumber: '+65 1111 1111',
+            email: 'testsupplierPO@gmail.com'
+        };
     });
 
     // add item to cart, validate multiple child components 
-    test('create new item', async ({ page }) => {
+    test('create parent item made of 2 children, and add to cart', async ({ page }) => {
         // create parent item
         await page.goto(ITEM_DETAILS_URL)
         await page.getByRole('button', { name: /add item/i }).click();
@@ -165,5 +172,159 @@ test.describe.serial('purchase order flow', () => {
         await expect(childCard2.locator('input[type="number"]')).toHaveValue(childItem2.componentQuantity.toString());
 
     })
+
+    // add items to cart and no suppliers available (button disabled)
+    test('add items to cart without valid suppliers', async ({ page }) => {
+        await page.goto(CART_URL)
+        const poButton = page.getByRole('button', { name: /po creation/i });
+        await expect(poButton).toBeDisabled();
+
+        // add a new test supplier
+        await page.goto(SUPPLIER_URL)
+
+        await page.getByRole('button', { name: /add supplier/i }).click();
+
+        const modal = page.getByRole('dialog');
+        await expect(modal).toBeVisible();
+
+        await page.getByLabel('Name').fill(supplier.name);
+        await page.getByLabel('Description').fill(supplier.description);
+        await page.getByLabel('Contact Number').fill(supplier.contactNumber);
+        await page.getByLabel('Email').fill(supplier.email);
+
+        await page.getByRole('button', { name: /(add supplier)/i }).click();
+
+        // link child item 1 and child item 2 to new supplier
+        await page.goto(ITEM_DETAILS_URL)
+
+        await page.getByPlaceholder('Filter items by SKU').fill('sku-child');
+        await page.getByRole('button', { name: /search/i }).click();
+
+        const childItem1Row = page.getByRole('row', { name: new RegExp(`\\b${childItem1.sku}\\b`, 'i') });
+        await childItem1Row.getByRole('button', { name: /open menu/i }).click();
+        await page.getByRole('menuitem', { name: /link to supplier/i }).click();
+        await modal.getByRole('radio', { name: supplier.name }).click();
+        await modal.getByRole('button', { name: /confirm link/i }).click();
+
+        await modal.waitFor({ state: 'hidden' });
+
+        await page.getByPlaceholder('Filter items by SKU').fill('sku-child');
+        await page.getByRole('button', { name: /search/i }).click();
+
+        const childItem2Row = page.getByRole('row', { name: new RegExp(`\\b${childItem2.sku}\\b`, 'i') });
+        await childItem2Row.getByRole('button', { name: /open menu/i }).click();
+        await page.getByRole('menuitem', { name: /link to supplier/i }).click();
+        await modal.getByRole('radio', { name: supplier.name }).click();
+        await modal.getByRole('button', { name: /confirm link/i }).click();
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.goto(CART_URL)
+        ]);
+        await page.locator('[data-slot="card"]', { hasText: `SKU: ${childItem1.sku}` })
+            .locator('[data-slot="checkbox"]')
+            .click();
+        await page.locator('[data-slot="card"]', { hasText: `SKU: ${childItem2.sku}` })
+            .locator('[data-slot="checkbox"]')
+            .click();
+        const supplierCard = page.locator('[data-slot="card"]', { hasText: /select supplier/i });
+        await supplierCard.getByRole('radio', { name: supplier.name }).click();
+
+        await expect(poButton).toBeEnabled();
+    })
+
+    // add item to cart and checkout (expect url to be pdf page)
+    test('add items to cart and checkout', async ({ page, context }) => {
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.goto(CART_URL)
+        ]);
+        const poButton = page.getByRole('button', { name: /po creation/i });
+        await page.locator('[data-slot="card"]', { hasText: `SKU: ${childItem1.sku}` })
+            .locator('[data-slot="checkbox"]')
+            .click();
+        await page.locator('[data-slot="card"]', { hasText: `SKU: ${childItem2.sku}` })
+            .locator('[data-slot="checkbox"]')
+            .click();
+        const supplierCard = page.locator('[data-slot="card"]', { hasText: /select supplier/i });
+        await supplierCard.getByRole('radio', { name: supplier.name }).click();
+
+        await expect(poButton).toBeEnabled();
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            poButton.click()
+        ]);
+
+        const orderItemsCard = page.locator('[data-slot="card"]', { hasText: 'Order Items' });
+
+        await expect(orderItemsCard).toContainText(childItem1.name);
+        await expect(orderItemsCard).toContainText(`SKU: ${childItem1.sku}`);
+        await expect(orderItemsCard).toContainText(`Variant: ${childItem1.variant}`);
+        await expect(orderItemsCard).toContainText(`Qty: ${childItem1.componentQuantity}`);
+
+        await expect(orderItemsCard).toContainText(childItem2.name);
+        await expect(orderItemsCard).toContainText(`SKU: ${childItem2.sku}`);
+        await expect(orderItemsCard).toContainText(`Variant: ${childItem2.variant}`);
+        await expect(orderItemsCard).toContainText(`Qty: ${childItem2.componentQuantity}`);
+
+        const supplierCardCheckout = page.locator('[data-slot="card"]', { hasText: 'Supplier Details' });
+        await expect(supplierCardCheckout).toContainText(supplier.name);
+        await expect(supplierCardCheckout).toContainText(supplier.email);
+        await expect(supplierCardCheckout).toContainText(supplier.description);
+
+        // validate checkout page details
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            await page.getByRole('button', { name: 'Confirm and Create PO' }).click()
+        ]);
+
+        await expect(page.getByRole('heading', { name: /purchase order/i })).toBeVisible();
+        await expect(page.getByText(/PO #\d+/)).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Print' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Download PDF' })).toBeVisible();
+
+        await expect(page.locator('div.flex.justify-between', { hasText: 'Status:' })).toContainText('Submitted');
+
+        await expect(page.getByText(supplier.name)).toBeVisible();
+        await expect(page.getByText(supplier.description)).toBeVisible();
+        await expect(page.getByText(supplier.description)).toBeVisible();
+        await expect(page.getByText(supplier.contactNumber)).toBeVisible();
+
+        // Items table — child 1 row
+        let row = page.getByRole('row', { name: new RegExp(`\\b${childItem1.sku}\\b`) });
+        await expect(row).toContainText(childItem1.sku);
+        await expect(row).toContainText(childItem1.name);
+        await expect(row).toContainText(childItem1.variant);
+        await expect(row).toContainText(childItem1.componentQuantity);
+
+        // Items table — child 2 row
+        row = page.getByRole('row', { name: new RegExp(`\\b${childItem2.sku}\\b`) });
+        await expect(row).toContainText(childItem2.sku);
+        await expect(row).toContainText(childItem2.name);
+        await expect(row).toContainText(childItem2.variant);
+        await expect(row).toContainText(childItem2.componentQuantity);
+
+        // Totals
+        const total = String(Number(childItem1.componentQuantity) + Number(childItem2.componentQuantity));
+        await expect(page.getByText(new RegExp(`Total Items:\\s*${total}\\b`))).toBeVisible();
+
+        // --- ADDED: verify Print opens a popup and calls window.print() ---
+        await context.addInitScript(() => {
+            const orig = window.print;
+            (window as any).__print_called = false;
+            window.print = () => { (window as any).__print_called = true; try { orig?.(); } catch { } };
+        });
+        const [printPopup] = await Promise.all([
+            page.waitForEvent('popup'),
+            page.getByRole('button', { name: 'Print' }).click(),
+        ]);
+        await printPopup.waitForLoadState('domcontentloaded');
+        const printed = await printPopup.evaluate(() => (window as any).__print_called === true);
+        expect(printed).toBeTruthy();
+
+
+    })
+
 
 })
