@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from fastapi import Depends
 from testcontainers.postgres import PostgresContainer
 import uuid
+import datetime as dt
+
 
 @pytest.fixture(scope="session", autouse=True)
 def _env_basics():
@@ -144,3 +146,25 @@ def create_item(get_test_db):
         return it
 
     return _create_item
+
+@pytest.fixture
+def create_order(get_test_db):
+    from database.models import Order
+    def _create_order(**overrides):
+        now = dt.datetime.now(dt.timezone.utc)
+        order = Order(
+            shopify_order_id=int(uuid.uuid4().int % 10**12),
+            order_date=overrides.get("order_date", now),
+            name=overrides.get("name", "Alice Tan"),
+            contact=overrides.get("contact", "91234567"),
+            street=overrides.get("street", "123 Example St"),
+            unit=overrides.get("unit", "#01-01"),
+            postal_code=overrides.get("postal_code", "123456"),
+            status=overrides.get("status", "pending"),
+        )
+        get_test_db.add(order)
+        get_test_db.commit()
+        get_test_db.refresh(order)
+        return order
+
+    return _create_order

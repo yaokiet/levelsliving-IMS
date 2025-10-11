@@ -85,7 +85,6 @@ def update_existing_order(order_id: int, payload: OrderUpdate, db: Session = Dep
         raise HTTPException(status_code=404, detail="Order not found")
     return updated
 
-
 @router.delete("/{order_id}", response_model=OrderRead)
 def delete_existing_order(order_id: int, db: Session = Depends(get_db)):
     """Delete an order by id."""
