@@ -34,9 +34,8 @@ jobs:
       - name: Deploy Backend to Droplet
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
-          cd /opt/backend
-          docker-compose pull
-          docker-compose up -d
+          docker compose pull
+          docker compose up -d
           EOF
         env:
           DROPLET_IP: ${{ secrets.DROPLET_IP }}
