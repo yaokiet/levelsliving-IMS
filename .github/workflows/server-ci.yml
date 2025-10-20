@@ -1,4 +1,4 @@
-name: Build and Test Server
+name: Build and Deploy Server
 
 on:
   push:
@@ -32,5 +32,14 @@ jobs:
       - name: Run pytest
         env:
           DOCKER_HOST: unix:///var/run/docker.sock  # Ensure Docker is accessible
+          LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
+          LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
+          LARK_SPREADSHEET_ID: ${{ secrets.LARK_SPREADSHEET_ID }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+          MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
         run: |
           pytest server/tests
