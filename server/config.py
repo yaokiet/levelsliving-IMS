@@ -1,5 +1,4 @@
-from pydantic import SecretStr
-from pydantic_settings import BaseSettings
+from pydantic import SecretStr, BaseSettings
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
