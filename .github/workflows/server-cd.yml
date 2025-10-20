@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   workflow_run:
     workflows:
-      - server-ci.yml  # Name of the triggering workflow
+      - server-ci.yml 
     types:
       - completed
 
@@ -30,13 +30,23 @@ jobs:
           push: true
           tags: joelsngzw/levelslivingserver:latest
 
-      # Step 4: Deploy to DigitalOcean Droplet
+      # Step 4: Set up SSH agent
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 5: Deploy to DigitalOcean Droplet
       - name: Deploy Backend to Droplet
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
-          docker compose pull
-          docker compose up -d
+          ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
+          docker compose pull || { echo "Failed to pull Docker images"; exit 1; }
+          docker compose up -d || { echo "Failed to start Docker containers"; exit 1; }
           EOF
-        env:
-          DROPLET_IP: ${{ secrets.DROPLET_IP }}
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 6: Verify Deployment
+      # - name: Verify Deployment
+      #   run: |
+      #     # Wait a few seconds for the server to start
+      #     sleep 10 
+      #     curl -f http://${{ secrets.DROPLET_IP }}:8000/api/v1/health || { echo "Health check failed"; exit 1; }
