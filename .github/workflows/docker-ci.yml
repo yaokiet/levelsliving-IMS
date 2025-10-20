@@ -4,27 +4,40 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'server/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      # Step 3: Build and push the Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./server
           push: true
           tags: joelsngzw/levelslivingserver:latest
-      - name: Notify webhook server to deploy
+
+      # Step 4: Deploy to DigitalOcean Droplet
+      - name: Deploy Backend to Droplet
         run: |
-          curl -X POST http://178.128.84.21:9000/ \
-              -H "Authorization: Bearer ${{ secrets.WEBHOOK_TOKEN }}"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
+          cd /opt/backend
+          docker-compose pull
+          docker-compose up -d
+          EOF
+        env:
+          DROPLET_IP: ${{ secrets.DROPLET_IP }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
