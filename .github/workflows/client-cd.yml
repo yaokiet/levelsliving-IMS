@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    steps:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
