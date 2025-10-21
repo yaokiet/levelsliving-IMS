@@ -156,16 +156,11 @@ INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
 -- =======================
 -- PURCHASE ORDER
 -- =======================
-INSERT INTO purchase_order (id, supplier_id, user_id, order_date, status) VALUES
+INSERT INTO purchase_order (supplier_id, user_id, order_date, status) VALUES
 -- PO to restock components, placed by the admin user
-(1, 1, 1, '2025-08-15 11:30:00', 'pending'),
+(1, 1, '2025-08-15 11:30:00', 'pending'),
 -- PO to restock electronics, placed by a regular user
-(2, 3, 2, '2025-08-22 16:00:00', 'pending');
-
-SELECT setval(
-  pg_get_serial_sequence('purchase_order', 'id'),
-  COALESCE((SELECT MAX(id) FROM purchase_order), 0)
-);
+(3, 2, '2025-08-22 16:00:00', 'pending');
 
 -- =======================
 -- PURCHASE ORDER ITEM
@@ -417,21 +412,21 @@ INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, 
 
 -- STEP 1: Define ALL necessary items with explicit IDs to guarantee they exist.
 
-INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUES
+INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 -- Level 1: Final Product
-(101, 'CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
+('CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
 
 -- Level 2: Sub-Assemblies
-(102, 'ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
-(103, 'ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
+('ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
+('ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
 
 -- Level 3: All Raw Components for this specific test item
-(104, 'SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
-(105, 'BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
-(106, 'FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
-(107, 'GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
-(108, 'CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
-(109, 'BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
+('SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
+('BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
+('FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
+('GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
+('CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
+('BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
 
 
 -- STEP 2: Define the relationships using these new, guaranteed-to-exist IDs.
