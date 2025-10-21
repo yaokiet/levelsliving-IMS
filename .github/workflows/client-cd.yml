@@ -14,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to DigitalOcean App Platform
+      - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          args: apps update-deployment ${{ secrets.DIGITALOCEAN_APP_ID }}
+
+      - name: Deploy to DigitalOcean App Platform
+        run: doctl apps update-deployment ${{ secrets.DIGITALOCEAN_APP_ID }}
