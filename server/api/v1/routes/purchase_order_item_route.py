@@ -8,7 +8,7 @@ from database.services.purchase_order_item import (
 
 router = APIRouter(prefix="/purchase-order-item", tags=["purchase-order-item"])
 
-@router.get("/", response_model=list[PurchaseOrderItemRead])
+@router.get("", response_model=list[PurchaseOrderItemRead])
 def read_purchase_order_items(db: Session = Depends(get_db)):
     """
     Retrieve all purchase order items.
@@ -25,7 +25,7 @@ def read_purchase_order_item(po_id: int, item_id: int, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Purchase order item not found")
     return po_item
 
-@router.post("/", response_model=PurchaseOrderItemRead)
+@router.post("", response_model=PurchaseOrderItemRead)
 def create_new_purchase_order_item(payload: PurchaseOrderItemCreate, db: Session = Depends(get_db)):
     """
     Create a new purchase order item.

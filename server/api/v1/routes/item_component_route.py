@@ -16,7 +16,7 @@ from database.services.item_component import (
 
 router = APIRouter(prefix="/item-component", tags=["item-component"])
 
-@router.get("/", response_model=list[ItemComponentRead])
+@router.get("", response_model=list[ItemComponentRead])
 def read_item_components(db: Session = Depends(get_db)):
     """
     Retrieve all item-component (BOM) relationships.
@@ -33,7 +33,7 @@ def read_item_component(parent_id: int, child_id: int, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="ItemComponent not found")
     return row
 
-@router.post("/", response_model=ItemComponentRead)
+@router.post("", response_model=ItemComponentRead)
 def create_new_item_component(payload: ItemComponentCreate, db: Session = Depends(get_db)):
     """
     Create a new item-component relationship.

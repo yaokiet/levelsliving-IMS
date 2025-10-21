@@ -8,7 +8,7 @@ from database.services.supplier import (
 
 router = APIRouter(prefix="/supplier", tags=["supplier"])
 
-@router.get("/", response_model=list[SupplierRead])
+@router.get("", response_model=list[SupplierRead])
 def read_suppliers(db: Session = Depends(get_db)):
     """
     Retrieve all suppliers.
@@ -25,7 +25,7 @@ def read_supplier(supplier_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Supplier not found")
     return supplier
 
-@router.post("/", response_model=SupplierRead)
+@router.post("", response_model=SupplierRead)
 def create_new_supplier(payload: SupplierCreate, db: Session = Depends(get_db)):
     """
     Create a new supplier.

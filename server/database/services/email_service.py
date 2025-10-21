@@ -21,7 +21,7 @@ from database.models.supplier import Supplier
 # This block remains the same as it correctly loads from your config.
 conf = ConnectionConfig(
     MAIL_USERNAME=settings.mail_username,
-    MAIL_PASSWORD=settings.mail_password,
+    MAIL_PASSWORD=settings.mail_password.get_secret_value(),
     MAIL_FROM=settings.mail_from,
     MAIL_PORT=settings.mail_port,
     MAIL_SERVER=settings.mail_server,

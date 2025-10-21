@@ -1,0 +1,59 @@
+name: Build and Test Client
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "client/**"  # Trigger only when changes are made in the client directory
+      - "package-lock.json" # Also trigger if the root lockfile changes
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20  # Use the Node.js version required by your project
+
+      # Step 3: Cache npm dependencies for both directories
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 4: Install root dependencies
+      - name: Install root dependencies
+        run: npm install
+
+      # Step 5: Install client dependencies and build
+      - name: Install client dependencies and Build
+        working-directory: ./client
+        run: |
+          npm install
+          npm run build
+
+      # Step 6: Set up Docker
+      - name: Set up Docker
+        run: |
+          sudo service docker start
+          docker info
+
+      # Step 7: Run Playwright tests
+      - name: Run Playwright tests
+        run: |
+          npx playwright install --with-deps
+          npx playwright test     
+        env:
+          CI: true  # Required for Playwright to run in CI environments
+  

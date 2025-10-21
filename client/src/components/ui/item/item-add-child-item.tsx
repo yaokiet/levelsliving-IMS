@@ -190,7 +190,7 @@ export function ItemAddChildItem({
 
       // Validate all selected quantities
       const invalidQtyIds = Array.from(selected).filter(
-        (childId) => parsePositiveInt(qtyById.get(childId) ?? "") === null
+        (childId) => parsePositiveInt(Number(qtyById.get(childId)) ?? -1) === null
       );
       if (invalidQtyIds.length > 0) {
         setError(
@@ -204,7 +204,7 @@ export function ItemAddChildItem({
       const payloads = Array.from(selected).map((childId) => ({
         parent_id: parentItemId,
         child_id: childId,
-        qty_required: parsePositiveInt(qtyById.get(childId) ?? "") as number,
+        qty_required: parsePositiveInt(Number(qtyById.get(childId)) ?? -1) as number,
       }));
 
       const results = await Promise.allSettled(

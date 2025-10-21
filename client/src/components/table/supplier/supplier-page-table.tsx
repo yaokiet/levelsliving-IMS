@@ -30,7 +30,7 @@ const SupplierPageTable = forwardRef<SupplierTableRef>((props, ref) => {
   }
 
   // Create columns with the refresh callback
-  const columns = createColumns(fetchSuppliers)
+  const columns = createColumns()
 
   const filterableColumns = useMemo(
     () => getFilterableColumns(columns),

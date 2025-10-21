@@ -27,7 +27,7 @@ from database.services.email_service import send_purchase_order_email
 
 router = APIRouter(prefix="/purchase-order", tags=["purchase-order"])
 
-@router.get("/", response_model=Paginated[PurchaseOrderRead])
+@router.get("", response_model=Paginated[PurchaseOrderRead])
 def list_purchase_orders(
     page: int = Query(1, ge=1, description="Page number (1-based)"),
     size: int = Query(50, ge=1, le=200, description="Page size"),
@@ -74,7 +74,7 @@ def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Purchase order not found")
     return po
 
-# @router.post("/", response_model=PurchaseOrderDetails)
+# @router.post("", response_model=PurchaseOrderDetails)
 # def create_new_purchase_order(payload: PurchaseOrderCreateWithItems, db: Session = Depends(get_db)):
 #     """
 #     Create a new purchase order **and its items** in a single transaction.
@@ -82,7 +82,7 @@ def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
 #     """
 #     return create_purchase_order(db, payload)
 
-@router.post("/", response_model=PurchaseOrderDetails)
+@router.post("", response_model=PurchaseOrderDetails)
 async def create_purchase_order_from_cart( # Renamed for clarity
     payload: PurchaseOrderCreateFromCart, # <-- Use the new, simpler payload
     background_tasks: BackgroundTasks,

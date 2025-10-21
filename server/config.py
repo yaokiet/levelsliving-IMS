@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic import SecretStr, BaseSettings
 from pathlib import Path
 from typing import Optional
 
@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     LARK_BASE_URL: str = "https://open.larksuite.com/open-apis"
     
     mail_username: str
-    mail_password: str
+    mail_password: SecretStr
     mail_from: str
     mail_port: int
     mail_server: str
