@@ -1,0 +1,121 @@
+{
+  "databases": {
+    "inventory_management": {
+      "database_name": "inventory_management",
+      "description": "An inventory and order management system that tracks items, suppliers, purchase orders, and customer orders.",
+      "tables": [
+        {
+          "table_name": "user",
+          "description": "Stores user information for system access, including roles like 'admin' and 'user'.",
+          "columns": [
+            {"column_name": "id", "data_type": "SERIAL", "description": "Unique identifier for the user."},
+            {"column_name": "name", "data_type": "VARCHAR(64)", "description": "The name of the user."},
+            {"column_name": "role", "data_type": "VARCHAR(10)", "description": "The role of the user, either 'admin' or 'user'."},
+            {"column_name": "email", "data_type": "VARCHAR(254)", "description": "The user's unique email address."},
+            {"column_name": "password_hash", "data_type": "VARCHAR(255)", "description": "The user's hashed password for security."}
+          ]
+        },
+        {
+          "table_name": "supplier",
+          "description": "Contains information about suppliers who provide items.",
+          "columns": [
+            {"column_name": "id", "data_type": "SERIAL", "description": "Unique identifier for the supplier."},
+            {"column_name": "name", "data_type": "VARCHAR(64)", "description": "The name of the supplier."},
+            {"column_name": "description", "data_type": "VARCHAR(64)", "description": "A brief description of the supplier."},
+            {"column_name": "email", "data_type": "VARCHAR(254)", "description": "The supplier's email address."},
+            {"column_name": "contact_number", "data_type": "VARCHAR(20)", "description": "The supplier's contact phone number."}
+          ]
+        },
+        {
+          "table_name": "item",
+          "description": "Stores details about all items in the inventory, including raw materials and final products.",
+          "columns": [
+            {"column_name": "id", "data_type": "SERIAL", "description": "Unique identifier for the item."},
+            {"column_name": "sku", "data_type": "VARCHAR(32)", "description": "Unique Stock Keeping Unit (SKU) for the item."},
+            {"column_name": "type", "data_type": "VARCHAR(32)", "description": "The type or category of the item."},
+            {"column_name": "item_name", "data_type": "VARCHAR(64)", "description": "The name of the item."},
+            {"column_name": "variant", "data_type": "VARCHAR(64)", "description": "Specific variant of the item (e.g., color, size)."},
+            {"column_name": "qty", "data_type": "INT", "description": "Current quantity of the item in stock."},
+            {"column_name": "threshold_qty", "data_type": "INT", "description": "The minimum quantity that should be in stock before reordering."}
+          ]
+        },
+        {
+          "table_name": "supplier_item",
+          "description": "A linking table that maps which items are supplied by which suppliers.",
+          "columns": [
+            {"column_name": "id", "data_type": "SERIAL", "description": "Unique identifier for the supplier-item link."},
+            {"column_name": "item_id", "data_type": "INT", "description": "Foreign key referencing the 'item' table."},
+            {"column_name": "supplier_id", "data_type": "INT", "description": "Foreign key referencing the 'supplier' table."},
+            {"column_name": "si_sku", "data_type": "VARCHAR(32)", "description": "The supplier's specific SKU for the item."}
+          ]
+        },
+        {
+          "table_name": "item_component",
+          "description": "Defines the Bill of Materials (BOM) for complex items. It lists the child items (components) required to assemble a parent item.",
+          "columns": [
+            {"column_name": "parent_id", "data_type": "INT", "description": "The assembled product (parent item)."},
+            {"column_name": "child_id", "data_type": "INT", "description": "The component (child item) needed for the assembly."},
+            {"column_name": "qty_required", "data_type": "INT", "description": "The quantity of the child item required to make one parent item."}
+          ]
+        },
+        {
+          "table_name": "purchase_order",
+          "description": "Contains header information for purchase orders made to suppliers.",
+          "columns": [
+            {"column_name": "id", "data_type": "SERIAL", "description": "Unique identifier for the purchase order."},
+            {"column_name": "supplier_id", "data_type": "INT", "description": "The supplier the order was sent to."},
+            {"column_name": "user_id", "data_type": "INT", "description": "The user who created the purchase order."},
+            {"column_name": "order_date", "data_type": "TIMESTAMP", "description": "The date and time the purchase order was created."},
+            {"column_name": "status", "data_type": "VARCHAR(20)", "description": "The current status of the purchase order (e.g., 'pending', 'completed')."}
+          ]
+        },
+        {
+          "table_name": "purchase_order_item",
+          "description": "Contains the line items for each purchase order, detailing which items were ordered and in what quantity.",
+          "columns": [
+            {"column_name": "purchase_order_id", "data_type": "INT", "description": "Foreign key referencing the 'purchase_order' table."},
+            {"column_name": "item_id", "data_type": "INT", "description": "The item being ordered."},
+            {"column_name": "qty", "data_type": "INT", "description": "The quantity of the item ordered."},
+            {"column_name": "supplier_item_id", "data_type": "INT", "description": "Reference to the specific supplier-item link."}
+          ]
+        },
+        {
+          "table_name": "order",
+          "description": "Stores information about customer orders.",
+          "columns": [
+            {"column_name": "order_id", "data_type": "SERIAL", "description": "Unique identifier for the customer order."},
+            {"column_name": "shopify_order_id", "data_type": "BIGINT", "description": "The order ID from Shopify, if applicable."},
+            {"column_name": "order_date", "data_type": "TIMESTAMP", "description": "The date the customer placed the order."},
+            {"column_name": "status", "data_type": "VARCHAR(32)", "description": "The current status of the customer order (e.g., 'unfulfilled', 'fulfilled')."},
+            {"column_name": "name", "data_type": "VARCHAR(64)", "description": "The name of the customer."},
+            {"column_name": "contact", "data_type": "VARCHAR(16)", "description": "The customer's contact number."},
+            {"column_name": "street", "data_type": "VARCHAR(254)", "description": "The customer's street address."},
+            {"column_name": "unit", "data_type": "VARCHAR(16)", "description": "The customer's unit number."},
+            {"column_name": "postal_code", "data_type": "CHAR(6)", "description": "The customer's postal code."}
+          ]
+        },
+        {
+          "table_name": "order_item",
+          "description": "Contains the line items for each customer order, detailing the specific products, quantities, and delivery information.",
+          "columns": [
+            {"column_name": "order_id", "data_type": "INT", "description": "Foreign key referencing the 'order' table."},
+            {"column_name": "item_id", "data_type": "INT", "description": "The item that was ordered."},
+            {"column_name": "qty_requested", "data_type": "INT", "description": "The quantity of the item requested by the customer."},
+            {"column_name": "delivery_date", "data_type": "DATE", "description": "The scheduled delivery date for the item."},
+            {"column_name": "value", "data_type": "DECIMAL(10,2)", "description": "The monetary value of this line item."}
+          ]
+        },
+        {
+          "table_name": "cart_item",
+          "description": "Stores items that a user has added to their cart before creating a purchase order.",
+          "columns": [
+            {"column_name": "id", "data_type": "SERIAL", "description": "Unique identifier for the cart item entry."},
+            {"column_name": "user_id", "data_type": "INT", "description": "The user who owns the cart."},
+            {"column_name": "item_id", "data_type": "INT", "description": "The item in the cart."},
+            {"column_name": "quantity", "data_type": "INT", "description": "The quantity of the item in the cart."}
+          ]
+        }
+      ]
+    }
+  }
+}
