@@ -7,7 +7,7 @@ import { SalesPurchaseChart } from "@/components/chart/sales-purchase-chart";
 
 export default function Page() {
   const lowStockItems: LowStockItem[] = [
-    { name: "Mahogany", remaining: 10, status: "Low" },
+    { name: "Mahogany", remaining: 10, status: "High" },
     { name: "Teak", remaining: 15, status: "Medium" },
     { name: "Oak", remaining: 15, status: "Medium" },
   ];
