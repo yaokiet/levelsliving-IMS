@@ -38,6 +38,7 @@ export default function ItemDetailsPage() {
 
   return (
     <div className="container mx-auto py-10 px-6">
+      <h2 className="text-2xl font-bold">Users</h2>
       {/* onCreated & onReload are use to refresh the table but both are used for
       different situations */}
       <ItemAddModal
