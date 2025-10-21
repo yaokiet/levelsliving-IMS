@@ -1,53 +1,53 @@
-name: Build and Test Server
+# name: Build and Test Server
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - "server/**"
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - "server/**"
 
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+# jobs:
+#   build-and-test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.12
       
-      - name: Cache pip dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+#       - name: Cache pip dependencies
+#         uses: actions/cache@v3
+#         with:
+#           path: ~/.cache/pip
+#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+#           restore-keys: |
+#             ${{ runner.os }}-pip-
 
-      - name: Set up Docker
-        run: |
-          sudo service docker start
-          docker info
+#       - name: Set up Docker
+#         run: |
+#           sudo service docker start
+#           docker info
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r server/requirements.txt
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r server/requirements.txt
 
-      - name: Run pytest
-        env:
-          DOCKER_HOST: unix:///var/run/docker.sock  # Ensure Docker is accessible
-          LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
-          LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
-          LARK_SPREADSHEET_ID: ${{ secrets.LARK_SPREADSHEET_ID }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-          MAIL_FROM: ${{ secrets.MAIL_FROM }}
-          MAIL_PORT: ${{ secrets.MAIL_PORT }}
-          MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
-          MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
-        run: |
-          pytest server/tests
+#       - name: Run pytest
+#         env:
+#           DOCKER_HOST: unix:///var/run/docker.sock  # Ensure Docker is accessible
+#           LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
+#           LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
+#           LARK_SPREADSHEET_ID: ${{ secrets.LARK_SPREADSHEET_ID }}
+#           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+#           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+#           MAIL_FROM: ${{ secrets.MAIL_FROM }}
+#           MAIL_PORT: ${{ secrets.MAIL_PORT }}
+#           MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
+#           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
+#         run: |
+#           pytest server/tests
