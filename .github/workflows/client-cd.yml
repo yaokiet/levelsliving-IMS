@@ -26,5 +26,5 @@ jobs:
         working-directory: ./client
         run: |
           # Vercel CLI might need project dependencies to detect the framework
-          npm install 
-          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+          npm install -g vercel
+          npx vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }} --yes --scope ${{ secrets.VERCEL_SCOPE }} --confirm 
