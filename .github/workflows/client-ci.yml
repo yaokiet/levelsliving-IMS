@@ -57,8 +57,3 @@ jobs:
         env:
           CI: true  # Required for Playwright to run in CI environments
   
-      # Step 8: Deploy to Vercel (only if tests pass)
-      - name: Deploy to Vercel
-        working-directory: ./client
-        run: |
-          npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
