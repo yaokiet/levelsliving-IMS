@@ -1,16 +1,16 @@
 name: Build Docker Image and Deploy Server
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "server/**"
+  workflow_run:
+    workflows:
+      - Build and Test Server
+    types:
+      - completed
 
 jobs:
   build:
     # Only run if the CI workflow succeeds
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }} 
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
     runs-on: ubuntu-latest
     steps:
       # Step 1: Checkout the code
@@ -32,19 +32,19 @@ jobs:
           push: true
           tags: joelsngzw/levelslivingserver:latest
 
-      # # Step 4: Set up SSH agent
-      # - name: Set up SSH agent
-      #   uses: webfactory/ssh-agent@v0.7.0
-      #   with:
-      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # Step 4: Set up SSH agent
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # # Step 5: Deploy to DigitalOcean Droplet
-      # - name: Deploy Backend to Droplet
-      #   run: |
-      #     ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
-      #     docker compose pull || { echo "Failed to pull Docker images"; exit 1; }
-      #     docker compose up -d || { echo "Failed to start Docker containers"; exit 1; }
-      #     EOF
+      # Step 5: Deploy to DigitalOcean Droplet
+      - name: Deploy Backend to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
+          docker compose pull || { echo "Failed to pull Docker images"; exit 1; }
+          docker compose up -d || { echo "Failed to start Docker containers"; exit 1; }
+          EOF
 
       # Step 6: Verify Deployment
       # - name: Verify Deployment
