@@ -20,7 +20,6 @@ test('authenticate once and save storage state', async () => {
 
   // log in button
   await Promise.all([
-    // For MPA or auth redirect:
     page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 15_000 }),
     page.getByRole('button', { name: /login/i }).click(),
   ]);
