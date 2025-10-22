@@ -26,17 +26,14 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
       - name: Set up Docker
         run: |
           sudo service docker start
           docker info
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r server/requirements.txt
-
       - name: Run pytest
         env:
           DOCKER_HOST: unix:///var/run/docker.sock  # Ensure Docker is accessible
