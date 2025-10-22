@@ -1,4 +1,4 @@
-# name: Deploy Client to DigitalOcean App Platform
+name: Deploy Client to DigitalOcean App Platform
 
 # on:
 #   workflow_run:
