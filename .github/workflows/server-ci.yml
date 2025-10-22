@@ -45,5 +45,5 @@ jobs:
           MAIL_SERVER: ${{ secrets.MAIL_SERVER }}
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
         run: |
-          pytest server/tests
+          pytest -v server/tests
 
