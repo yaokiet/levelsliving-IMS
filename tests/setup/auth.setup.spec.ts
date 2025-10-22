@@ -20,7 +20,7 @@ test('authenticate once and save storage state', async () => {
 
   // log in button
   await Promise.all([
-    page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 15_000 }),
+    page.waitForURL((url) => !url.pathname.endsWith('/login'), { timeout: 10_000 }),
     page.getByRole('button', { name: /login/i }).click(),
   ]);
 
