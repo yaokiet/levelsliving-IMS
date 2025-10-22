@@ -38,6 +38,7 @@ jobs:
         env:
           DOCKER_HOST: unix:///var/run/docker.sock  # Ensure Docker is accessible
           # add in all required env variables for pytest
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}

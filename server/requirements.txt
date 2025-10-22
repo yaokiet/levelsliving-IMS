@@ -22,4 +22,3 @@ google-generativeai
 json-repair
 google-cloud-aiplatform
 google-genai
-# google-genai==
