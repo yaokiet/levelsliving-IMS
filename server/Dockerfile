@@ -1,6 +1,7 @@
 # Dockerfile
 # Stage 1: Build Stage
-FROM python:3.12-slim AS builder
+# FROM python:3.12-slim AS builder
+FROM python:3.9-slim AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -15,7 +16,7 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 COPY . .
 
 # Stage 2: Runtime Stage
-FROM python:3.12-slim
+FROM python:3.9-slim
 
 # Set the working directory
 WORKDIR /app
