@@ -49,7 +49,16 @@ jobs:
           sudo service docker start
           docker info
 
-      # Step 7: Run Playwright tests
+      # Step 7: Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      # Step 8: Run Playwright tests
       - name: Run Playwright tests
         run: |
           npx playwright install --with-deps
