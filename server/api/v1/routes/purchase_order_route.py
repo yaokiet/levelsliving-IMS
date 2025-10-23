@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status, BackgroundTasks, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, Query, status, Request, BackgroundTasks, UploadFile, File, Form
 from typing import Optional, Iterable, List
 from sqlalchemy.orm import Session
 
@@ -9,13 +9,15 @@ from database.schemas.purchase_order import (
     PurchaseOrderDetails, 
     PurchaseOrderUpdate, 
     PurchaseOrderRead, 
-    PurchaseOrderItemReadCustom
+    PurchaseOrderItemReadCustom,
+    PurchaseOrderCreateFromCart
 )
+
 from database.schemas.pagination import Paginated
 
 from database.services.purchase_order import (
     get_all_purchase_orders,
-    create_purchase_order, 
+    create_purchase_order_from_cart_service,
     update_purchase_order, 
     delete_purchase_order,
     get_purchase_order_details,
@@ -25,7 +27,7 @@ from database.services.email_service import send_purchase_order_email
 
 router = APIRouter(prefix="/purchase-order", tags=["purchase-order"])
 
-@router.get("/", response_model=Paginated[PurchaseOrderRead])
+@router.get("", response_model=Paginated[PurchaseOrderRead])
 def list_purchase_orders(
     page: int = Query(1, ge=1, description="Page number (1-based)"),
     size: int = Query(50, ge=1, le=200, description="Page size"),
@@ -72,7 +74,7 @@ def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Purchase order not found")
     return po
 
-# @router.post("/", response_model=PurchaseOrderDetails)
+# @router.post("", response_model=PurchaseOrderDetails)
 # def create_new_purchase_order(payload: PurchaseOrderCreateWithItems, db: Session = Depends(get_db)):
 #     """
 #     Create a new purchase order **and its items** in a single transaction.
@@ -80,28 +82,36 @@ def read_purchase_order_details(po_id: int, db: Session = Depends(get_db)):
 #     """
 #     return create_purchase_order(db, payload)
 
-@router.post("/", response_model=PurchaseOrderDetails)
-async def create_new_purchase_order(
-    payload: PurchaseOrderCreateWithItems, # We now accept a clean JSON body
+@router.post("", response_model=PurchaseOrderDetails)
+async def create_purchase_order_from_cart( # Renamed for clarity
+    payload: PurchaseOrderCreateFromCart, # <-- Use the new, simpler payload
     background_tasks: BackgroundTasks,
+    request: Request,
     db: Session = Depends(get_db),
 ):
     """
-    Create a new purchase order and its items from a JSON payload.
+    Create a new purchase order from the user's cart and clears the cart
+    in a single transaction.
 
     Upon successful creation, it sends a confirmation email to the supplier
     in a background task.
     """
-    # 1. Create the purchase order in the database
-    new_po = create_purchase_order(db, payload)
+    user_payload = getattr(request.state, "user", None)
+    if not user_payload or "user_id" not in user_payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+        )
+    user_id = user_payload["user_id"]
+    
+    # Pass the user_id to the service function
+    new_po = create_purchase_order_from_cart_service(db, payload, user_id)
 
-    # 2. Add the email sending task to the background (without the PDF)
     background_tasks.add_task(
         send_purchase_order_email,
-        po_id = new_po['id']
+        po_id=new_po['id']
     )
 
-    # 3. Return the response to the user immediately
     return new_po
 
 @router.put("/{po_id}", response_model=PurchaseOrderRead)

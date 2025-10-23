@@ -10,7 +10,7 @@ from database.services.supplier_item import (
 
 router = APIRouter(prefix="/supplier-item", tags=["supplier-item"])
 
-@router.get("/", response_model=Paginated[SupplierItemRead])
+@router.get("", response_model=Paginated[SupplierItemRead])
 def read_supplier_items(
     page: int = Query(1, ge=1, description="Page number (1-based)"),
     size: int = Query(50, ge=1, le=200, description="Page size"),
@@ -31,7 +31,7 @@ def read_supplier_item(supplier_item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="SupplierItem not found")
     return si
 
-@router.post("/", response_model=SupplierItemRead)
+@router.post("", response_model=SupplierItemRead)
 def create_new_supplier_item(payload: SupplierItemCreate, db: Session = Depends(get_db)):
     """
     Create a new supplier-item relationship.

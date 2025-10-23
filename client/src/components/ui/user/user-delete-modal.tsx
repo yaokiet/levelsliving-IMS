@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ReusableDialog } from "@/components/table/reusable/reusable-dialog";
 import { deleteUser } from "@/lib/api/userApi"; 
+import { toast } from "sonner";
 
 interface UserDeleteModalProps {
     userId: string; // ID of the user to delete
@@ -33,6 +34,9 @@ export function UserDeleteModal({
             setSubmitting(true);
             await deleteUser(userId); // Call the API to delete the user
             await onDeleted?.(); // Refresh the table or perform other actions
+            toast.success("Success!", {
+                description: `User ${userName} deleted successfully.`,
+            });
             setOpen(false); // Close the modal after successful deletion
         } catch (e: unknown) {
             const fallback = "An error occurred while deleting the user.";

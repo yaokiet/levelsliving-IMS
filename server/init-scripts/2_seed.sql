@@ -102,20 +102,47 @@ INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 ('SCRW-PK-02', 'Component', 'Screw Pack', 'M4', 180, 50),
 ('SCRW-PK-03', 'Component', 'Screw Pack', 'Wood', 160, 40),
 ('DESK-TOP-02', 'Component', 'Desk Tabletop', 'Walnut Veneer', 15, 5),
-('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6);
+('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6),
+('DESK-LEG-02-2', 'Component', 'Desk Leg Set 2', 'Fixed', 25, 6),('DESK-FRM-03', 'Component', 'Desk Frame', 'Adjustable', 20, 5),
+('CABLE-ETH-01', 'Electronics', 'Ethernet Cable', 'Cat6 2m', 50, 20),
+('CABLE-ETH-02', 'Electronics', 'Ethernet Cable', 'Cat6 5m', 40, 15),
+('ADAPTER-001', 'Electronics', 'USB-C to HDMI Adapter', NULL, 25, 10),
+('ADAPTER-002', 'Electronics', 'USB-C to Ethernet Adapter', NULL, 20, 8),
+('SWITCH-001', 'Electronics', 'Network Switch', '8-Port Gigabit', 10, 5),
+('ROUTER-001', 'Electronics', 'Wi-Fi Router', 'AX3000', 8, 4),
+('CAMERA-001', 'Electronics', 'Security Camera', 'Indoor 1080p', 12, 6),
+('CAMERA-002', 'Electronics', 'Security Camera', 'Outdoor 4K', 6, 3),
+('MIC-001', 'Electronics', 'USB Microphone', 'Condenser', 10, 5),
+('STAND-MIC-01', 'Component', 'Microphone Stand', 'Adjustable', 25, 10),
+('STAND-MON-01', 'Component', 'Monitor Stand', 'Wood', 15, 5),
+('STAND-LAP-01', 'Component', 'Laptop Stand', 'Aluminum', 20, 8),
+('EXT-CORD-01', 'Electronics', 'Extension Cord', '3m', 30, 10),
+('EXT-CORD-02', 'Electronics', 'Extension Cord', '5m', 25, 10),
+('PLANT-001', 'Furniture', 'Artificial Plant', 'Medium', 15, 5),
+('PLANT-002', 'Furniture', 'Artificial Plant', 'Large', 10, 5),
+('CLOCK-001', 'Decor', 'Wall Clock', 'Round White', 10, 4),
+('RUG-001', 'Decor', 'Office Rug', 'Grey', 8, 3),
+('PAINT-001', 'Decor', 'Wall Art', 'Abstract', 6, 2),
+('CABINET-003', 'Furniture', 'Storage Cabinet', 'Wood', 6, 3),
+('CABINET-004', 'Furniture', 'Filing Cabinet', 'Metal', 5, 2),
+('CUSHION-001', 'Decor', 'Throw Cushion', 'Blue', 20, 10),
+('TRAY-001', 'Office Supply', 'Desk Organizer Tray', 'Plastic', 25, 10),
+('BIND-001', 'Office Supply', 'File Binder', 'A4', 40, 15),
+('PAPER-001', 'Office Supply', 'Printing Paper', 'A4 Ream', 60, 20),
+('WHITEBOARD-001', 'Office Supply', 'Whiteboard', 'Magnetic 90x60cm', 8, 4);
 
 -- =======================
 -- SUPPLIER_ITEM
 -- =======================
-INSERT INTO supplier_item (id, item_id, supplier_id, si_sku) VALUES
+INSERT INTO supplier_item (item_id, supplier_id, si_sku) VALUES
 -- Component Solutions Inc. supplies all components
-(1, 7, 1, NULL), (2, 8, 1, NULL), (3, 9, 1, NULL), (4, 10, 1, NULL), (5, 11, 1, NULL), (6, 12, 1, NULL),
+(7, 1, NULL), (8, 1, NULL), (9, 1, NULL), (10, 1, NULL), (11, 1, NULL), (12, 1, NULL),
 -- Fine Finish Furnishings supplies assembled furniture
-(7, 1, 2, NULL), (8, 2, 2, NULL),
+(1, 2, NULL), (2, 2, NULL),
 -- TechSource Electronics supplies peripherals
-(9, 3, 3, NULL), (10, 4, 3, NULL), (11, 5, 3, NULL),
+(3, 3, NULL), (4, 3, NULL), (5, 3, NULL),
 -- Desk Lamps are also supplied by TechSource
-(12, 6, 3, NULL);
+(6, 3, NULL);
 
 -- =======================
 -- ITEM_COMPONENT (Bill of Materials)
@@ -129,16 +156,11 @@ INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
 -- =======================
 -- PURCHASE ORDER
 -- =======================
-INSERT INTO purchase_order (id, supplier_id, user_id, order_date, status) VALUES
+INSERT INTO purchase_order (supplier_id, user_id, order_date, status) VALUES
 -- PO to restock components, placed by the admin user
-(1, 1, 1, '2025-08-15 11:30:00', 'pending'),
+(1, 1, '2025-08-15 11:30:00', 'pending'),
 -- PO to restock electronics, placed by a regular user
-(2, 3, 2, '2025-08-22 16:00:00', 'pending');
-
-SELECT setval(
-  pg_get_serial_sequence('purchase_order', 'id'),
-  COALESCE((SELECT MAX(id) FROM purchase_order), 0)
-);
+(3, 2, '2025-08-22 16:00:00', 'pending');
 
 -- =======================
 -- PURCHASE ORDER ITEM
@@ -390,21 +412,21 @@ INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, 
 
 -- STEP 1: Define ALL necessary items with explicit IDs to guarantee they exist.
 
-INSERT INTO "item" (id, sku, type, item_name, variant, qty, threshold_qty) VALUES
+INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
 -- Level 1: Final Product
-(101, 'CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
+('CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
 
 -- Level 2: Sub-Assemblies
-(102, 'ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
-(103, 'ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
+('ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
+('ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
 
 -- Level 3: All Raw Components for this specific test item
-(104, 'SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
-(105, 'BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
-(106, 'FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
-(107, 'GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
-(108, 'CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
-(109, 'BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
+('SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
+('BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
+('FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
+('GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
+('CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
+('BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
 
 
 -- STEP 2: Define the relationships using these new, guaranteed-to-exist IDs.

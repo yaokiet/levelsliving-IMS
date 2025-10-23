@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { createNewUser } from "@/lib/api/userApi";
 import { UserFormFields } from "./user-form-fields";
 import type { UserCreate, UserFormState } from "@/types/user";
+import { toast } from "sonner";
 
 function initEmptyForm(): UserFormState {
     return {
@@ -79,6 +80,9 @@ export function UserAddModal({
             setSubmitting(true);
             await createNewUser(payload);
             await onCreated?.();
+            toast.success("Success!", {
+                description: `User ${form.name} added successfully.`,
+            });
             return { status: 200 };
         } catch (e: unknown) {
             const fallback = "An error occurred while creating the user.";

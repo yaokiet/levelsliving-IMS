@@ -9,7 +9,7 @@ from database.services import cart_service
 router = APIRouter(prefix="/cart", tags=["cart"])
 
 
-@router.post("/")
+@router.post("")
 def add_item_to_cart(
     item_data: CartItemCreate,
     request: Request,
@@ -38,7 +38,7 @@ def add_item_to_cart(
         )
     return {"message": "Item added to cart successfully."}
 
-@router.post("/bulk-add/")
+@router.post("/bulk-add")
 def add_multiple_items_to_cart(
     payload: CartBulkCreate,
     request: Request,
@@ -68,7 +68,7 @@ def add_multiple_items_to_cart(
 
     return {"message": "Items added to cart successfully."}
 
-@router.get("/", response_model=List[CartItemRead])
+@router.get("", response_model=List[CartItemRead])
 def read_user_cart(request: Request, db: Session = Depends(get_db)):
     """Retrieves all items from the current user's cart."""
     user_payload = getattr(request.state, "user", None)
@@ -131,7 +131,7 @@ def delete_item_from_cart(
     return {"message": "Item deleted"}
 
 
-@router.delete("/")
+@router.delete("")
 def clear_cart(request: Request, db: Session = Depends(get_db)):
     """Deletes all items from the current user's cart."""
     user_payload = getattr(request.state, "user", None)
@@ -141,6 +141,6 @@ def clear_cart(request: Request, db: Session = Depends(get_db)):
             detail="Not authenticated",
         )
     user_id = user_payload["user_id"]
-    cart_service.clear_user_cart(db, user_id=user_id)
+    cart_service.delete_cart(db, user_id=user_id)
     return {"message": "Cart cleared successfully."}
 
