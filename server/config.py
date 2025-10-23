@@ -26,6 +26,11 @@ class Settings(BaseSettings):
     GOOGLE_GENAI_PROJECT_ID: Optional[str] = "levelslivingai"
     GOOGLE_GENAI_LOCATION: Optional[str] = "global"
 
+    # Google Sheets Integration
+    GOOGLE_SHEETS_ENABLED: Optional[bool] = True
+    GOOGLE_SHEETS_CREDENTIALS_PATH: Optional[str] = str(BASE_DIR / "google_credentials.json")
+    GOOGLE_SHEETS_SPREADSHEET_ID: Optional[str] = ""
+
     # pydantic v2 config
     model_config = SettingsConfigDict(
         env_file=".env",

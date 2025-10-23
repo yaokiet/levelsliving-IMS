@@ -22,3 +22,5 @@ google-generativeai
 json-repair
 google-cloud-aiplatform
 google-genai
+gspread==6.1.4
+google-auth==2.36.0
