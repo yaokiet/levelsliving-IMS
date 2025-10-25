@@ -42,6 +42,7 @@ jobs:
       - name: Deploy Backend to Droplet
         run: |
           ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << 'EOF'
+          docker system prune -af || { echo "Failed to prune Docker system"; exit 1; }
           docker compose pull || { echo "Failed to pull Docker images"; exit 1; }
           docker compose up -d || { echo "Failed to start Docker containers"; exit 1; }
           EOF
