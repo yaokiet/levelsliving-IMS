@@ -376,6 +376,138 @@ class GoogleSheetsClient:
         except Exception as e:
             logger.error(f"Failed to get suppliers from sheet: {e}")
             return []
+    
+    # ========== INVENTORY / ITEMS SYNC METHODS ==========
+    
+    def sync_item_create(self, item_data: Dict[str, Any]) -> bool:
+        """
+        Sync a newly created item to Google Sheets
+        
+        Args:
+            item_data: Dictionary containing item information
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            headers = ['ID', 'SKU', 'Type', 'Item Name', 'Variant', 'Quantity', 'Threshold Qty', 'Created At', 'Updated At']
+            worksheet = self.get_or_create_worksheet('Inventory', headers)
+            
+            # Prepare row data
+            row = [
+                item_data.get('id', ''),
+                item_data.get('sku', ''),
+                item_data.get('type', ''),
+                item_data.get('item_name', ''),
+                item_data.get('variant', ''),
+                item_data.get('qty', 0),
+                item_data.get('threshold_qty', 0),
+                str(item_data.get('created_at', '')),
+                str(item_data.get('updated_at', ''))
+            ]
+            
+            # Append new row
+            worksheet.append_row(row)
+            logger.info(f"Synced new item to Google Sheets: {item_data.get('item_name')}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to sync item create: {e}")
+            return False
+    
+    def sync_item_update(self, item_data: Dict[str, Any]) -> bool:
+        """
+        Update an existing item in Google Sheets
+        
+        Args:
+            item_data: Dictionary containing updated item information
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            headers = ['ID', 'SKU', 'Type', 'Item Name', 'Variant', 'Quantity', 'Threshold Qty', 'Created At', 'Updated At']
+            worksheet = self.get_or_create_worksheet('Inventory', headers)
+            
+            # Find the row with matching ID
+            item_id = str(item_data.get('id', ''))
+            cell = worksheet.find(item_id, in_column=1)
+            
+            if cell:
+                # Update the row
+                row_number = cell.row
+                row = [
+                    item_data.get('id', ''),
+                    item_data.get('sku', ''),
+                    item_data.get('type', ''),
+                    item_data.get('item_name', ''),
+                    item_data.get('variant', ''),
+                    item_data.get('qty', 0),
+                    item_data.get('threshold_qty', 0),
+                    str(item_data.get('created_at', '')),
+                    str(item_data.get('updated_at', ''))
+                ]
+                
+                worksheet.update(f'A{row_number}:I{row_number}', [row])
+                logger.info(f"Updated item in Google Sheets: {item_data.get('item_name')}")
+                return True
+            else:
+                # If not found, create new row
+                logger.warning(f"Item ID {item_id} not found in sheet, creating new row")
+                return self.sync_item_create(item_data)
+                
+        except Exception as e:
+            logger.error(f"Failed to sync item update: {e}")
+            return False
+    
+    def sync_item_delete(self, item_id: int) -> bool:
+        """
+        Delete an item from Google Sheets
+        
+        Args:
+            item_id: ID of the item to delete
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            headers = ['ID', 'SKU', 'Type', 'Item Name', 'Variant', 'Quantity', 'Threshold Qty', 'Created At', 'Updated At']
+            worksheet = self.get_or_create_worksheet('Inventory', headers)
+            
+            # Find and delete the row
+            cell = worksheet.find(str(item_id), in_column=1)
+            
+            if cell:
+                worksheet.delete_rows(cell.row)
+                logger.info(f"Deleted item from Google Sheets: ID {item_id}")
+                return True
+            else:
+                logger.warning(f"Item ID {item_id} not found in sheet")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Failed to sync item delete: {e}")
+            return False
+    
+    def get_all_items_from_sheet(self) -> List[Dict[str, Any]]:
+        """
+        Retrieve all items from Google Sheets
+        
+        Returns:
+            List of item dictionaries
+        """
+        try:
+            headers = ['ID', 'SKU', 'Type', 'Item Name', 'Variant', 'Quantity', 'Threshold Qty', 'Created At', 'Updated At']
+            worksheet = self.get_or_create_worksheet('Inventory', headers)
+            
+            # Get all records as list of dictionaries
+            records = worksheet.get_all_records()
+            logger.info(f"Retrieved {len(records)} items from Google Sheets")
+            return records
+            
+        except Exception as e:
+            logger.error(f"Failed to get items from sheet: {e}")
+            return []
 
 
 # Singleton instance
