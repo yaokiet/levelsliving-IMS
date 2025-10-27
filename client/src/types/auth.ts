@@ -5,3 +5,5 @@ export interface AuthState {
   isAuthenticated: boolean
   initialized: boolean
 }
+
+export type { User }

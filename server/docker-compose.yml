@@ -15,8 +15,6 @@ services:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
       retries: 5
-    networks:
-      - appnet
 
   server:
     build: .
@@ -28,11 +26,16 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:password@db:5432/levelsliving
       SECRET_KEY: ${SECRET_KEY}
+      # --- ADD OR UPDATE THESE LINES ---
+      GOOGLE_GENAI_PROJECT_ID: "levelslivingai"
+      GOOGLE_GENAI_USE_VERTEXAI: "False" # Make sure this is False
+      GOOGLE_GENAI_LOCATION: "global"
+
+      # Add your new API Key here
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
     restart: always
     volumes:
       - .:/app
-    networks:
-      - appnet
 
   pgadmin:
     image: dpage/pgadmin4
@@ -46,13 +49,7 @@ services:
       - db
     volumes:
       - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - appnet
 
 volumes:
   pg_data:
   pgadmin_data:
-
-networks:
-  appnet:
-    external: true

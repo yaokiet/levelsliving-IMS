@@ -10,7 +10,7 @@ from app.utils.query_params import parse_query_list
 
 router = APIRouter(prefix="/user", tags=["user"])
 
-@router.get("/", response_model=Paginated[UserRead], dependencies=[require_role("admin")])
+@router.get("", response_model=Paginated[UserRead], dependencies=[require_role("admin")])
 def read_users(
     page: int = Query(1, ge=1, description="1-based page number"),
     size: int = Query(50, ge=1, le=200, description="Page size (max 200)"),
@@ -31,7 +31,7 @@ def read_users(
     db: Session = Depends(get_db),
 ):
     """
-    List users with pagination, search (q), and sorting.
+    List users with pagination, search (q), and sorting
     """
     return get_all_users(
         db,
@@ -60,7 +60,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.post("/", response_model=UserRead)
+@router.post("", response_model=UserRead)
 def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
     new_user = create_user(db, user)
     if new_user is None:

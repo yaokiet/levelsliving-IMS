@@ -35,7 +35,7 @@ def read_items_paginated(
         include_total=include_total,
     )
 
-@router.get("/", response_model=list[ItemRead])
+@router.get("", response_model=list[ItemRead])
 def read_items(db: Session = Depends(get_db)):
     """
     Retrieve all items.
@@ -62,7 +62,7 @@ def read_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found")
     return item
 
-@router.post("/", response_model=ItemRead)
+@router.post("", response_model=ItemRead)
 def create_new_item(payload: ItemCreate, db: Session = Depends(get_db)):
     """
     Create a new item.

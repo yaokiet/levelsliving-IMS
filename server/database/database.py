@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from psycopg2.extras import RealDictCursor
 
 # Load configuration settings
 Base = declarative_base()
@@ -21,3 +22,13 @@ def get_db() -> Session:
         yield db
     finally:
         db.close()
+        
+def execute_sql_query(query: str):
+    conn = get_db()
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(query)
+            results = cur.fetchall()
+            return [dict(row) for row in results]
+    finally:
+        conn.close()

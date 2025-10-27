@@ -5,13 +5,13 @@ from app.core.config import SECRET_KEY, ALGORITHM
 from jose import jwt
 
 def create_access_token(data: AccessTokenData, expires_delta: int):
-    to_encode = data.model_dump()
+    to_encode = data.dict()
     expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def create_refresh_token(data: RefreshTokenData, expires_delta: int):
-    to_encode = data.model_dump()
+    to_encode = data.dict()
     expire = datetime.now(timezone.utc) + timedelta(seconds=expires_delta)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)

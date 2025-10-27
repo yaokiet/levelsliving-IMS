@@ -9,7 +9,7 @@ from database.services.order_item import (
 
 router = APIRouter(prefix="/order-item", tags=["order-item"])
 
-@router.get("/", response_model=list[OrderItemRead])
+@router.get("", response_model=list[OrderItemRead])
 def read_order_items(db: Session = Depends(get_db)):
     """
     Retrieve all order items.
@@ -26,7 +26,7 @@ def read_order_item(order_id: int, item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Order item not found")
     return oi
 
-@router.post("/", response_model=OrderItemRead)
+@router.post("", response_model=OrderItemRead)
 def create_new_order_item(payload: OrderItemCreate, db: Session = Depends(get_db)):
     """
     Create a new order item.
