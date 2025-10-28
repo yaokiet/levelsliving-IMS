@@ -17,7 +17,7 @@ from api.v1.routes.cart_route import router as cart_router
 # Import the new LLM route
 from api.v1.routes.llm_route import router as llm_router
 
-from api.v1.routes.forecast_cu1_route import router as forecast_cu1_route_router
+from api.v1.routes.forecast_route import router as forecast_route_router
 
 router = APIRouter(prefix="/levelsliving/app/api/v1")
 
@@ -39,7 +39,7 @@ router.include_router(cart_router)
 router.include_router(llm_router)
 
 # Forecasting router
-router.include_router(forecast_cu1_route_router)
+router.include_router(forecast_route_router)
 
 
 @router.get("/test")

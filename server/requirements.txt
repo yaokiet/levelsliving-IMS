@@ -23,4 +23,4 @@ json-repair
 google-cloud-aiplatform
 google-genai
 pandas
-xgboost==2.1.4
+xgboost==2.0.3

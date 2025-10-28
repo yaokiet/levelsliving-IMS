@@ -1,6 +1,6 @@
 {
   "highest": {
-    "model_path": "xgb_sku_highest_model.json",
+    "model_path": "xgb_sku_highest_model.ubj",
     "features": [
       "month_num",
       "year",
@@ -20,7 +20,7 @@
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
   "medium": {
-    "model_path": "xgb_sku_medium_model.json",
+    "model_path": "xgb_sku_medium_model.ubj",
     "features": [
       "month_num",
       "year",
@@ -40,7 +40,7 @@
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
   "rest": {
-    "model_path": "xgb_sku_rest_model.json",
+    "model_path": "xgb_sku_rest_model.ubj",
     "features": [
       "month_num",
       "year",
@@ -60,7 +60,7 @@
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
   "solo::CU-1": {
-    "model_path": "xgb_sku_solo_CU_1_model.json",
+    "model_path": "xgb_sku_solo_CU_1_model.ubj",
     "features": [
       "month_num",
       "year",
@@ -80,7 +80,7 @@
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
   "solo::SC15": {
-    "model_path": "xgb_sku_solo_SC15_model.json",
+    "model_path": "xgb_sku_solo_SC15_model.ubj",
     "features": [
       "month_num",
       "year",
@@ -100,7 +100,7 @@
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
   "solo::SC5": {
-    "model_path": "xgb_sku_solo_SC5_model.json",
+    "model_path": "xgb_sku_solo_SC5_model.ubj",
     "features": [
       "month_num",
       "year",
@@ -119,8 +119,28 @@
     },
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
+  "inventory": {
+    "model_path": "xgb_inventory_model.ubj",
+    "features": [
+      "month_num",
+      "year",
+      "lag_1",
+      "lag_2",
+      "lag_3",
+      "month_sin",
+      "month_cos"
+    ],
+    "metrics": {
+      "mae": 0.42118497907379293,
+      "rmse": 0.5746154003091407,
+      "mape_pct": 7.79041911465472,
+      "smape_pct": 7.389266079748885,
+      "best_iter": 50
+    },
+    "notes": "Inventory overall level forecaster."
+  },
   "_training_context": {
-    "created_at": "2025-10-28T06:06:15.406198Z",
+    "created_at": "2025-10-28T07:11:54.849563Z",
     "xgboost_version": "2.0.3"
   }
 }
