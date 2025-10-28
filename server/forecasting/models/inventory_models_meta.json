@@ -1,0 +1,15 @@
+{
+  "inventory_pooled": {
+    "model_path": "xgb_inventory_pooled_model.json",
+    "features": [
+      "month_num",
+      "year",
+      "lag_1",
+      "lag_2",
+      "lag_3",
+      "month_sin",
+      "month_cos"
+    ],
+    "notes": "Aggregated inventory forecaster (no SKU input)"
+  }
+}
