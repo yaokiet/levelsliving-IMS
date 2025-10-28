@@ -101,6 +101,10 @@ def forecast_sku(sku_id: str, req: ForecastRequest) -> SKUForecastResponse:
 def forecast_inventory(req: ForecastRequest) -> InventoryForecastResponse:    
     try:
         last_month = pd.to_datetime(req.last_month)
+        next_month_start = (
+            last_month.to_period("M") + 1              # Move to next month period
+        ).to_timestamp(how="start")                  # Convert to first day of month
+        next_month_start = next_month_start.tz_localize("UTC")  # Attach UTC timezone
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid last_month: {e}")
     
@@ -110,9 +114,8 @@ def forecast_inventory(req: ForecastRequest) -> InventoryForecastResponse:
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Error loading model: {e}")
 
-    fut_month = last_month + pd.offsets.MonthEnd(1)
-    forecast_m = int(fut_month.month)
-    forecast_year = int(fut_month.year) 
+    forecast_m = int(next_month_start.month)
+    forecast_year = int(next_month_start.year) 
 
     row = {
         "month_num": forecast_m,
@@ -139,7 +142,7 @@ def forecast_inventory(req: ForecastRequest) -> InventoryForecastResponse:
     
     return InventoryForecastResponse(
         model = MODEL_NAME,
-        forecast_month=str(fut_month.date()),
+        forecast_month=str(next_month_start.date()),
         predicted_quantity=pred,
     )
 
