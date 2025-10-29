@@ -2,18 +2,18 @@
 
 import * as React from "react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
-  ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { postInventoryForecast } from "@/lib/api/forecast"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { Slider } from "../ui/slider"
+import { useInventoryForecast } from "@/hooks/useInventoryForecast"
+import { addMonthsUTC, firstOfMonthUTC } from "@/lib/chart-date"
+import { chartConfig } from "@/lib/chart-config"
+import { SalesPurchaseChartControls } from "./sales-purchase-chart-controls"
 
 // Historical data (actuals)
 const chartDataBase = [
@@ -187,182 +187,47 @@ const chartDataBase = [
   }
 ];
 
-
-// Utility: parse ISO date safely in UTC
-const toUTCDate = (s: string) => {
-  const d = new Date(s)
-  // normalize to first of month in UTC for consistent buckets
-  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))
-}
-
-// build lag vector from the last three actual months relative to last_month
-// turn this into a function to replicate for repeated forecasts based on forecasts
-// lag_1 = last_month quantity, lag_2 = previous month, lag_3 = two months back
-function computeLags(data: { date: string; quantity?: number; prediction?: number }[]) {
-  // Use prediction if present, else fall back to quantity
-  const series = data
-    .map(d => ({ date: d.date, value: typeof d.prediction === "number" ? d.prediction : d.quantity }))
-    .filter(d => typeof d.value === "number")
-    .sort((a, b) => toUTCDate(a.date).getTime() - toUTCDate(b.date).getTime())
-
-  if (series.length < 3) {
-    return { last_month: null as string | null, lag_1: null, lag_2: null, lag_3: null }
-  }
-
-  const last = series[series.length - 1]
-  const prev1 = series[series.length - 2]
-  const prev2 = series[series.length - 3]
-
-  return {
-    last_month: last.date,
-    lag_1: Number(last.value!),
-    lag_2: Number(prev1.value!),
-    lag_3: Number(prev2.value!),
-  }
-}
-
-
-const chartConfig = {
-  quantity: {
-    label: "Quantity",
-    color: "hsl(221.2 83.2% 53.3%)",   // blue
-  },
-  prediction: {
-    label: "Prediction",
-    color: "hsl(142.1 70.6% 45.3%)",   // green
-  },
-} satisfies ChartConfig
+type TimeRange = "6m" | "12m" | "18m" | "24m" | "max";
 
 export function SalesPurchaseChart() {
   // for loading data
   const [predictionHorizon, setPredictionHorizon] = React.useState(2)
-  const [data, setData] = React.useState(chartDataBase)
-  const [loading, setLoading] = React.useState(false)
-  const [error, setError] = React.useState<string | null>(null)
+  const [timeRange, setTimeRange] = React.useState<TimeRange>("6m");
 
-  // for date filtering
-  const [timeRange, setTimeRange] =
-    React.useState<"6m" | "12m" | "18m" | "24m" | "max">("6m")
-  const firstOfMonthUTC = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))
-  const addMonthsUTC = (d: Date, delta: number) =>
-    new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + delta, 1))
+  const { data, loading, error } = useInventoryForecast({
+    base: chartDataBase,
+    horizon: predictionHorizon,
+  });
 
   // Filter against the current data state so forecasted month is included
   const filteredData = React.useMemo(() => {
-    if (timeRange === "max") return data
+    if (timeRange === "max") return data;
 
-    // Determine latest month present in the series
     const latest = data.reduce((acc, item) => {
-      const d = new Date(item.date)
-      return d > acc ? d : acc
-    }, new Date(0))
-    const latestUTC = firstOfMonthUTC(latest)
+      const d = new Date(item.date);
+      return d > acc ? d : acc;
+    }, new Date(0));
 
-    // Window size in months
-    const ranges: Record<typeof timeRange, number> = {
-      "6m": 6,
-      "12m": 12,
-      "18m": 18,
-      "24m": 24,
-      "max": Infinity,
-    }
-    const windowMonths = ranges[timeRange]
+    const latestUTC = firstOfMonthUTC(latest);
+    const ranges: Record<TimeRange, number> = { "6m": 6, "12m": 12, "18m": 18, "24m": 24, "max": Infinity };
+    const windowMonths = ranges[timeRange];
+    const cutoff = addMonthsUTC(latestUTC, -(windowMonths - 1));
 
-    // Inclusive cutoff at the first day of month N-1 months before latest
-    // Example: for 6m window and latest = Sep, cutoff = Apr 1 (Apr, May, Jun, Jul, Aug, Sep)
-    const cutoff = addMonthsUTC(latestUTC, -(windowMonths - 1))
-
-    return data.filter((item) => {
-      const dUTC = firstOfMonthUTC(new Date(item.date))
-      return dUTC >= cutoff
-    })
-  }, [data, timeRange])
-
-
-  React.useEffect(() => {
-    let cancelled = false
-
-    async function run() {
-      setLoading(true)
-      setError(null)
-      try {
-        // Start from historical base; we will append forecasts as we go
-        let curr = [...chartDataBase]
-
-        for (let i = 0; i < predictionHorizon; i++) {
-          const { last_month, lag_1, lag_2, lag_3 } = computeLags(curr)
-          if (!last_month) throw new Error("Insufficient history to compute lags")
-
-          const resp = await postInventoryForecast({ last_month, lag_1, lag_2, lag_3 })
-
-          // Server returns end-of-month; normalize to first-of-month (UTC) for your X-axis buckets
-          const [y, m] = resp.forecast_month.split("-").map(Number) // "YYYY-MM-DD"
-          const forecastISO = new Date(Date.UTC(y, m - 1, 1)).toISOString().slice(0, 10)
-
-          // Round the prediction and append; if the month already exists, update it
-          const value = Math.round(resp.predicted_quantity)
-          const idx = curr.findIndex(d => d.date === forecastISO)
-          if (idx >= 0) {
-            curr[idx] = { ...curr[idx], prediction: value }
-          } else {
-            curr = [...curr, { date: forecastISO, prediction: value }]
-          }
-          // Loop will compute lags again including this new prediction
-        }
-
-        if (!cancelled) setData(curr)
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "Forecast failed")
-      } finally {
-        if (!cancelled) setLoading(false)
-      }
-    }
-
-    run()
-    return () => {
-      cancelled = true
-    }
-  }, [predictionHorizon])
-
+    return data.filter((item) => firstOfMonthUTC(new Date(item.date)) >= cutoff);
+  }, [data, timeRange]);
 
   return (
     <Card className="w-full bg-background">
-      <CardHeader className="relative flex items-end justify-between">
-        {/* Select positioned to top-right */}
-        <div className="absolute -top-3 right-2 flex flex-row gap-4 items-center">
-
-          <div className="flex flex-row items-center gap-2">
-            <span className="text-xs text-muted-foreground whitespace-nowrap">
-              Horizon: {predictionHorizon}m
-            </span>
-            <Slider
-              value={[predictionHorizon]}
-              onValueChange={([v]) => setPredictionHorizon(v)}
-              min={1}
-              max={6}
-              step={1}
-              className="w-40"
-            />
-          </div>
-
-          <div className="">
-            <Select value={timeRange} onValueChange={(v) => setTimeRange(v as typeof timeRange)}>
-              <SelectTrigger
-                className="w-[160px] rounded-lg "
-                aria-label="Select a range"
-              >
-                <SelectValue placeholder="6 months" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="6m">6 months</SelectItem>
-                <SelectItem value="12m">12 months</SelectItem>
-                <SelectItem value="18m">18 months</SelectItem>
-                <SelectItem value="24m">24 months</SelectItem>
-                <SelectItem value="max">Max</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+      <CardHeader className="flex items-start justify-between">
+        <div className="grid gap-1">
+          {/* Optional title/description */}
         </div>
+        <SalesPurchaseChartControls
+          timeRange={timeRange}
+          setTimeRange={setTimeRange}
+          predictionHorizon={predictionHorizon}
+          setPredictionHorizon={setPredictionHorizon}
+        />
       </CardHeader>
 
       <CardContent>
