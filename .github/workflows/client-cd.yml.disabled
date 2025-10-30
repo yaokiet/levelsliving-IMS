@@ -1,0 +1,23 @@
+name: Deploy Client to DigitalOcean App Platform
+
+# on:
+#   workflow_run:
+#     workflows: 
+#       - Build and Test Client
+#     types:
+#       - completed
+
+# jobs:
+#   deploy:
+#     # Only run if the CI workflow succeeds
+#     if: ${{ github.event.workflow_run.conclusion == 'success' }}
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Install doctl
+#         uses: digitalocean/action-doctl@v2
+#         with:
+#           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+#       - name: Deploy to DigitalOcean App Platform
+#         run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }}
