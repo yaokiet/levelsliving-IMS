@@ -16,14 +16,25 @@ export function LogoutButton() {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    async function handleLogout() {
-        await logout();
-        dispatch(clearUser());
-        router.replace("/login");
+    const handleLogout = async (event: Event) => {
+        // 1. Prevent the default event behavior.
+        event.preventDefault();
+
+        // 2. Perform the logout logic.
+        try {
+            await logout();
+        } catch (error) {
+            console.error("Logout failed:", error);
+        } finally {
+            // 3. Clear the user state.
+            dispatch(clearUser());
+            // 4. Navigate to the login page.
+            router.replace("/login");
+        }
     }
 
     return (
-        <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+        <DropdownMenuItem onSelect={handleLogout} className="cursor-pointer">
             <LogOut />
             Log out
         </DropdownMenuItem>
