@@ -6,7 +6,10 @@ from sqlalchemy import func
 from database.models.supplier_item import SupplierItem
 import logging
 from config import settings
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+# Singapore timezone (UTC+8)
+SGT = timezone(timedelta(hours=8))
 
 # Import Google Sheets client
 try:
@@ -49,10 +52,10 @@ def create_supplier(db: Session, supplier: SupplierCreate):
                 'id': db_supplier.id,
                 'name': db_supplier.name,
                 'description': db_supplier.description or '',
-                'email': db_supplier.email or '',
+                'email': db_supplier.email,
                 'contact_number': db_supplier.contact_number or '',
-                'created_at': getattr(db_supplier, 'created_at', datetime.now()),
-                'updated_at': getattr(db_supplier, 'updated_at', datetime.now())
+                'created_at': getattr(db_supplier, 'created_at', datetime.now(SGT)),
+                'updated_at': getattr(db_supplier, 'updated_at', datetime.now(SGT))
             }
             success = sheets_client.sync_supplier_create(supplier_data)
             if success:
@@ -93,10 +96,10 @@ def update_supplier(db: Session, supplier_id: int, supplier: SupplierUpdate):
                     'id': db_supplier.id,
                     'name': db_supplier.name,
                     'description': db_supplier.description or '',
-                    'email': db_supplier.email or '',
+                    'email': db_supplier.email,
                     'contact_number': db_supplier.contact_number or '',
-                    'created_at': getattr(db_supplier, 'created_at', datetime.now()),
-                    'updated_at': getattr(db_supplier, 'updated_at', datetime.now())
+                    'created_at': getattr(db_supplier, 'created_at', datetime.now(SGT)),
+                    'updated_at': getattr(db_supplier, 'updated_at', datetime.now(SGT))
                 }
                 success = sheets_client.sync_supplier_update(supplier_data)
                 if success:

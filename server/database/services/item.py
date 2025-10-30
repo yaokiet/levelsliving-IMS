@@ -9,9 +9,12 @@ from collections import defaultdict
 
 from typing import Any, Dict, List, Optional, Iterable
 from sqlalchemy import or_, func, String, Integer
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import logging
 from config import settings
+
+# Singapore timezone (UTC+8)
+SGT = timezone(timedelta(hours=8))
 
 from database.services.pagination import (
     clamp_page_size,
@@ -165,8 +168,8 @@ def create_item(db: Session, item: ItemCreate):
                 'variant': db_item.variant or '',
                 'qty': db_item.qty,
                 'threshold_qty': db_item.threshold_qty,
-                'created_at': getattr(db_item, 'created_at', datetime.now()),
-                'updated_at': getattr(db_item, 'updated_at', datetime.now())
+                'created_at': getattr(db_item, 'created_at', datetime.now(SGT)),
+                'updated_at': getattr(db_item, 'updated_at', datetime.now(SGT))
             }
             success = sheets_client.sync_item_create(item_data)
             if success:
@@ -212,8 +215,8 @@ def update_item(db: Session, item_id: int, item: ItemUpdate):
                     'variant': db_item.variant or '',
                     'qty': db_item.qty,
                     'threshold_qty': db_item.threshold_qty,
-                    'created_at': getattr(db_item, 'created_at', datetime.now()),
-                    'updated_at': getattr(db_item, 'updated_at', datetime.now())
+                    'created_at': getattr(db_item, 'created_at', datetime.now(SGT)),
+                    'updated_at': getattr(db_item, 'updated_at', datetime.now(SGT))
                 }
                 success = sheets_client.sync_item_update(item_data)
                 if success:
