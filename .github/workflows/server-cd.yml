@@ -44,8 +44,9 @@ jobs:
           # First, securely copy the new server-docker-compose.yml to a temporary location on the Droplet
           scp -o StrictHostKeyChecking=no ./server/server-docker-compose.yml root@${{ secrets.DROPLET_IP }}:/tmp/docker-compose.yml
 
-          # Now, execute the deployment script on the Droplet
-          ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} << EOF
+          # Now, execute the deployment script on the Droplet.
+          # The single quotes around 'EOF' prevent the runner's shell from expanding variables.
+          ssh -o StrictHostKeyChecking=no root@${{ secrets.DROPLET_IP }} <<'EOF'
             set -e # Exit immediately if any command fails
 
             # --- 1. Create/replace .env file ---
@@ -110,7 +111,7 @@ EOT
 
             echo "Deployment successful!"
             rm ~/docker-compose.yml.bak
-          EOF
+EOF
 
       # Step 6: Verify Deployment
       # - name: Verify Deployment
