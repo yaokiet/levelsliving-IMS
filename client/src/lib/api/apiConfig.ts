@@ -40,7 +40,7 @@ export const API_PATHS = {
     // Cart endpoints
     cart: `${API_PREFIX}/cart`,
     cart_item: (itemId: number | string) => `${API_PREFIX}/cart/${itemId}`,
-    cart_bulk_add: `${API_PREFIX}/cart/bulk-add/`,
+    cart_bulk_add: `${API_PREFIX}/cart/bulk-add`,
 
     // Forecast endpoints
     forecast_inventory: `${API_PREFIX}/forecast`,
