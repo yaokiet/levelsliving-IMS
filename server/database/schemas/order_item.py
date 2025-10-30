@@ -31,5 +31,5 @@ class OrderItemUpdate(BaseModel):
     value: Optional[Decimal] = None
 
 class OrderItemRead(OrderItemBase):
-    class Config:
+    class ConfigDict:
         orm_mode = True

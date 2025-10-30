@@ -242,7 +242,7 @@ def update_purchase_order(db: Session, po_id: int, payload: PurchaseOrderUpdate)
     if not po:
         return None
 
-    data = payload.dict(exclude_unset=True)
+    data = payload.model_dump(exclude_unset=True)
     for k, v in data.items():
         setattr(po, k, v)
 
