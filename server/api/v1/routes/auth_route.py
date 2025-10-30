@@ -1,4 +1,3 @@
-import os
 from fastapi import APIRouter, HTTPException, Response, Depends, Cookie
 from app.auth.jwt_utils import create_access_token, create_refresh_token
 from app.core.config import ACCESS_TOKEN_EXPIRE_SECONDS, REFRESH_TOKEN_EXPIRE_SECONDS, SECRET_KEY, ALGORITHM
@@ -16,7 +15,6 @@ from database.database import get_db
 import secrets
 
 router = APIRouter()
-backend_origin = os.getenv("NEXT_PUBLIC_API_DOMAIN")
 
 @router.post("/login", response_model=UserRead)
 async def login(login_request: LoginRequest, response: Response, db: Session = Depends(get_db)):
@@ -51,8 +49,7 @@ async def login(login_request: LoginRequest, response: Response, db: Session = D
         secure=True,
         samesite="None",
         max_age=ACCESS_TOKEN_EXPIRE_SECONDS,
-        path="/",
-        domain=backend_origin
+        path="/"
     )
     response.set_cookie(
         key="refresh_token",
@@ -61,8 +58,7 @@ async def login(login_request: LoginRequest, response: Response, db: Session = D
         secure=True,
         samesite="None",
         max_age=REFRESH_TOKEN_EXPIRE_SECONDS,
-        path="/",
-        domain=backend_origin
+        path="/"
     )
     return user
 
@@ -110,8 +106,7 @@ def refresh_token(response: Response, refresh_token: str = Cookie(None), db: Ses
         secure=True,
         samesite="None",
         max_age=ACCESS_TOKEN_EXPIRE_SECONDS,
-        path="/",
-        domain=backend_origin
+        path="/"
     )
     return {"success": True}
 
