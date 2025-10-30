@@ -38,3 +38,4 @@ services:
 
 volumes:
   pg_data: # Define the named volume for PostgreSQL data persistence
+  
