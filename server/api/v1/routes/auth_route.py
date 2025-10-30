@@ -47,7 +47,7 @@ async def login(login_request: LoginRequest, response: Response, db: Session = D
         value=access_token,
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="Strict",
         max_age=ACCESS_TOKEN_EXPIRE_SECONDS,
         path="/"
     )
@@ -56,7 +56,7 @@ async def login(login_request: LoginRequest, response: Response, db: Session = D
         value=refresh_token,
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="Strict",
         max_age=REFRESH_TOKEN_EXPIRE_SECONDS,
         path="/"
     )
@@ -104,7 +104,7 @@ def refresh_token(response: Response, refresh_token: str = Cookie(None), db: Ses
         value=access_token,
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="Strict",
         max_age=ACCESS_TOKEN_EXPIRE_SECONDS,
         path="/"
     )
