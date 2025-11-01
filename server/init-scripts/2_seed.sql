@@ -174,232 +174,232 @@ INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_
 (2, 3, 10, 9),   -- 10 Monitors
 (2, 5, 15, 11);  -- 15 Wireless Mice
 
--- =======================
--- CUSTOMER ORDER
--- =======================
-INSERT INTO "order" (shopify_order_id, order_date, status, name, contact, street, unit, postal_code) VALUES
-(1001, '2025-08-20 10:00:00+08', 'pending', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
-(1002, '2025-08-28 15:30:00+08', 'pending', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
-(1003, '2025-09-01 09:45:00+08', 'pending', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879'),
--- Additional orders
-(1004, '2025-09-02 11:15:00+08', 'pending', 'Darren Goh', '91230001', '10 Tampines Ave 5', '#02-10', '529123'),
-(1005, '2025-09-03 14:40:00+08', 'pending', 'Elaine Ng', '98230002', '55 Bukit Batok West Ave 8', NULL, '650555'),
-(1006, '2025-09-04 09:05:00+08', 'pending', 'Farah Ahmad', '87650003', '21 Pasir Ris Dr 3', '#07-22', '510021'),
-(1007, '2025-09-05 16:20:00+08', 'pending', 'Gavin Lee', '93330004', '888 Woodlands Ave 6', '#12-03', '730888'),
-(1008, '2025-09-06 10:10:00+08', 'pending', 'Hui Min Tan', '94560005', '33 Sengkang East Way', NULL, '544886'),
-(1009, '2025-09-07 13:25:00+08', 'pending', 'Ivan Koh', '90110006', '2 Punggol Walk', '#05-12', '828624'),
-(1010, '2025-09-08 15:50:00+08', 'pending', 'Jasmine Ong', '97990007', '100 Hougang Ave 10', '#03-45', '538768'),
-(1011, '2025-09-09 09:40:00+08', 'pending', 'Kelvin Chia', '81230008', '22 Yishun Ave 11', '#04-18', '768652'),
-(1012, '2025-09-10 11:55:00+08', 'processing', 'Lydia Low', '96550009', '45 Toa Payoh Lor 5', NULL, '310045'),
-(1013, '2025-09-11 10:35:00+08', 'processing', 'Marcus Tan', '91440010', '9 Bishan St 22', '#08-09', '570009'),
-(1014, '2025-09-12 14:15:00+08', 'processing', 'Nicole Goh', '83830011', '6 Clementi Ave 3', '#10-04', '120006'),
-(1015, '2025-09-13 16:45:00+08', 'processing', 'Owen Foo', '99110012', '77 Jurong West St 61', '#09-31', '640077'),
-(1016, '2025-09-14 12:10:00+08', 'processing', 'Priya Raj', '88990013', '18 Choa Chu Kang Ave 3', '#02-07', '689861'),
-(1017, '2025-09-15 13:30:00+08', 'processing', 'Qin Wei', '97770014', '3 Bukit Panjang Ring Rd', '#11-20', '679943'),
-(1018, '2025-09-16 09:20:00+08', 'processing', 'Ryan Lim', '82220015', '1 Serangoon North Ave 1', NULL, '550001'),
-(1019, '2025-09-17 17:05:00+08', 'processing', 'Sara Lee', '93330016', '12 Marine Parade Rd', '#06-06', '449282'),
-(1020, '2025-09-18 10:50:00+08', 'processing', 'Terry Ng', '81110017', '88 Bedok North Rd', '#03-21', '460088'),
-(1021, '2025-09-19 15:00:00+08', 'processing', 'Uma Devi', '90020018', '5 Jalan Bukit Merah', NULL, '150005'),
-(1022, '2025-09-20 11:25:00+08', 'shipped', 'Victor Tan', '95550019', '70 Redhill Close', '#07-08', '150070'),
-(1023, '2025-09-21 14:05:00+08', 'shipped', 'Wendy Poh', '86660020', '66 Tiong Bahru Rd', '#12-02', '160066'),
-(1024, '2025-09-22 09:15:00+08', 'shipped', 'Xavier Chen', '91110021', '50 Queenstown Dr', NULL, '149299'),
-(1025, '2025-09-23 13:55:00+08', 'shipped', 'Yasmin Noor', '93440022', '23 Bukit Timah Rd', '#04-15', '588179'),
-(1026, '2025-09-24 16:35:00+08', 'shipped', 'Zachary Ho', '80220023', '11 Thomson Rd', '#05-05', '307610'),
-(1027, '2025-09-25 10:05:00+08', 'shipped', 'Adrian Quek', '92340024', '9 River Valley Rd', '#02-19', '179039'),
-(1028, '2025-09-26 12:50:00+08', 'shipped', 'Belinda Tan', '87770025', '18 Joo Chiat Pl', NULL, '427744'),
-(1029, '2025-09-27 15:20:00+08', 'shipped', 'Caleb Goh', '96660026', '4 Upper Thomson Rd', '#06-12', '570004'),
-(1030, '2025-09-28 11:45:00+08', 'shipped', 'Diana Lim', '95550027', '2 Newton Rd', '#14-01', '307995'),
-(1031, '2025-09-29 09:30:00+08', 'delivered', 'Ethan Tan', '83330028', '7 Orchard Link', '#03-08', '237957'),
-(1032, '2025-09-30 16:10:00+08', 'delivered', 'Fiona Ng', '98880029', '1 Kim Seng Walk', '#23-10', '239403'),
-(1033, '2025-10-01 10:20:00+08', 'delivered', 'Gary Choo', '80110030', '88 Zion Rd', '#04-14', '247778'),
-(1034, '2025-10-02 13:35:00+08', 'delivered', 'Hannah Yap', '97220031', '2 Jervois Rd', NULL, '248992'),
-(1035, '2025-10-03 15:55:00+08', 'delivered', 'Isabelle Koh', '84440032', '5 Telok Blangah Way', '#09-09', '090005'),
-(1036, '2025-10-04 11:05:00+08', 'delivered', 'Jacky Neo', '95550033', '6 Alexandra View', '#18-07', '158746'),
-(1037, '2025-10-05 14:25:00+08', 'delivered', 'Karen Sim', '88880034', '21 Keppel Bay Dr', '#10-02', '098417'),
-(1038, '2025-10-06 12:15:00+08', 'delivered', 'Leonard Phua', '93330035', '3 Marina Blvd', '#12-01', '018982'),
-(1039, '2025-10-07 10:40:00+08', 'delivered', 'Megan Toh', '90110036', '1 Harbourfront Walk', '#03-03', '098585'),
-(1040, '2025-10-08 16:30:00+08', 'delivered', 'Nathan Lee', '96660037', '10 Bayfront Ave', '#05-16', '018956'),
-(1041, '2025-10-09 09:50:00+08', 'cancelled', 'Olivia Teo', '87770038', '8 Raffles Ave', NULL, '039802'),
-(1042, '2025-10-10 13:45:00+08', 'cancelled', 'Peter Wong', '94560039', '2 Stadium Walk', '#02-02', '397691'),
-(1043, '2025-10-11 11:20:00+08', 'cancelled', 'Queenie Tan', '81230040', '5 Stadium Walk', '#07-07', '397693'),
-(1044, '2025-10-12 15:35:00+08', 'cancelled', 'Ronald Goh', '98990041', '1 Expo Dr', '#04-04', '486150'),
-(1045, '2025-10-13 10:55:00+08', 'cancelled', 'Siti Nur', '83330042', '1 Changi Business Park', '#03-11', '486036'),
-(1046, '2025-10-14 12:40:00+08', 'returned', 'Tomasz Kow', '95550043', '3 Tampines Central 5', '#06-20', '529509'),
-(1047, '2025-10-15 14:00:00+08', 'returned', 'Umar Ali', '99110044', '1 Paya Lebar Rd', '#11-08', '409037'),
-(1048, '2025-10-16 09:25:00+08', 'returned', 'Valerie Heng', '88990045', '5 Changi Business Park Cres', '#02-06', '486038'),
-(1049, '2025-10-17 16:50:00+08', 'returned', 'Wayne Lim', '97770046', '4 Tampines Walk', '#08-10', '528523'),
-(1050, '2025-10-18 11:35:00+08', 'returned', 'Xiu Ying', '82220047', '2 Orchard Turn', '#09-21', '238801'),
-(1051, '2025-10-19 13:15:00+08', 'returned', 'Yong Sheng', '93330048', '8 Marina Gardens Dr', NULL, '018951'),
-(1052, '2025-10-20 15:05:00+08', 'returned', 'Zoe Chan', '90110049', '1 Kim Seng Promenade', '#22-02', '237994'),
-(1053, '2025-10-21 10:00:00+08', 'returned', 'Aaron Tan', '96660050', '6 Raffles Blvd', '#05-05', '039594');
+-- -- =======================
+-- -- CUSTOMER ORDER
+-- -- =======================
+-- INSERT INTO "order" (shopify_order_id, order_date, status, name, contact, street, unit, postal_code) VALUES
+-- (1001, '2025-08-20 10:00:00+08', 'pending', 'Alice Tan', '91234567', '123 Ang Mo Kio Ave 1', '#01-01', '560123'),
+-- (1002, '2025-08-28 15:30:00+08', 'pending', 'Bob Lim', '98765432', '456 Clementi Rd', NULL, '123456'),
+-- (1003, '2025-09-01 09:45:00+08', 'pending', 'Charlie Chan', '81112222', '789 Orchard Boulevard', '#10-11', '238879'),
+-- -- Additional orders
+-- (1004, '2025-09-02 11:15:00+08', 'pending', 'Darren Goh', '91230001', '10 Tampines Ave 5', '#02-10', '529123'),
+-- (1005, '2025-09-03 14:40:00+08', 'pending', 'Elaine Ng', '98230002', '55 Bukit Batok West Ave 8', NULL, '650555'),
+-- (1006, '2025-09-04 09:05:00+08', 'pending', 'Farah Ahmad', '87650003', '21 Pasir Ris Dr 3', '#07-22', '510021'),
+-- (1007, '2025-09-05 16:20:00+08', 'pending', 'Gavin Lee', '93330004', '888 Woodlands Ave 6', '#12-03', '730888'),
+-- (1008, '2025-09-06 10:10:00+08', 'pending', 'Hui Min Tan', '94560005', '33 Sengkang East Way', NULL, '544886'),
+-- (1009, '2025-09-07 13:25:00+08', 'pending', 'Ivan Koh', '90110006', '2 Punggol Walk', '#05-12', '828624'),
+-- (1010, '2025-09-08 15:50:00+08', 'pending', 'Jasmine Ong', '97990007', '100 Hougang Ave 10', '#03-45', '538768'),
+-- (1011, '2025-09-09 09:40:00+08', 'pending', 'Kelvin Chia', '81230008', '22 Yishun Ave 11', '#04-18', '768652'),
+-- (1012, '2025-09-10 11:55:00+08', 'processing', 'Lydia Low', '96550009', '45 Toa Payoh Lor 5', NULL, '310045'),
+-- (1013, '2025-09-11 10:35:00+08', 'processing', 'Marcus Tan', '91440010', '9 Bishan St 22', '#08-09', '570009'),
+-- (1014, '2025-09-12 14:15:00+08', 'processing', 'Nicole Goh', '83830011', '6 Clementi Ave 3', '#10-04', '120006'),
+-- (1015, '2025-09-13 16:45:00+08', 'processing', 'Owen Foo', '99110012', '77 Jurong West St 61', '#09-31', '640077'),
+-- (1016, '2025-09-14 12:10:00+08', 'processing', 'Priya Raj', '88990013', '18 Choa Chu Kang Ave 3', '#02-07', '689861'),
+-- (1017, '2025-09-15 13:30:00+08', 'processing', 'Qin Wei', '97770014', '3 Bukit Panjang Ring Rd', '#11-20', '679943'),
+-- (1018, '2025-09-16 09:20:00+08', 'processing', 'Ryan Lim', '82220015', '1 Serangoon North Ave 1', NULL, '550001'),
+-- (1019, '2025-09-17 17:05:00+08', 'processing', 'Sara Lee', '93330016', '12 Marine Parade Rd', '#06-06', '449282'),
+-- (1020, '2025-09-18 10:50:00+08', 'processing', 'Terry Ng', '81110017', '88 Bedok North Rd', '#03-21', '460088'),
+-- (1021, '2025-09-19 15:00:00+08', 'processing', 'Uma Devi', '90020018', '5 Jalan Bukit Merah', NULL, '150005'),
+-- (1022, '2025-09-20 11:25:00+08', 'shipped', 'Victor Tan', '95550019', '70 Redhill Close', '#07-08', '150070'),
+-- (1023, '2025-09-21 14:05:00+08', 'shipped', 'Wendy Poh', '86660020', '66 Tiong Bahru Rd', '#12-02', '160066'),
+-- (1024, '2025-09-22 09:15:00+08', 'shipped', 'Xavier Chen', '91110021', '50 Queenstown Dr', NULL, '149299'),
+-- (1025, '2025-09-23 13:55:00+08', 'shipped', 'Yasmin Noor', '93440022', '23 Bukit Timah Rd', '#04-15', '588179'),
+-- (1026, '2025-09-24 16:35:00+08', 'shipped', 'Zachary Ho', '80220023', '11 Thomson Rd', '#05-05', '307610'),
+-- (1027, '2025-09-25 10:05:00+08', 'shipped', 'Adrian Quek', '92340024', '9 River Valley Rd', '#02-19', '179039'),
+-- (1028, '2025-09-26 12:50:00+08', 'shipped', 'Belinda Tan', '87770025', '18 Joo Chiat Pl', NULL, '427744'),
+-- (1029, '2025-09-27 15:20:00+08', 'shipped', 'Caleb Goh', '96660026', '4 Upper Thomson Rd', '#06-12', '570004'),
+-- (1030, '2025-09-28 11:45:00+08', 'shipped', 'Diana Lim', '95550027', '2 Newton Rd', '#14-01', '307995'),
+-- (1031, '2025-09-29 09:30:00+08', 'delivered', 'Ethan Tan', '83330028', '7 Orchard Link', '#03-08', '237957'),
+-- (1032, '2025-09-30 16:10:00+08', 'delivered', 'Fiona Ng', '98880029', '1 Kim Seng Walk', '#23-10', '239403'),
+-- (1033, '2025-10-01 10:20:00+08', 'delivered', 'Gary Choo', '80110030', '88 Zion Rd', '#04-14', '247778'),
+-- (1034, '2025-10-02 13:35:00+08', 'delivered', 'Hannah Yap', '97220031', '2 Jervois Rd', NULL, '248992'),
+-- (1035, '2025-10-03 15:55:00+08', 'delivered', 'Isabelle Koh', '84440032', '5 Telok Blangah Way', '#09-09', '090005'),
+-- (1036, '2025-10-04 11:05:00+08', 'delivered', 'Jacky Neo', '95550033', '6 Alexandra View', '#18-07', '158746'),
+-- (1037, '2025-10-05 14:25:00+08', 'delivered', 'Karen Sim', '88880034', '21 Keppel Bay Dr', '#10-02', '098417'),
+-- (1038, '2025-10-06 12:15:00+08', 'delivered', 'Leonard Phua', '93330035', '3 Marina Blvd', '#12-01', '018982'),
+-- (1039, '2025-10-07 10:40:00+08', 'delivered', 'Megan Toh', '90110036', '1 Harbourfront Walk', '#03-03', '098585'),
+-- (1040, '2025-10-08 16:30:00+08', 'delivered', 'Nathan Lee', '96660037', '10 Bayfront Ave', '#05-16', '018956'),
+-- (1041, '2025-10-09 09:50:00+08', 'cancelled', 'Olivia Teo', '87770038', '8 Raffles Ave', NULL, '039802'),
+-- (1042, '2025-10-10 13:45:00+08', 'cancelled', 'Peter Wong', '94560039', '2 Stadium Walk', '#02-02', '397691'),
+-- (1043, '2025-10-11 11:20:00+08', 'cancelled', 'Queenie Tan', '81230040', '5 Stadium Walk', '#07-07', '397693'),
+-- (1044, '2025-10-12 15:35:00+08', 'cancelled', 'Ronald Goh', '98990041', '1 Expo Dr', '#04-04', '486150'),
+-- (1045, '2025-10-13 10:55:00+08', 'cancelled', 'Siti Nur', '83330042', '1 Changi Business Park', '#03-11', '486036'),
+-- (1046, '2025-10-14 12:40:00+08', 'returned', 'Tomasz Kow', '95550043', '3 Tampines Central 5', '#06-20', '529509'),
+-- (1047, '2025-10-15 14:00:00+08', 'returned', 'Umar Ali', '99110044', '1 Paya Lebar Rd', '#11-08', '409037'),
+-- (1048, '2025-10-16 09:25:00+08', 'returned', 'Valerie Heng', '88990045', '5 Changi Business Park Cres', '#02-06', '486038'),
+-- (1049, '2025-10-17 16:50:00+08', 'returned', 'Wayne Lim', '97770046', '4 Tampines Walk', '#08-10', '528523'),
+-- (1050, '2025-10-18 11:35:00+08', 'returned', 'Xiu Ying', '82220047', '2 Orchard Turn', '#09-21', '238801'),
+-- (1051, '2025-10-19 13:15:00+08', 'returned', 'Yong Sheng', '93330048', '8 Marina Gardens Dr', NULL, '018951'),
+-- (1052, '2025-10-20 15:05:00+08', 'returned', 'Zoe Chan', '90110049', '1 Kim Seng Promenade', '#22-02', '237994'),
+-- (1053, '2025-10-21 10:00:00+08', 'returned', 'Aaron Tan', '96660050', '6 Raffles Blvd', '#05-05', '039594');
 
 
--- =======================
--- ORDER ITEM
--- =======================
-INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, delivery_time, team_assigned, delivered, custom, remarks, value) VALUES
--- Items for Order 1
-(1, 1, 2, '{"shopee"}', '2025-08-25', '14:00:00', 'Team A', true, NULL, 'Leave at doorstep if no one is home.', 150.00),
-(1, 6, 1, '{"shopee"}', '2025-08-25', '14:00:00', 'Team A', true, NULL, NULL, 45.50),
--- Items for Order 2
-(2, 2, 1, '{"private"}', '2025-09-05', '10:30:00', 'Team B', false, 'Custom engraving: "Carpe Diem"', 'Call upon arrival.', 499.99),
-(2, 3, 1, NULL, '2025-09-05', '10:30:00', 'Team B', false, NULL, NULL, 320.00),
--- Items for Order 3
-(3, 4, 1, '{"custom"}', '2025-09-10', NULL, NULL, false, 'Red switches, custom keycaps', NULL, 189.90),
-(3, 5, 1, '{"private", "custom"}', '2025-09-10', NULL, NULL, false, NULL, 'Birthday gift, please include gift wrap.', 79.50),
-(3, 10, 5, NULL, '2025-09-10', NULL, NULL, false, NULL, 'Extra parts', 5.00),
+-- -- =======================
+-- -- ORDER ITEM
+-- -- =======================
+-- INSERT INTO "order_item" (order_id, item_id, qty_requested, tag, delivery_date, delivery_time, team_assigned, delivered, custom, remarks, value) VALUES
+-- -- Items for Order 1
+-- (1, 1, 2, '{"shopee"}', '2025-08-25', '14:00:00', 'Team A', true, NULL, 'Leave at doorstep if no one is home.', 150.00),
+-- (1, 6, 1, '{"shopee"}', '2025-08-25', '14:00:00', 'Team A', true, NULL, NULL, 45.50),
+-- -- Items for Order 2
+-- (2, 2, 1, '{"private"}', '2025-09-05', '10:30:00', 'Team B', false, 'Custom engraving: "Carpe Diem"', 'Call upon arrival.', 499.99),
+-- (2, 3, 1, NULL, '2025-09-05', '10:30:00', 'Team B', false, NULL, NULL, 320.00),
+-- -- Items for Order 3
+-- (3, 4, 1, '{"custom"}', '2025-09-10', NULL, NULL, false, 'Red switches, custom keycaps', NULL, 189.90),
+-- (3, 5, 1, '{"private", "custom"}', '2025-09-10', NULL, NULL, false, NULL, 'Birthday gift, please include gift wrap.', 79.50),
+-- (3, 10, 5, NULL, '2025-09-10', NULL, NULL, false, NULL, 'Extra parts', 5.00),
 
--- Additional order items
--- Order 4
-(4, 13, 2, '{"online"}', '2025-09-07', '10:00:00', 'Team A', false, NULL, 'Call before delivery', 140.00),
-(4, 15, 1, '{"online"}', '2025-09-07', '10:00:00', 'Team A', false, NULL, NULL, 220.00),
--- Order 5
-(5, 16, 1, '{"shopee"}', '2025-09-10', '14:30:00', 'Team B', false, NULL, NULL, 179.90),
-(5, 19, 2, '{"shopee"}', '2025-09-10', '14:30:00', 'Team B', false, NULL, 'Fragile items', 89.90),
--- Order 6
-(6, 20, 1, '{"lazada"}', '2025-09-12', '09:00:00', 'Team C', false, NULL, NULL, 120.00),
-(6, 22, 1, '{"lazada"}', '2025-09-12', '09:00:00', 'Team C', false, NULL, NULL, 350.00),
--- Order 7
-(7, 23, 1, '{"online"}', '2025-09-15', '13:00:00', 'Team D', false, NULL, NULL, 279.90),
-(7, 24, 2, '{"online"}', '2025-09-15', '13:00:00', 'Team D', false, NULL, 'Leave at guardhouse', 199.90),
--- Order 8
-(8, 25, 1, '{"shopee"}', '2025-09-16', '11:30:00', 'Team A', false, NULL, NULL, 399.00),
-(8, 26, 1, '{"shopee"}', '2025-09-16', '11:30:00', 'Team A', false, NULL, NULL, 599.00),
--- Order 9
-(9, 27, 1, '{"lazada"}', '2025-09-18', '15:00:00', 'Team B', false, NULL, NULL, 189.90),
-(9, 28, 1, '{"lazada"}', '2025-09-18', '15:00:00', 'Team B', false, NULL, 'Office setup', 219.90),
--- Order 10
-(10, 29, 1, '{"online"}', '2025-09-20', '10:30:00', 'Team C', false, 'Wall-mounted installation', NULL, 799.00),
-(10, 30, 1, '{"online"}', '2025-09-20', '10:30:00', 'Team C', false, NULL, NULL, 599.90),
--- Order 11
-(11, 31, 1, '{"shopee"}', '2025-09-22', '14:00:00', 'Team D', false, NULL, NULL, 329.00),
-(11, 32, 1, '{"shopee"}', '2025-09-22', '14:00:00', 'Team D', false, NULL, 'Handle with care', 279.90),
--- Order 12
-(12, 33, 1, '{"lazada"}', '2025-09-24', '09:45:00', 'Team A', false, NULL, NULL, 159.90),
-(12, 34, 2, '{"lazada"}', '2025-09-24', '09:45:00', 'Team A', false, NULL, NULL, 99.90),
--- Order 13
-(13, 35, 1, '{"online"}', '2025-09-26', '16:15:00', 'Team B', false, 'Gift wrap', NULL, 229.00),
-(13, 36, 1, '{"online"}', '2025-09-26', '16:15:00', 'Team B', false, NULL, NULL, 189.90),
--- Order 14
-(14, 37, 1, '{"shopee"}', '2025-09-28', '11:10:00', 'Team C', false, NULL, NULL, 89.90),
-(14, 38, 1, '{"shopee"}', '2025-09-28', '11:10:00', 'Team C', false, NULL, NULL, 119.90),
--- Order 15
-(15, 39, 2, '{"lazada"}', '2025-09-30', '10:20:00', 'Team D', false, NULL, NULL, 29.90),
-(15, 40, 1, '{"lazada"}', '2025-09-30', '10:20:00', 'Team D', false, NULL, 'Fast delivery requested', 119.90),
--- Order 16
-(16, 41, 1, '{"online"}', '2025-10-02', '15:30:00', 'Team A', false, NULL, NULL, 159.90),
-(16, 42, 1, '{"online"}', '2025-10-02', '15:30:00', 'Team A', false, NULL, NULL, 229.90),
--- Order 17
-(17, 43, 2, '{"shopee"}', '2025-10-03', '12:00:00', 'Team B', false, NULL, NULL, 12.90),
-(17, 44, 3, '{"shopee"}', '2025-10-03', '12:00:00', 'Team B', false, NULL, 'Small package', 15.90),
--- Order 18
-(18, 45, 1, '{"lazada"}', '2025-10-04', '09:15:00', 'Team C', false, NULL, NULL, 24.90),
-(18, 46, 4, '{"lazada"}', '2025-10-04', '09:15:00', 'Team C', false, NULL, NULL, 6.90),
--- Order 19
-(19, 47, 1, '{"online"}', '2025-10-05', '11:45:00', 'Team D', false, NULL, NULL, 39.90),
-(19, 48, 1, '{"online"}', '2025-10-05', '11:45:00', 'Team D', false, NULL, 'High floor', 119.90),
--- Order 20
-(20, 49, 1, '{"shopee"}', '2025-10-06', '13:20:00', 'Team A', true, NULL, NULL, 22.90),
-(20, 50, 2, '{"shopee"}', '2025-10-06', '13:20:00', 'Team A', true, NULL, NULL, 19.90),
--- Order 21
-(21, 51, 1, '{"lazada"}', '2025-10-07', '10:40:00', 'Team B', true, NULL, NULL, 25.90),
-(21, 52, 1, '{"lazada"}', '2025-10-07', '10:40:00', 'Team B', true, NULL, NULL, 49.90),
--- Order 22
-(22, 53, 1, '{"online"}', '2025-10-08', '14:10:00', 'Team C', true, NULL, NULL, 199.90),
-(22, 54, 1, '{"online"}', '2025-10-08', '14:10:00', 'Team C', true, NULL, 'Premium service', 149.90),
--- Order 23
-(23, 55, 1, '{"shopee"}', '2025-10-09', '09:30:00', 'Team D', true, 'Premium membership included', NULL, 129.90),
-(23, 56, 1, '{"shopee"}', '2025-10-09', '09:30:00', 'Team D', true, NULL, NULL, 179.90),
--- Order 24
-(24, 57, 1, '{"lazada"}', '2025-10-10', '11:00:00', 'Team A', true, NULL, NULL, 49.90),
-(24, 58, 2, '{"lazada"}', '2025-10-10', '11:00:00', 'Team A', true, NULL, NULL, 29.90),
--- Order 25
-(25, 59, 1, '{"online"}', '2025-10-11', '16:20:00', 'Team B', true, NULL, NULL, 59.90),
-(25, 60, 1, '{"online"}', '2025-10-11', '16:20:00', 'Team B', true, NULL, 'Delivery on weekend', 79.90),
--- Order 26
-(26, 13, 1, '{"shopee"}', '2025-10-12', '10:15:00', 'Team C', true, NULL, NULL, 70.00),
-(26, 15, 1, '{"shopee"}', '2025-10-12', '10:15:00', 'Team C', true, NULL, NULL, 220.00),
--- Order 27
-(27, 16, 2, '{"lazada"}', '2025-10-13', '12:35:00', 'Team D', true, NULL, NULL, 179.90),
-(27, 19, 1, '{"lazada"}', '2025-10-13', '12:35:00', 'Team D', true, NULL, NULL, 44.95),
--- Order 28
-(28, 20, 1, '{"online"}', '2025-10-14', '14:45:00', 'Team A', true, NULL, NULL, 120.00),
-(28, 22, 1, '{"online"}', '2025-10-14', '14:45:00', 'Team A', true, NULL, 'Contact before delivery', 350.00),
--- Order 29
-(29, 23, 1, '{"shopee"}', '2025-10-15', '09:25:00', 'Team B', true, 'Extended warranty', NULL, 329.90),
-(29, 24, 1, '{"shopee"}', '2025-10-15', '09:25:00', 'Team B', true, NULL, NULL, 99.95),
--- Order 30
-(30, 25, 1, '{"lazada"}', '2025-10-16', '11:50:00', 'Team C', true, NULL, NULL, 399.00),
-(30, 26, 1, '{"lazada"}', '2025-10-16', '11:50:00', 'Team C', true, NULL, 'Heavy item', 599.00),
--- Order 31
-(31, 1, 1, '{"online"}', '2025-10-17', '13:40:00', 'Team D', true, NULL, 'Existing customer', 75.00),
-(31, 6, 2, '{"online"}', '2025-10-17', '13:40:00', 'Team D', true, NULL, NULL, 91.00),
--- Order 32
-(32, 2, 1, '{"shopee"}', '2025-10-18', '10:10:00', 'Team A', true, NULL, NULL, 520.00),
-(32, 3, 1, '{"shopee"}', '2025-10-18', '10:10:00', 'Team A', true, NULL, NULL, 320.00),
--- Order 33
-(33, 4, 1, '{"lazada"}', '2025-10-19', '15:30:00', 'Team B', true, 'Customized settings', NULL, 189.90),
-(33, 5, 2, '{"lazada"}', '2025-10-19', '15:30:00', 'Team B', true, NULL, NULL, 99.80),
--- Order 34
-(34, 27, 1, '{"online"}', '2025-10-20', '09:00:00', 'Team C', false, NULL, NULL, 189.90),
-(34, 28, 1, '{"online"}', '2025-10-20', '09:00:00', 'Team C', false, NULL, 'Corporate order', 219.90),
--- Order 35
-(35, 29, 1, '{"shopee"}', '2025-10-21', '14:00:00', 'Team D', false, NULL, NULL, 799.00),
-(35, 30, 1, '{"shopee"}', '2025-10-21', '14:00:00', 'Team D', false, NULL, NULL, 599.90),
--- Order 36
-(36, 31, 2, '{"lazada"}', '2025-10-22', '11:25:00', 'Team A', false, NULL, NULL, 658.00),
-(36, 32, 1, '{"lazada"}', '2025-10-22', '11:25:00', 'Team A', false, NULL, NULL, 279.90),
--- Order 37
-(37, 33, 1, '{"online"}', '2025-10-23', '10:50:00', 'Team B', false, NULL, 'Gift delivery', 159.90),
-(37, 34, 1, '{"online"}', '2025-10-23', '10:50:00', 'Team B', false, NULL, NULL, 49.95),
--- Order 38
-(38, 35, 1, '{"shopee"}', '2025-10-24', '13:10:00', 'Team C', false, NULL, NULL, 229.00),
-(38, 36, 2, '{"shopee"}', '2025-10-24', '13:10:00', 'Team C', false, NULL, NULL, 379.80),
--- Order 39
-(39, 37, 3, '{"lazada"}', '2025-10-25', '09:35:00', 'Team D', false, NULL, NULL, 269.70),
-(39, 38, 1, '{"lazada"}', '2025-10-25', '09:35:00', 'Team D', false, NULL, 'Bulk order', 119.90),
--- Order 40
-(40, 39, 10, '{"online"}', '2025-10-26', '15:45:00', 'Team A', false, NULL, NULL, 299.00),
-(40, 40, 1, '{"online"}', '2025-10-26', '15:45:00', 'Team A', false, NULL, NULL, 119.90),
--- Order 41
-(41, 41, 1, '{"shopee"}', '2025-10-27', '11:55:00', 'Team B', false, NULL, NULL, 159.90),
-(41, 42, 1, '{"shopee"}', '2025-10-27', '11:55:00', 'Team B', false, NULL, NULL, 229.90),
--- Order 42
-(42, 43, 5, '{"lazada"}', '2025-10-28', '10:05:00', 'Team C', false, NULL, 'Essential supplies', 64.50),
-(42, 44, 3, '{"lazada"}', '2025-10-28', '10:05:00', 'Team C', false, NULL, NULL, 47.70),
--- Order 43
-(43, 45, 2, '{"online"}', '2025-10-29', '12:20:00', 'Team D', false, NULL, NULL, 49.80),
-(43, 46, 4, '{"online"}', '2025-10-29', '12:20:00', 'Team D', false, NULL, NULL, 27.60),
--- Order 44
-(44, 47, 1, '{"shopee"}', '2025-10-30', '16:00:00', 'Team A', false, NULL, 'Need installation', 39.90),
-(44, 48, 1, '{"shopee"}', '2025-10-30', '16:00:00', 'Team A', false, NULL, NULL, 119.90),
--- Order 45
-(45, 49, 3, '{"lazada"}', '2025-10-31', '09:10:00', 'Team B', false, NULL, NULL, 68.70),
-(45, 50, 2, '{"lazada"}', '2025-10-31', '09:10:00', 'Team B', false, NULL, NULL, 39.80),
--- Order 46
-(46, 51, 1, '{"online"}', '2025-11-01', '14:15:00', 'Team C', false, NULL, NULL, 25.90),
-(46, 52, 2, '{"online"}', '2025-11-01', '14:15:00', 'Team C', false, NULL, 'Office supplies', 99.80),
--- Order 47
-(47, 53, 1, '{"shopee"}', '2025-11-02', '10:45:00', 'Team D', false, NULL, NULL, 199.90),
-(47, 54, 1, '{"shopee"}', '2025-11-02', '10:45:00', 'Team D', false, NULL, NULL, 149.90),
--- Order 48
-(48, 55, 1, '{"lazada"}', '2025-11-03', '12:55:00', 'Team A', false, 'Premium package', 'Express shipping', 129.90),
-(48, 56, 1, '{"lazada"}', '2025-11-03', '12:55:00', 'Team A', false, NULL, NULL, 179.90),
--- Order 49
-(49, 57, 2, '{"online"}', '2025-11-04', '11:35:00', 'Team B', false, NULL, NULL, 99.80),
-(49, 58, 2, '{"online"}', '2025-11-04', '11:35:00', 'Team B', false, NULL, NULL, 59.80),
--- Order 50
-(50, 59, 1, '{"shopee"}', '2025-11-05', '15:25:00', 'Team C', false, NULL, NULL, 59.90),
-(50, 60, 2, '{"shopee"}', '2025-11-05', '15:25:00', 'Team C', false, NULL, NULL, 159.80),
--- Order 51
-(51, 1, 1, '{"lazada"}', '2025-11-06', '10:20:00', 'Team D', false, NULL, NULL, 75.00),
-(51, 6, 1, '{"lazada"}', '2025-11-06', '10:20:00', 'Team D', false, NULL, NULL, 45.50),
--- Order 52
-(52, 2, 1, '{"online"}', '2025-11-07', '13:35:00', 'Team A', false, 'Custom height', NULL, 520.00),
-(52, 3, 1, '{"online"}', '2025-11-07', '13:35:00', 'Team A', false, NULL, 'Need wall mount', 320.00),
--- Order 53
-(53, 4, 2, '{"shopee"}', '2025-11-08', '09:05:00', 'Team B', false, 'Bundle discount', NULL, 359.80),
-(53, 5, 2, '{"shopee"}', '2025-11-08', '09:05:00', 'Team B', false, NULL, NULL, 99.80);
+-- -- Additional order items
+-- -- Order 4
+-- (4, 13, 2, '{"online"}', '2025-09-07', '10:00:00', 'Team A', false, NULL, 'Call before delivery', 140.00),
+-- (4, 15, 1, '{"online"}', '2025-09-07', '10:00:00', 'Team A', false, NULL, NULL, 220.00),
+-- -- Order 5
+-- (5, 16, 1, '{"shopee"}', '2025-09-10', '14:30:00', 'Team B', false, NULL, NULL, 179.90),
+-- (5, 19, 2, '{"shopee"}', '2025-09-10', '14:30:00', 'Team B', false, NULL, 'Fragile items', 89.90),
+-- -- Order 6
+-- (6, 20, 1, '{"lazada"}', '2025-09-12', '09:00:00', 'Team C', false, NULL, NULL, 120.00),
+-- (6, 22, 1, '{"lazada"}', '2025-09-12', '09:00:00', 'Team C', false, NULL, NULL, 350.00),
+-- -- Order 7
+-- (7, 23, 1, '{"online"}', '2025-09-15', '13:00:00', 'Team D', false, NULL, NULL, 279.90),
+-- (7, 24, 2, '{"online"}', '2025-09-15', '13:00:00', 'Team D', false, NULL, 'Leave at guardhouse', 199.90),
+-- -- Order 8
+-- (8, 25, 1, '{"shopee"}', '2025-09-16', '11:30:00', 'Team A', false, NULL, NULL, 399.00),
+-- (8, 26, 1, '{"shopee"}', '2025-09-16', '11:30:00', 'Team A', false, NULL, NULL, 599.00),
+-- -- Order 9
+-- (9, 27, 1, '{"lazada"}', '2025-09-18', '15:00:00', 'Team B', false, NULL, NULL, 189.90),
+-- (9, 28, 1, '{"lazada"}', '2025-09-18', '15:00:00', 'Team B', false, NULL, 'Office setup', 219.90),
+-- -- Order 10
+-- (10, 29, 1, '{"online"}', '2025-09-20', '10:30:00', 'Team C', false, 'Wall-mounted installation', NULL, 799.00),
+-- (10, 30, 1, '{"online"}', '2025-09-20', '10:30:00', 'Team C', false, NULL, NULL, 599.90),
+-- -- Order 11
+-- (11, 31, 1, '{"shopee"}', '2025-09-22', '14:00:00', 'Team D', false, NULL, NULL, 329.00),
+-- (11, 32, 1, '{"shopee"}', '2025-09-22', '14:00:00', 'Team D', false, NULL, 'Handle with care', 279.90),
+-- -- Order 12
+-- (12, 33, 1, '{"lazada"}', '2025-09-24', '09:45:00', 'Team A', false, NULL, NULL, 159.90),
+-- (12, 34, 2, '{"lazada"}', '2025-09-24', '09:45:00', 'Team A', false, NULL, NULL, 99.90),
+-- -- Order 13
+-- (13, 35, 1, '{"online"}', '2025-09-26', '16:15:00', 'Team B', false, 'Gift wrap', NULL, 229.00),
+-- (13, 36, 1, '{"online"}', '2025-09-26', '16:15:00', 'Team B', false, NULL, NULL, 189.90),
+-- -- Order 14
+-- (14, 37, 1, '{"shopee"}', '2025-09-28', '11:10:00', 'Team C', false, NULL, NULL, 89.90),
+-- (14, 38, 1, '{"shopee"}', '2025-09-28', '11:10:00', 'Team C', false, NULL, NULL, 119.90),
+-- -- Order 15
+-- (15, 39, 2, '{"lazada"}', '2025-09-30', '10:20:00', 'Team D', false, NULL, NULL, 29.90),
+-- (15, 40, 1, '{"lazada"}', '2025-09-30', '10:20:00', 'Team D', false, NULL, 'Fast delivery requested', 119.90),
+-- -- Order 16
+-- (16, 41, 1, '{"online"}', '2025-10-02', '15:30:00', 'Team A', false, NULL, NULL, 159.90),
+-- (16, 42, 1, '{"online"}', '2025-10-02', '15:30:00', 'Team A', false, NULL, NULL, 229.90),
+-- -- Order 17
+-- (17, 43, 2, '{"shopee"}', '2025-10-03', '12:00:00', 'Team B', false, NULL, NULL, 12.90),
+-- (17, 44, 3, '{"shopee"}', '2025-10-03', '12:00:00', 'Team B', false, NULL, 'Small package', 15.90),
+-- -- Order 18
+-- (18, 45, 1, '{"lazada"}', '2025-10-04', '09:15:00', 'Team C', false, NULL, NULL, 24.90),
+-- (18, 46, 4, '{"lazada"}', '2025-10-04', '09:15:00', 'Team C', false, NULL, NULL, 6.90),
+-- -- Order 19
+-- (19, 47, 1, '{"online"}', '2025-10-05', '11:45:00', 'Team D', false, NULL, NULL, 39.90),
+-- (19, 48, 1, '{"online"}', '2025-10-05', '11:45:00', 'Team D', false, NULL, 'High floor', 119.90),
+-- -- Order 20
+-- (20, 49, 1, '{"shopee"}', '2025-10-06', '13:20:00', 'Team A', true, NULL, NULL, 22.90),
+-- (20, 50, 2, '{"shopee"}', '2025-10-06', '13:20:00', 'Team A', true, NULL, NULL, 19.90),
+-- -- Order 21
+-- (21, 51, 1, '{"lazada"}', '2025-10-07', '10:40:00', 'Team B', true, NULL, NULL, 25.90),
+-- (21, 52, 1, '{"lazada"}', '2025-10-07', '10:40:00', 'Team B', true, NULL, NULL, 49.90),
+-- -- Order 22
+-- (22, 53, 1, '{"online"}', '2025-10-08', '14:10:00', 'Team C', true, NULL, NULL, 199.90),
+-- (22, 54, 1, '{"online"}', '2025-10-08', '14:10:00', 'Team C', true, NULL, 'Premium service', 149.90),
+-- -- Order 23
+-- (23, 55, 1, '{"shopee"}', '2025-10-09', '09:30:00', 'Team D', true, 'Premium membership included', NULL, 129.90),
+-- (23, 56, 1, '{"shopee"}', '2025-10-09', '09:30:00', 'Team D', true, NULL, NULL, 179.90),
+-- -- Order 24
+-- (24, 57, 1, '{"lazada"}', '2025-10-10', '11:00:00', 'Team A', true, NULL, NULL, 49.90),
+-- (24, 58, 2, '{"lazada"}', '2025-10-10', '11:00:00', 'Team A', true, NULL, NULL, 29.90),
+-- -- Order 25
+-- (25, 59, 1, '{"online"}', '2025-10-11', '16:20:00', 'Team B', true, NULL, NULL, 59.90),
+-- (25, 60, 1, '{"online"}', '2025-10-11', '16:20:00', 'Team B', true, NULL, 'Delivery on weekend', 79.90),
+-- -- Order 26
+-- (26, 13, 1, '{"shopee"}', '2025-10-12', '10:15:00', 'Team C', true, NULL, NULL, 70.00),
+-- (26, 15, 1, '{"shopee"}', '2025-10-12', '10:15:00', 'Team C', true, NULL, NULL, 220.00),
+-- -- Order 27
+-- (27, 16, 2, '{"lazada"}', '2025-10-13', '12:35:00', 'Team D', true, NULL, NULL, 179.90),
+-- (27, 19, 1, '{"lazada"}', '2025-10-13', '12:35:00', 'Team D', true, NULL, NULL, 44.95),
+-- -- Order 28
+-- (28, 20, 1, '{"online"}', '2025-10-14', '14:45:00', 'Team A', true, NULL, NULL, 120.00),
+-- (28, 22, 1, '{"online"}', '2025-10-14', '14:45:00', 'Team A', true, NULL, 'Contact before delivery', 350.00),
+-- -- Order 29
+-- (29, 23, 1, '{"shopee"}', '2025-10-15', '09:25:00', 'Team B', true, 'Extended warranty', NULL, 329.90),
+-- (29, 24, 1, '{"shopee"}', '2025-10-15', '09:25:00', 'Team B', true, NULL, NULL, 99.95),
+-- -- Order 30
+-- (30, 25, 1, '{"lazada"}', '2025-10-16', '11:50:00', 'Team C', true, NULL, NULL, 399.00),
+-- (30, 26, 1, '{"lazada"}', '2025-10-16', '11:50:00', 'Team C', true, NULL, 'Heavy item', 599.00),
+-- -- Order 31
+-- (31, 1, 1, '{"online"}', '2025-10-17', '13:40:00', 'Team D', true, NULL, 'Existing customer', 75.00),
+-- (31, 6, 2, '{"online"}', '2025-10-17', '13:40:00', 'Team D', true, NULL, NULL, 91.00),
+-- -- Order 32
+-- (32, 2, 1, '{"shopee"}', '2025-10-18', '10:10:00', 'Team A', true, NULL, NULL, 520.00),
+-- (32, 3, 1, '{"shopee"}', '2025-10-18', '10:10:00', 'Team A', true, NULL, NULL, 320.00),
+-- -- Order 33
+-- (33, 4, 1, '{"lazada"}', '2025-10-19', '15:30:00', 'Team B', true, 'Customized settings', NULL, 189.90),
+-- (33, 5, 2, '{"lazada"}', '2025-10-19', '15:30:00', 'Team B', true, NULL, NULL, 99.80),
+-- -- Order 34
+-- (34, 27, 1, '{"online"}', '2025-10-20', '09:00:00', 'Team C', false, NULL, NULL, 189.90),
+-- (34, 28, 1, '{"online"}', '2025-10-20', '09:00:00', 'Team C', false, NULL, 'Corporate order', 219.90),
+-- -- Order 35
+-- (35, 29, 1, '{"shopee"}', '2025-10-21', '14:00:00', 'Team D', false, NULL, NULL, 799.00),
+-- (35, 30, 1, '{"shopee"}', '2025-10-21', '14:00:00', 'Team D', false, NULL, NULL, 599.90),
+-- -- Order 36
+-- (36, 31, 2, '{"lazada"}', '2025-10-22', '11:25:00', 'Team A', false, NULL, NULL, 658.00),
+-- (36, 32, 1, '{"lazada"}', '2025-10-22', '11:25:00', 'Team A', false, NULL, NULL, 279.90),
+-- -- Order 37
+-- (37, 33, 1, '{"online"}', '2025-10-23', '10:50:00', 'Team B', false, NULL, 'Gift delivery', 159.90),
+-- (37, 34, 1, '{"online"}', '2025-10-23', '10:50:00', 'Team B', false, NULL, NULL, 49.95),
+-- -- Order 38
+-- (38, 35, 1, '{"shopee"}', '2025-10-24', '13:10:00', 'Team C', false, NULL, NULL, 229.00),
+-- (38, 36, 2, '{"shopee"}', '2025-10-24', '13:10:00', 'Team C', false, NULL, NULL, 379.80),
+-- -- Order 39
+-- (39, 37, 3, '{"lazada"}', '2025-10-25', '09:35:00', 'Team D', false, NULL, NULL, 269.70),
+-- (39, 38, 1, '{"lazada"}', '2025-10-25', '09:35:00', 'Team D', false, NULL, 'Bulk order', 119.90),
+-- -- Order 40
+-- (40, 39, 10, '{"online"}', '2025-10-26', '15:45:00', 'Team A', false, NULL, NULL, 299.00),
+-- (40, 40, 1, '{"online"}', '2025-10-26', '15:45:00', 'Team A', false, NULL, NULL, 119.90),
+-- -- Order 41
+-- (41, 41, 1, '{"shopee"}', '2025-10-27', '11:55:00', 'Team B', false, NULL, NULL, 159.90),
+-- (41, 42, 1, '{"shopee"}', '2025-10-27', '11:55:00', 'Team B', false, NULL, NULL, 229.90),
+-- -- Order 42
+-- (42, 43, 5, '{"lazada"}', '2025-10-28', '10:05:00', 'Team C', false, NULL, 'Essential supplies', 64.50),
+-- (42, 44, 3, '{"lazada"}', '2025-10-28', '10:05:00', 'Team C', false, NULL, NULL, 47.70),
+-- -- Order 43
+-- (43, 45, 2, '{"online"}', '2025-10-29', '12:20:00', 'Team D', false, NULL, NULL, 49.80),
+-- (43, 46, 4, '{"online"}', '2025-10-29', '12:20:00', 'Team D', false, NULL, NULL, 27.60),
+-- -- Order 44
+-- (44, 47, 1, '{"shopee"}', '2025-10-30', '16:00:00', 'Team A', false, NULL, 'Need installation', 39.90),
+-- (44, 48, 1, '{"shopee"}', '2025-10-30', '16:00:00', 'Team A', false, NULL, NULL, 119.90),
+-- -- Order 45
+-- (45, 49, 3, '{"lazada"}', '2025-10-31', '09:10:00', 'Team B', false, NULL, NULL, 68.70),
+-- (45, 50, 2, '{"lazada"}', '2025-10-31', '09:10:00', 'Team B', false, NULL, NULL, 39.80),
+-- -- Order 46
+-- (46, 51, 1, '{"online"}', '2025-11-01', '14:15:00', 'Team C', false, NULL, NULL, 25.90),
+-- (46, 52, 2, '{"online"}', '2025-11-01', '14:15:00', 'Team C', false, NULL, 'Office supplies', 99.80),
+-- -- Order 47
+-- (47, 53, 1, '{"shopee"}', '2025-11-02', '10:45:00', 'Team D', false, NULL, NULL, 199.90),
+-- (47, 54, 1, '{"shopee"}', '2025-11-02', '10:45:00', 'Team D', false, NULL, NULL, 149.90),
+-- -- Order 48
+-- (48, 55, 1, '{"lazada"}', '2025-11-03', '12:55:00', 'Team A', false, 'Premium package', 'Express shipping', 129.90),
+-- (48, 56, 1, '{"lazada"}', '2025-11-03', '12:55:00', 'Team A', false, NULL, NULL, 179.90),
+-- -- Order 49
+-- (49, 57, 2, '{"online"}', '2025-11-04', '11:35:00', 'Team B', false, NULL, NULL, 99.80),
+-- (49, 58, 2, '{"online"}', '2025-11-04', '11:35:00', 'Team B', false, NULL, NULL, 59.80),
+-- -- Order 50
+-- (50, 59, 1, '{"shopee"}', '2025-11-05', '15:25:00', 'Team C', false, NULL, NULL, 59.90),
+-- (50, 60, 2, '{"shopee"}', '2025-11-05', '15:25:00', 'Team C', false, NULL, NULL, 159.80),
+-- -- Order 51
+-- (51, 1, 1, '{"lazada"}', '2025-11-06', '10:20:00', 'Team D', false, NULL, NULL, 75.00),
+-- (51, 6, 1, '{"lazada"}', '2025-11-06', '10:20:00', 'Team D', false, NULL, NULL, 45.50),
+-- -- Order 52
+-- (52, 2, 1, '{"online"}', '2025-11-07', '13:35:00', 'Team A', false, 'Custom height', NULL, 520.00),
+-- (52, 3, 1, '{"online"}', '2025-11-07', '13:35:00', 'Team A', false, NULL, 'Need wall mount', 320.00),
+-- -- Order 53
+-- (53, 4, 2, '{"shopee"}', '2025-11-08', '09:05:00', 'Team B', false, 'Bundle discount', NULL, 359.80),
+-- (53, 5, 2, '{"shopee"}', '2025-11-08', '09:05:00', 'Team B', false, NULL, NULL, 99.80);
 
 -- =======================
 -- USER SESSIONS

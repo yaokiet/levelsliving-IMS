@@ -46,6 +46,9 @@ def _tier_to_model_path(tier: str) -> Path:
         raise HTTPException(status_code=400, detail=f"Unknown tier: {tier}")
     return MODELS_DIR / name , name
 
+# TO CHANGE
+# ADD CACHING OF FORECASTS INTO MEMORY
+
 # Forecast for one SKU
 @router.post("/{sku_id}", response_model=SKUForecastResponse)
 def forecast_sku(sku_id: str, req: ForecastRequest) -> SKUForecastResponse:    
@@ -148,6 +151,6 @@ def forecast_inventory(req: ForecastRequest) -> InventoryForecastResponse:
 
 # update xgb models, metadata files
 @router.post("/model_update")
-def forecast_inventory():
+def update_forecast_models():
     # get all orders from google drive
     pass

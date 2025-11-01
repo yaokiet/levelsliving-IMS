@@ -24,7 +24,7 @@ export function SalesPurchaseChartControls({
         <Slider
           value={[predictionHorizon]}
           onValueChange={([v]) => setPredictionHorizon(v)}
-          min={1}
+          min={0}
           max={12}
           step={1}
           className="w-40"
