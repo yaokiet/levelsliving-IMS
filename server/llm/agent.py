@@ -26,7 +26,7 @@ class Agent():
             logger.debug(" ".join(str(arg) for arg in args))
 
     async def _preprocessing(self):
-        self._log("Main agent preprocessing started")
+        logger.info("Main agent preprocessing started")
         generative_model_client = GenerativeModelClient(
             system_instruction=self.prompt_manager.get_agent_prompt_tool_calling(),
         )
@@ -39,34 +39,33 @@ class Agent():
             } for agent in self.agents])],
         )
         if not function_calls:
-            self._log("No agent delegation detected")
+            logger.info("No agent delegation detected")
             return None
 
-        self._log(f"Agent delegation detected: {function_calls}")
-        # Assuming we only delegate to one agent at a time
+        logger.info(f"Agent delegation detected: {function_calls}")
+
         delegated_agent_name = function_calls[0].name
         return delegated_agent_name
 
     async def generate_content(self, user_prompt):
         self.chat_history_manager.add_user_prompt(user_prompt)
+        logger.info(f"LETS START Main agent history before delegation: {self.chat_history_manager.get_chat_history()}")
         delegated_agent_name = await self._preprocessing()
+        logger.info(f"Delegation decision: {delegated_agent_name}")
 
         if delegated_agent_name and delegated_agent_name in self.agent_map:
             delegated_agent = self.agent_map.get(delegated_agent_name)
             
-            # --- FIX HERE: Use keyword arguments ---
             yield Event(type=EventType.LOADING_TEXT, data=delegated_agent.loading_text)
             
-            # Pass the main history to the sub-agent so it has full context
             delegated_agent.chat_history_manager = self.chat_history_manager
             async for event in delegated_agent.generate_content(user_prompt):
                 yield event
             return
 
-        # --- FIX HERE: Use keyword arguments ---
         yield Event(type=EventType.LOADING_TEXT, data="Curating Response...")
         
-        self._log("Generating final response from main agent")
+        logger.info("Generating final response from main agent")
         generative_model_client = GenerativeModelClient(
             system_instruction=self.prompt_manager.get_agent_prompt_generation(),
         )

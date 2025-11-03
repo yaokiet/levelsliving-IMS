@@ -18,6 +18,7 @@ class DatabaseAgent():
                     "type": "string",
                     "description": "The user's query, reinforced with previous chat history.",
                 }
+
             },
             "required": ["query"]
         }
@@ -41,8 +42,10 @@ class DatabaseAgent():
         if function_responses:
             self.chat_history_manager.add_model_function_responses(function_responses)
 
+            
     async def _preprocessing(self):
         self._log("Model generation started for preprocessing")
+
         while True:
             generative_model_client = GenerativeModelClient(
                 system_instruction=self.prompt_manager.get_agent_prompt_tool_calling(),
@@ -66,13 +69,28 @@ class DatabaseAgent():
             await self._execute_tools(function_calls)
 
     async def generate_content(self, user_prompt):
-        # The user prompt is added by the main agent, so we don't add it here.
+        tools_were_run = False
         async for loading_text in self._preprocessing():
+            tools_were_run = True
             yield Event(type=EventType.LOADING_TEXT, data=loading_text)
         
+        if not tools_were_run:
+            self._log("CRITICAL: Preprocessing failed to call any tools. Aborting generation.")
+            yield Event(type=EventType.LOADING_TEXT, data="Curating Response...") # Yield loading first
+            
+            failed_response = ResponseSchema(
+                response="I was unable to retrieve that information from the database.",
+                data=None
+            )
+            
+            yield Event(type=EventType.RESPONSE, data=failed_response.model_dump())
+            
+            self.chat_history_manager.add_model_response(failed_response.model_dump_json())
+            return 
+
         yield Event(type=EventType.LOADING_TEXT, data="Curating Response...")
         
-        self._log("Generating final response")
+        self._log("Generating final response (tools ran successfully)")
         generative_model_client = GenerativeModelClient(
             system_instruction=self.prompt_manager.get_agent_prompt_generation(),
         )
