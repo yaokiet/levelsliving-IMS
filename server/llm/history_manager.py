@@ -1,9 +1,12 @@
 from google.genai import types
 
-
 class ChatHistoryManager:
-    def __init__(self, chat_history: list = []):
-        self.history = chat_history
+    def __init__(self, chat_history: list = None):
+        # This is the correct way
+        if chat_history is None:
+            self.history = []
+        else:
+            self.history = chat_history
 
     def add_user_prompt(self, prompt: str):
         part = types.UserContent(
