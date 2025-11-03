@@ -9,9 +9,9 @@ import uuid
 @pytest.fixture(scope="session", autouse=True)
 def _env_basics():
     os.environ.setdefault("FRONTEND_ORIGIN", "http://localhost:3000")
-    os.environ.setdefault("LARK_APP_ID", "test")
-    os.environ.setdefault("LARK_APP_SECRET", "test")
-    os.environ.setdefault("LARK_SPREADSHEET_ID", "test")
+    # os.environ.setdefault("LARK_APP_ID", "test")
+    # os.environ.setdefault("LARK_APP_SECRET", "test")
+    # os.environ.setdefault("LARK_SPREADSHEET_ID", "test")
     yield
 
 @pytest.fixture(scope="session", autouse=True)

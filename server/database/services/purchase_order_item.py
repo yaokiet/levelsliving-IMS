@@ -40,7 +40,7 @@ def update_purchase_order_item(db: Session, po_id: int, item_id: int, payload: P
     db_po_item = get_purchase_order_item(db, po_id, item_id)
     if not db_po_item:
         return None
-    update_data = payload.dict(exclude_unset=True)
+    update_data = payload.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_po_item, key, value)
     db.commit()

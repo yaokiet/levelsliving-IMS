@@ -19,9 +19,9 @@ class SupplierUpdate(BaseModel):
 class SupplierRead(SupplierBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
         
 class SupplierSearchByItems(BaseModel):
-    item_ids: List[int] = Field(..., min_items=1, description="A list of item IDs to search for.")
+    item_ids: List[int] = Field(..., min_length=1, description="A list of item IDs to search for.")
 

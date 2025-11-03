@@ -123,7 +123,7 @@ def create_user(db: Session, user: UserCreate):
 def update_user(db: Session, user_id: int, user: UserUpdate):
     db_user = db.query(User).filter(User.id == user_id).first()
     if db_user:
-        update_data = user.dict(exclude_unset=True)
+        update_data = user.model_dump(exclude_unset=True)
         if "password" in update_data:
             update_data["password_hash"] = update_data.pop("password")  # TODO: Hash password before storing
         for key, value in update_data.items():

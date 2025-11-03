@@ -30,7 +30,7 @@ class OrderUpdate(BaseModel):
 class OrderRead(OrderBase):
     order_id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
 
 
@@ -55,7 +55,7 @@ class ItemMergedRead(BaseModel):
     remarks: Optional[str] = None
     value: Decimal  
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
 
 
@@ -70,5 +70,5 @@ class OrderDetails(BaseModel):
     total_value: Decimal
     subRows: List[ItemMergedRead]
 
-    class Config:
+    class ConfigDict:
         orm_mode = True

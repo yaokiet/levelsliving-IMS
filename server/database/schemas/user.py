@@ -18,5 +18,5 @@ class UserUpdate(BaseModel):
 class UserRead(UserBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True

@@ -11,11 +11,13 @@ from api.v1.routes.purchase_order_item_route import router as purchase_order_ite
 from api.v1.routes.order_route import router as order_router
 from api.v1.routes.order_item_route import router as order_item_router
 from api.v1.routes.auth_route import router as auth_router
-from api.v1.routes.lark_route import router as lark_router
+# from api.v1.routes.lark_route import router as lark_router
 from api.v1.routes.cart_route import router as cart_router
 
 # Import the new LLM route
 from api.v1.routes.llm_route import router as llm_router
+
+from api.v1.routes.forecast_route import router as forecast_route_router
 
 router = APIRouter(prefix="/levelsliving/app/api/v1")
 
@@ -30,11 +32,14 @@ router.include_router(purchase_order_item_router)
 router.include_router(order_router)
 router.include_router(order_item_router)
 router.include_router(auth_router)
-router.include_router(lark_router)
+# router.include_router(lark_router)
 router.include_router(cart_router)
 
 # Include the new LLM router
 router.include_router(llm_router)
+
+# Forecasting router
+router.include_router(forecast_route_router)
 
 
 @router.get("/test")

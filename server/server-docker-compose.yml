@@ -1,0 +1,41 @@
+services:
+  # PostgreSQL Database Service
+  db:
+    image: postgres:16-alpine # Use a lightweight PostgreSQL image
+    restart: always           # Always restart if it stops
+    environment:
+      POSTGRES_DB: levelsliving
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pg_data:/var/lib/postgresql/data  # ← this makes data persistent
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432 (optional for FastAPI, useful for PGAdmin4)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # FastAPI Application Service
+  server: # Changed service name from 'web' to 'server' as per your original request
+    image: joelsngzw/levelslivingserver:latest # Build the image from the Dockerfile in the current directory
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000" # Map host port 8000 to container port 8000
+    env_file:
+      - /root/.env
+    environment:
+      # --- ADD OR UPDATE THESE LINES ---
+      GOOGLE_GENAI_PROJECT_ID: "levelslivingai"
+      GOOGLE_GENAI_USE_VERTEXAI: "False" # Make sure this is False
+      GOOGLE_GENAI_LOCATION: "global"
+    restart: always # Always restart if it stops
+    volumes:
+      - /opt/levelsliving-IMS:/app/config
+
+volumes:
+  pg_data: # Define the named volume for PostgreSQL data persistence
+  

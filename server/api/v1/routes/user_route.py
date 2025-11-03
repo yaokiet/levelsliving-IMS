@@ -31,7 +31,7 @@ def read_users(
     db: Session = Depends(get_db),
 ):
     """
-    List users with pagination, search (q), and sorting.
+    List users with pagination, search (q), and sorting
     """
     return get_all_users(
         db,

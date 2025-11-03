@@ -9,12 +9,28 @@ from collections import defaultdict
 
 from typing import Any, Dict, List, Optional, Iterable
 from sqlalchemy import or_, func, String, Integer
+from datetime import datetime, timezone, timedelta
+import logging
+from config import settings
+
+# Singapore timezone (UTC+8)
+SGT = timezone(timedelta(hours=8))
 
 from database.services.pagination import (
     clamp_page_size,
     parse_sort,
     build_meta,
 )
+
+# Import Google Sheets client
+try:
+    from app.utils.google_sheets import get_google_sheets_client
+    GOOGLE_SHEETS_AVAILABLE = True
+except ImportError:
+    GOOGLE_SHEETS_AVAILABLE = False
+    logging.warning("Google Sheets integration not available")
+
+logger = logging.getLogger(__name__)
 
 def get_item(db: Session, item_id: int):
     return db.query(Item).filter(Item.id == item_id).first()
@@ -127,26 +143,133 @@ def get_all_items_pagniated(
     return {"meta": meta, "data": data}
 
 def create_item(db: Session, item: ItemCreate):
-    db_item = Item(**item.dict())
+    db_item = Item(**item.model_dump())
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
+    
+    # Sync to Google Sheets if enabled
+    print(f"[GOOGLE SHEETS] Checking sync settings for item creation...")
+    print(f"[GOOGLE SHEETS] Available: {GOOGLE_SHEETS_AVAILABLE}")
+    print(f"[GOOGLE SHEETS] Enabled: {settings.GOOGLE_SHEETS_ENABLED if hasattr(settings, 'GOOGLE_SHEETS_ENABLED') else 'NOT SET'}")
+    
+    if GOOGLE_SHEETS_AVAILABLE and settings.GOOGLE_SHEETS_ENABLED:
+        try:
+            print(f"[GOOGLE SHEETS] Attempting to sync new item: {db_item.item_name}")
+            sheets_client = get_google_sheets_client(
+                settings.GOOGLE_SHEETS_CREDENTIALS_PATH,
+                settings.GOOGLE_SHEETS_SPREADSHEET_ID
+            )
+            item_data = {
+                'id': db_item.id,
+                'sku': db_item.sku,
+                'type': db_item.type,
+                'item_name': db_item.item_name,
+                'variant': db_item.variant or '',
+                'qty': db_item.qty,
+                'threshold_qty': db_item.threshold_qty,
+                'created_at': getattr(db_item, 'created_at', datetime.now(SGT)),
+                'updated_at': getattr(db_item, 'updated_at', datetime.now(SGT))
+            }
+            success = sheets_client.sync_item_create(item_data)
+            if success:
+                print(f"[GOOGLE SHEETS] ✓ Successfully synced item '{db_item.item_name}' to Google Sheets")
+            else:
+                print(f"[GOOGLE SHEETS] ✗ Failed to sync item '{db_item.item_name}' to Google Sheets")
+        except Exception as e:
+            print(f"[GOOGLE SHEETS] ✗ ERROR syncing item create: {str(e)}")
+            logger.error(f"Failed to sync item create to Google Sheets: {e}", exc_info=True)
+    else:
+        if not GOOGLE_SHEETS_AVAILABLE:
+            print(f"[GOOGLE SHEETS] Skipping sync - Google Sheets integration not available")
+        elif not settings.GOOGLE_SHEETS_ENABLED:
+            print(f"[GOOGLE SHEETS] Skipping sync - Google Sheets integration disabled in settings")
+    
     return db_item
 
 def update_item(db: Session, item_id: int, item: ItemUpdate):
     db_item = db.query(Item).filter(Item.id == item_id).first()
     if db_item:
-        for key, value in item.dict().items():
+        for key, value in item.model_dump().items():
             setattr(db_item, key, value)
         db.commit()
         db.refresh(db_item)
+        
+        # Sync to Google Sheets if enabled
+        print(f"[GOOGLE SHEETS] Checking sync settings for item update...")
+        print(f"[GOOGLE SHEETS] Available: {GOOGLE_SHEETS_AVAILABLE}")
+        print(f"[GOOGLE SHEETS] Enabled: {settings.GOOGLE_SHEETS_ENABLED if hasattr(settings, 'GOOGLE_SHEETS_ENABLED') else 'NOT SET'}")
+        
+        if GOOGLE_SHEETS_AVAILABLE and settings.GOOGLE_SHEETS_ENABLED:
+            try:
+                print(f"[GOOGLE SHEETS] Attempting to sync updated item: {db_item.item_name}")
+                sheets_client = get_google_sheets_client(
+                    settings.GOOGLE_SHEETS_CREDENTIALS_PATH,
+                    settings.GOOGLE_SHEETS_SPREADSHEET_ID
+                )
+                item_data = {
+                    'id': db_item.id,
+                    'sku': db_item.sku,
+                    'type': db_item.type,
+                    'item_name': db_item.item_name,
+                    'variant': db_item.variant or '',
+                    'qty': db_item.qty,
+                    'threshold_qty': db_item.threshold_qty,
+                    'created_at': getattr(db_item, 'created_at', datetime.now(SGT)),
+                    'updated_at': getattr(db_item, 'updated_at', datetime.now(SGT))
+                }
+                success = sheets_client.sync_item_update(item_data)
+                if success:
+                    print(f"[GOOGLE SHEETS] ✓ Successfully synced item update for '{db_item.item_name}' to Google Sheets")
+                else:
+                    print(f"[GOOGLE SHEETS] ✗ Failed to sync item update for '{db_item.item_name}' to Google Sheets")
+            except Exception as e:
+                print(f"[GOOGLE SHEETS] ✗ ERROR syncing item update: {str(e)}")
+                logger.error(f"Failed to sync item update to Google Sheets: {e}", exc_info=True)
+        else:
+            if not GOOGLE_SHEETS_AVAILABLE:
+                print(f"[GOOGLE SHEETS] Skipping sync - Google Sheets integration not available")
+            elif not settings.GOOGLE_SHEETS_ENABLED:
+                print(f"[GOOGLE SHEETS] Skipping sync - Google Sheets integration disabled in settings")
+    
     return db_item
 
 def delete_item(db: Session, item_id: int):
     db_item = db.query(Item).filter(Item.id == item_id).first()
     if db_item:
+        # Store item data before deletion for Google Sheets sync
+        item_id_to_delete = db_item.id
+        item_name_to_delete = db_item.item_name
+        
         db.delete(db_item)
         db.commit()
+        
+        # Sync to Google Sheets if enabled
+        print(f"[GOOGLE SHEETS] Checking sync settings for item deletion...")
+        print(f"[GOOGLE SHEETS] Available: {GOOGLE_SHEETS_AVAILABLE}")
+        print(f"[GOOGLE SHEETS] Enabled: {settings.GOOGLE_SHEETS_ENABLED if hasattr(settings, 'GOOGLE_SHEETS_ENABLED') else 'NOT SET'}")
+        
+        if GOOGLE_SHEETS_AVAILABLE and settings.GOOGLE_SHEETS_ENABLED:
+            try:
+                print(f"[GOOGLE SHEETS] Attempting to sync deleted item: {item_name_to_delete}")
+                sheets_client = get_google_sheets_client(
+                    settings.GOOGLE_SHEETS_CREDENTIALS_PATH,
+                    settings.GOOGLE_SHEETS_SPREADSHEET_ID
+                )
+                success = sheets_client.sync_item_delete(item_id_to_delete)
+                if success:
+                    print(f"[GOOGLE SHEETS] ✓ Successfully synced item deletion for '{item_name_to_delete}' to Google Sheets")
+                else:
+                    print(f"[GOOGLE SHEETS] ✗ Failed to sync item deletion for '{item_name_to_delete}' to Google Sheets")
+            except Exception as e:
+                print(f"[GOOGLE SHEETS] ✗ ERROR syncing item delete: {str(e)}")
+                logger.error(f"Failed to sync item delete to Google Sheets: {e}", exc_info=True)
+        else:
+            if not GOOGLE_SHEETS_AVAILABLE:
+                print(f"[GOOGLE SHEETS] Skipping sync - Google Sheets integration not available")
+            elif not settings.GOOGLE_SHEETS_ENABLED:
+                print(f"[GOOGLE SHEETS] Skipping sync - Google Sheets integration disabled in settings")
+    
     return db_item
 
 # item detail APIs

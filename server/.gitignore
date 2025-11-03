@@ -11,3 +11,6 @@ auth.json
 *.DS_Store
 *.pytest_cache/
 **/raw
+
+# Google Sheets credentials
+google_credentials.json

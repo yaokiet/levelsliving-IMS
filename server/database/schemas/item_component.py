@@ -13,5 +13,5 @@ class ItemComponentUpdate(BaseModel):
     qty_required: Optional[int] = None
 
 class ItemComponentRead(ItemComponentBase):
-    class Config:
+    class ConfigDict:
         orm_mode = True 
