@@ -11,11 +11,11 @@
       "month_cos"
     ],
     "metrics": {
-      "mae": 0.27371716144575675,
-      "rmse": 0.4073993466008711,
-      "mape_pct": 5.613269069510179,
-      "smape_pct": 5.707011983259139,
-      "best_iter": 46
+      "mae": 0.6201688139281282,
+      "rmse": 0.7413998256433824,
+      "mape_pct": 13.166347237368504,
+      "smape_pct": 12.001736831887388,
+      "best_iter": 50
     },
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
@@ -31,11 +31,11 @@
       "month_cos"
     ],
     "metrics": {
-      "mae": 0.41113717042431674,
-      "rmse": 0.4917602990165228,
-      "mape_pct": 8.79074286606651,
-      "smape_pct": 8.801353166709847,
-      "best_iter": 42
+      "mae": 0.423191129459917,
+      "rmse": 0.4773203882134697,
+      "mape_pct": 9.19334705541176,
+      "smape_pct": 8.95320342916786,
+      "best_iter": 2
     },
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
@@ -51,71 +51,11 @@
       "month_cos"
     ],
     "metrics": {
-      "mae": 0.43177088232218785,
-      "rmse": 0.5922132041246883,
-      "mape_pct": 13.322515203001114,
-      "smape_pct": 12.136097442786717,
-      "best_iter": 29
-    },
-    "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
-  },
-  "solo::CU-1": {
-    "model_path": "xgb_sku_solo_CU_1_model.ubj",
-    "features": [
-      "month_num",
-      "year",
-      "lag_1",
-      "lag_2",
-      "lag_3",
-      "month_sin",
-      "month_cos"
-    ],
-    "metrics": {
-      "mae": 0.45898107517099335,
-      "rmse": 0.5661693103433504,
-      "mape_pct": 12.52165934257296,
-      "smape_pct": 12.579736152349449,
-      "best_iter": 12
-    },
-    "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
-  },
-  "solo::SC15": {
-    "model_path": "xgb_sku_solo_SC15_model.ubj",
-    "features": [
-      "month_num",
-      "year",
-      "lag_1",
-      "lag_2",
-      "lag_3",
-      "month_sin",
-      "month_cos"
-    ],
-    "metrics": {
-      "mae": 0.8653284506510863,
-      "rmse": 0.9675674343325991,
-      "mape_pct": 63.13924916343707,
-      "smape_pct": 52.61636959898901,
-      "best_iter": 59
-    },
-    "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
-  },
-  "solo::SC5": {
-    "model_path": "xgb_sku_solo_SC5_model.ubj",
-    "features": [
-      "month_num",
-      "year",
-      "lag_1",
-      "lag_2",
-      "lag_3",
-      "month_sin",
-      "month_cos"
-    ],
-    "metrics": {
-      "mae": 0.6538899958473784,
-      "rmse": 0.7329600019453308,
-      "mape_pct": 36.03952691896012,
-      "smape_pct": 29.041475540603045,
-      "best_iter": 74
+      "mae": 0.34843158420564646,
+      "rmse": 0.5306677999251247,
+      "mape_pct": 9.574307935675517,
+      "smape_pct": 8.6379625701563,
+      "best_iter": 226
     },
     "notes": "Tiered SKU forecaster; 'solo::SKU' denotes per-SKU model."
   },
@@ -140,7 +80,7 @@
     "notes": "Inventory overall level forecaster."
   },
   "_training_context": {
-    "created_at": "2025-11-01T03:39:38.463367Z",
+    "created_at": "2025-11-03T07:55:37.955599Z",
     "xgboost_version": "2.0.3"
   }
 }

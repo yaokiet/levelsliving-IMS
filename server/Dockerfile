@@ -33,6 +33,8 @@ EXPOSE 8000
 # Set the Python path
 ENV PYTHONPATH=/app
 
+RUN rm -rf seed-scripts
+
 # Command to run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # CMD ["sh", "-c", "python init-scripts/init-db.py && uvicorn main:app --host 0.0.0.0 --port 8000"]
