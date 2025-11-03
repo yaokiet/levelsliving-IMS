@@ -245,7 +245,13 @@ export default function ChatbotPage() {
       <div className="flex flex-col rounded-lg border border-border bg-card shadow-lg h-[80vh]">
         {/* Header with Connection Buttons */}
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h1 className="text-xl font-bold">LevelsAI </h1>
+          <div>
+            <h1 className="text-xl font-bold">LevelsAI </h1>
+            <p className="text-xs pt-2 text-muted-foreground text-wrap w-5/6">
+              Note: This feature is still a work in progress, LevelsAI is prone to hallucination. If your queries fail, reconnect or refresh your browser and try again. 
+            </p>
+          </div>
+
           <div className="flex items-center space-x-4">
             <ConnectionStatus isConnected={isConnected} />
             {!isConnected ? (
@@ -265,7 +271,6 @@ export default function ChatbotPage() {
             )}
           </div>
         </div>
-
 
         {/* Message List */}
         <ChatMessagesList messages={messages} messagesEndRef={messagesEndRef} />
