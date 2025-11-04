@@ -15,6 +15,9 @@ export default function RootLayout({
           <AuthInitializer />
           {children}
           <Toaster />
+
+        
+
         </ReduxProvider>
       </body>
     </html>

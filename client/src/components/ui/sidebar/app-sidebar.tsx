@@ -8,7 +8,8 @@ import {
   Container,
   Gauge,
   Users,
-  FileText
+  FileText,
+  Bot,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -56,6 +57,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       name: "Purchase Orders",
       url: "/purchase-orders",
       icon: FileText,
+    },
+    {
+      name: "LevelsAI (Beta)",
+      url: "/levels-ai",
+      icon: Bot,
     },
   ];
 
