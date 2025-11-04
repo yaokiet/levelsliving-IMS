@@ -73,7 +73,7 @@ def get_user_cart(db: Session, user_id: int) -> List[CartItemRead]:
         .filter(CartItem.user_id == user_id)
         .all()
     )
-    return [CartItemRead.from_orm(item) for item in cart_items]
+    return [CartItemRead.model_validate(item._asdict()) for item in cart_items]
 
 
 def update_cart_item_quantity(db: Session, user_id: int, item_id: int, quantity: int) -> bool:
