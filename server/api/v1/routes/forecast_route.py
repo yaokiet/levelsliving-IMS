@@ -97,7 +97,7 @@ def forecast_sku(sku_id: str, req: ForecastRequest) -> SKUForecastResponse:
     )
 
 # Forecast for whole inventory
-@router.post("/", response_model=InventoryForecastResponse)
+@router.post("", response_model=InventoryForecastResponse)
 def forecast_inventory(req: ForecastRequest) -> InventoryForecastResponse:    
     try:
         last_month = pd.to_datetime(req.last_month)
