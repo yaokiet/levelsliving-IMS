@@ -20,10 +20,10 @@ INSERT INTO "user" (name, role, email, password_hash) VALUES
 -- =======================
 -- SUPPLIERS
 -- =======================
-INSERT INTO supplier (name, description, email, contact_number) VALUES
-('Component Solutions Inc.', 'Supplier for raw furniture components', 'ykleong.2022@scis.smu.edu.sg', '+1-800-555-0101'),
-('Fine Finish Furnishings', 'Supplier for assembled furniture', 'ykleong.2022@scis.smu.edu.sg', '+65 6789 1234'),
-('TechSource Electronics', 'Distributor of computer peripherals', 'ykleong.2022@scis.smu.edu.sg', '+65 6222 3333');
+-- INSERT INTO supplier (name, description, email, contact_number) VALUES
+-- ('Component Solutions Inc.', 'Supplier for raw furniture components', 'ykleong.2022@scis.smu.edu.sg', '+1-800-555-0101'),
+-- ('Fine Finish Furnishings', 'Supplier for assembled furniture', 'ykleong.2022@scis.smu.edu.sg', '+65 6789 1234'),
+-- ('TechSource Electronics', 'Distributor of computer peripherals', 'ykleong.2022@scis.smu.edu.sg', '+65 6222 3333');
 
 -- =======================
 -- ITEMS

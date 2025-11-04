@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
-import csv
-import itertools
 from typing import List, Dict, Tuple
 
 import pandas as pd
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-import psycopg2
+from config import settings
 
-from config.shared import (
-    CREDENTIALS_PATH,
-    SPREADSHEET_ID,
-    DATABASE_URL,
-    TEMP_DIR
+from seeder_config.shared import (
+    TEMP_DIR,
+    DATABASE_URL
 )
 
-from config.schemas.order import (
+from seeder_config.schemas.order import (
     ORDER_TARGET_COLUMNS,
     ORDER_SHEET_TO_TARGET,
     ORDER_COL_MAP
 )
 
+from utils.google_sheets_load import fetch_sheet_to_raw_csv
+from utils.db_data_insert import load_clean_into_db
 from utils.validation_functions import (
     coerce_bigint_nullable, 
     coerce_timestamp_not_null,
@@ -34,58 +30,11 @@ from utils.validation_functions import (
 SHEET_NAME = "Orders"
 TABLE_NAME = "order"
 
-RAW_PATH = TEMP_DIR / f"sheets_{TABLE_NAME}_raw.csv"
-CLEAN_PATH = TEMP_DIR / f"sheets_{TABLE_NAME}_clean.csv"
-ERRORS_PATH = TEMP_DIR / f"sheets_{TABLE_NAME}_errors.csv"
+# ----------------- Validation → CLEAN / ERRORS CSV -----------------
 
-# ----------------- Step 1: Fetch sheet → RAW CSV -----------------
-
-def fetch_sheet_to_raw_csv() -> None:
-    scopes = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
-    creds = service_account.Credentials.from_service_account_file(
-        CREDENTIALS_PATH, scopes=scopes
-    )
-    service = build("sheets", "v4", credentials=creds)
-
-    # Fetch only the columns specified in col_map using batchGet (single API call)
-    ranges = [f"{SHEET_NAME}!{col}:{col}" for col in ORDER_COL_MAP.values()]
-
-    resp = service.spreadsheets().values().batchGet(
-        spreadsheetId=SPREADSHEET_ID,
-        ranges=ranges,
-        majorDimension="ROWS",
-    ).execute()
-
-    value_ranges = resp.get("valueRanges", [])
-
-    # Each valueRange corresponds to one column
-    cols_data = [vr.get("values", [[]]) for vr in value_ranges]
-
-    # Pad columns to same length
-    max_len = max(len(c) for c in cols_data)
-    cols_data = [c + [[]] * (max_len - len(c)) for c in cols_data]
-
-    # Transpose back to rows
-    rows = [list(itertools.chain.from_iterable(row)) for row in zip(*cols_data)]
-
-    print(f"Fetched {len(rows)} rows x {len(ORDER_COL_MAP)} cols from Google Sheets")
-
-    headers = list(ORDER_COL_MAP.keys())
-
-    # Skip the first sheet row (assumed header) when writing RAW
-    with RAW_PATH.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(headers)
-        writer.writerows(rows[1:])
-
-    print(f"Saved {len(rows) - 1} data rows × {len(headers)} cols to {RAW_PATH}")
-
-
-# ----------------- Step 2: Validation → CLEAN / ERRORS CSV -----------------
-
-def validate_raw_to_clean_and_error() -> Tuple[int, int]:
+def validate_raw_to_clean_and_error(raw_path, clean_path, errors_path) -> Tuple[int, int]:
     # Read RAW as strings
-    df = pd.read_csv(RAW_PATH, dtype=str).fillna("")
+    df = pd.read_csv(raw_path, dtype=str).fillna("")
     df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 
     # Extract only the columns we need and rename to target column names
@@ -148,69 +97,30 @@ def validate_raw_to_clean_and_error() -> Tuple[int, int]:
     clean_df = pd.DataFrame(clean_rows, columns=ORDER_TARGET_COLUMNS)
     errors_df = pd.DataFrame(errors_rows)
 
-    clean_df.to_csv(CLEAN_PATH, index=False)
-    errors_df.to_csv(ERRORS_PATH, index=False)
+    clean_df.to_csv(clean_path, index=False)
+    errors_df.to_csv(errors_path, index=False)
 
-    print(f"Clean rows:  {len(clean_df)} -> {CLEAN_PATH}")
-    print(f"Error rows: {len(errors_df)} -> {ERRORS_PATH}")
+    print(f"Clean rows:  {len(clean_df)} -> {clean_path}")
+    print(f"Error rows: {len(errors_df)} -> {errors_path}")
 
     return len(clean_df), len(errors_df)
 
-
-# ----------------- Step 3: Load CLEAN CSV → Postgres -----------------
-
-def load_clean_into_db() -> int:
-    copy_sql = f"""
-    COPY "{TABLE_NAME}" ({", ".join(ORDER_TARGET_COLUMNS)})
-    FROM STDIN WITH (FORMAT CSV, HEADER TRUE, NULL '');
-    """
-
-    # Sanity check: CSV header matches ORDER_TARGET_COLUMNS
-    with CLEAN_PATH.open("r", encoding="utf-8") as f:
-        reader = csv.reader(f)
-        header = next(reader)
-        if header != ORDER_TARGET_COLUMNS:
-            raise ValueError(
-                "CSV header mismatch.\n"
-                f"Expected: {ORDER_TARGET_COLUMNS}\n"
-                f"Found:    {header}\n"
-                "Make sure you wrote sheets_clean.csv with exactly these columns in this order."
-            )
-
-    total_rows = sum(1 for _ in CLEAN_PATH.open("r", encoding="utf-8")) - 1
-
-    conn = psycopg2.connect(DATABASE_URL)
-    conn.autocommit = False
-
-    try:
-        with conn.cursor() as cur:
-            with CLEAN_PATH.open("r", encoding="utf-8") as f:
-                cur.copy_expert(copy_sql, f)
-        conn.commit()
-        print(f"Loaded {total_rows} rows from {CLEAN_PATH} into '{TABLE_NAME}'.")
-    except Exception:
-        conn.rollback()
-        raise
-    finally:
-        conn.close()
-
-    return total_rows
-
-
 def main():
-    # 1. Fetch raw order data to csv
-    fetch_sheet_to_raw_csv()
-    
+    # 1. Fetch raw order data to csv at temporary dir
+    RAW_PATH, CLEAN_PATH, ERRORS_PATH = fetch_sheet_to_raw_csv(
+        settings, 
+        SHEET_NAME, 
+        ORDER_COL_MAP, 
+        TEMP_DIR
+        )
     # 2. Validate and clean data
-    clean_count, error_count = validate_raw_to_clean_and_error()
-    
+    clean_count, error_count = validate_raw_to_clean_and_error(RAW_PATH, CLEAN_PATH, ERRORS_PATH)    
     
     if clean_count > 0:
         # 3. Load cleaned data into pgsql container
-        load_clean_into_db()
+        load_clean_into_db(TABLE_NAME, CLEAN_PATH, ORDER_TARGET_COLUMNS, DATABASE_URL)
     else:
         print("No clean rows to load into the database; skipping COPY.")
-
 
 if __name__ == "__main__":
     main()
