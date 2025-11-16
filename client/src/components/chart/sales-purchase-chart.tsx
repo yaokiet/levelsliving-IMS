@@ -265,7 +265,7 @@ export function SalesPurchaseChart() {
               }
             />
 
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend content={<ChartLegendContent payload={undefined} />} />
 
             {/* Actuals */}
             <Bar
