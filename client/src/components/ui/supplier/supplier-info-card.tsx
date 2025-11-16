@@ -7,19 +7,31 @@ import { Phone, Building2, FileText, Copy, Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SupplierDeleteModal } from "./supplier-delete-modal";
 import { useState } from "react";
-import { toast } from "sonner";
+import { SupplierEditModal } from "./supplier-edit-modal";
 
 interface SupplierInfoCardProps {
   supplier: Supplier;
   className?: string;
+  onUpdated?: () => void | Promise<void>;
 }
 
 export function SupplierInfoCard({
   supplier,
   className = "",
+  onUpdated,
 }: SupplierInfoCardProps) {
   const router = useRouter();
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+  const handleEditClick = () => {
+    setEditModalOpen(true); // Open the edit modal
+  };
+
+  const handleUpdated = () => {
+    // Perform any additional actions after updating, e.g., refresh the page
+    onUpdated?.();
+  };
 
   const handleDeleteClick = () => {
     setDeleteModalOpen(true); // Open the delete modal
@@ -35,11 +47,6 @@ export function SupplierInfoCard({
     if (supplier.contact_number) {
       navigator.clipboard.writeText(supplier.contact_number);
     }
-  };
-
-  const handleEdit = () => {
-    // Navigate to edit page (you can implement this later)
-    console.log("Edit supplier:", supplier.id);
   };
 
   const handleDeleted = () => {
@@ -68,7 +75,7 @@ export function SupplierInfoCard({
 
             {/* Action Buttons */}
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleEdit}>
+              <Button variant="outline" size="sm" onClick={handleEditClick}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </Button>
@@ -146,6 +153,14 @@ export function SupplierInfoCard({
             )}
           </CardContent>
         </Card>
+
+        {/* Edit Modal */}
+        <SupplierEditModal
+          supplier={supplier}
+          isOpen={isEditModalOpen}
+          setIsOpen={setEditModalOpen}
+          onUpdated={handleUpdated}
+        />
 
         {/* Delete Modal */}
         <SupplierDeleteModal

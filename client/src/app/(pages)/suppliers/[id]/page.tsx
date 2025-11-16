@@ -30,6 +30,7 @@ function SupplierDetailsContent() {
   const [supplier, setSupplier] = useState<Supplier | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchSupplier = async () => {
@@ -53,7 +54,11 @@ function SupplierDetailsContent() {
     };
 
     fetchSupplier();
-  }, [supplierId]);
+  }, [supplierId, refreshKey]);
+
+  const handleUpdated = () => {
+    setRefreshKey((prev) => prev + 1); // Increment refreshKey to trigger re-fetch
+  };
 
   if (loading) {
     return (
@@ -95,7 +100,7 @@ function SupplierDetailsContent() {
 
   return (
     <div className="container mx-auto py-6 px-4 sm:py-10 sm:px-6">
-      <SupplierInfoCard supplier={supplier} />
+      <SupplierInfoCard supplier={supplier} onUpdated={handleUpdated} />
     </div>
   );
 }
