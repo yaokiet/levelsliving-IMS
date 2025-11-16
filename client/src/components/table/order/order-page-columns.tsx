@@ -117,7 +117,7 @@ export const orderItemColumns: ColumnDef<OrderItem>[] = [
     
     cell: ({ row }) => {
       const sku = row.getValue("sku") as string;
-      const id = row.original.id;
+      const id = row.getValue("item_id") as string;
       const router = useRouter();
 
       return (
