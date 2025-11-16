@@ -23,7 +23,7 @@ type BarLineChartData = {
   type: "bar" | "line";
   datasets: {
     x: string;
-    data: { label: str; value: number }[];
+    data: { label: string; value: number }[];
   }[];
 };
 
@@ -88,7 +88,6 @@ export function ChatbotChart({ chartData }: ChartbotChartProps) {
     const { transformedData, keys } = transformBarLineData(chartData);
 
     const ChartComponent = chartData.type === "bar" ? BarChart : LineChart;
-    const DataComponent = chartData.type === "bar" ? Bar : Line;
 
     return (
       <div style={{ width: "100%", height: 300 }}>
@@ -102,15 +101,22 @@ export function ChatbotChart({ chartData }: ChartbotChartProps) {
             <YAxis />
             <Tooltip />
             <Legend />
-            {keys.map((key, index) => (
-              <DataComponent
-                key={key}
-                type="monotone"
-                dataKey={key}
-                fill={COLORS[index % COLORS.length]}
-                stroke={COLORS[index % COLORS.length]}
-              />
-            ))}
+            {/* Use conditional rendering directly */}
+            {keys.map((key, index) => {
+              const color = COLORS[index % COLORS.length];
+              if (chartData.type === "bar") {
+                return <Bar key={key} dataKey={key} fill={color} />;
+              }
+              // Since the outer if checks for 'bar' or 'line', this else is for 'line'
+              return (
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={color}
+                />
+              );
+            })}
           </ChartComponent>
         </ResponsiveContainer>
       </div>

@@ -9,7 +9,7 @@ import { ErrorMessage } from "./ErrorMessage";
 
 type ChatMessagesListProps = {
   messages: Message[];
-  messagesEndRef: React.RefObject<HTMLDivElement> | null;
+  messagesEndRef: React.RefObject<HTMLDivElement | null> | null;
 };
 
 export function ChatMessagesList({
