@@ -1,10 +1,11 @@
 import { apiFetch } from "./apiClient";
 import { API_PATHS } from "./apiConfig";
-import type {
-  PurchaseOrder,
-  PurchaseOrderWithDetails,
-  PurchaseOrderTableRow,
-  PaginatedPurchaseOrders,
+import {
+  type PurchaseOrder,
+  type PurchaseOrderWithDetails,
+  type PurchaseOrderTableRow,
+  type PaginatedPurchaseOrders,
+  PurchaseOrderStatus,
 } from "@/types/purchase-order";
 
 //For now i will leave the comment for the console.log. Later can remove if not needed.
@@ -111,7 +112,7 @@ export async function getPurchaseOrdersForTable(): Promise<
         user_name: `User ${po.user_id}`, // Backend should provide user_name
         total_items: 0, // Backend should provide calculated total_items
         total_cost: 0, // Backend should provide calculated total_cost
-        status: po.status || ("pending" as const),
+        status: po.status || PurchaseOrderStatus.Pending,
       };
     });
 
