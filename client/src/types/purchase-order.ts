@@ -2,9 +2,9 @@ import { Supplier } from './supplier';
 import { PageMeta } from './pagination';
 
 export enum PurchaseOrderStatus {
-  Pending = 'pending',
-  Confirmed = 'confirmed',
-  Rejected = 'rejected',
+  Pending = 'Pending',
+  Confirmed = 'Confirmed',
+  Rejected = 'Rejected',
 }
 
 // Basic Purchase Order from API

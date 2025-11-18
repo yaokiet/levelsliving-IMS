@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { PurchaseOrderWithDetails, PurchaseOrderStatus } from '@/types/purchase-order';
-import { getPurchaseOrderWithDetails } from '@/lib/api/purchaseOrderApi';
+import { getPurchaseOrderWithDetails, updatePOStatus } from '@/lib/api/purchaseOrderApi';
 import { Card, CardContent } from '@/components/ui/card';
 import { PurchaseOrderDocument } from '@/components/ui/purchase-order/purchase-order-document';
 import { PurchaseOrderPdfActions } from '@/components/ui/purchase-order/purchase-order-pdf-actions';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { StatusChangeModal } from '@/components/ui/purchase-order/status-change-modal';
 
 export default function PurchaseOrderDetailPage() {
   const params = useParams();
@@ -17,6 +18,10 @@ export default function PurchaseOrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<PurchaseOrderStatus>(PurchaseOrderStatus.Pending); // Track the current status
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    newStatus: PurchaseOrderStatus | null;
+  }>({ isOpen: false, newStatus: null }); // State for the modal
 
   const id = typeof params.id === 'string' ? parseInt(params.id) : null;
 
@@ -49,8 +54,10 @@ export default function PurchaseOrderDetailPage() {
     if (!purchaseOrder) return;
 
     try {
+      await updatePOStatus(purchaseOrder.id, newStatus);
+      const po = await getPurchaseOrderWithDetails(purchaseOrder.id);
+      setPurchaseOrder(po);
       setStatus(newStatus); // Optimistically update the status in the UI
-      // await updatePOStatus(purchaseOrder.id, newStatus);
       toast.success('Status updated successfully');
     } catch (err) {
       console.error('Failed to update status:', err);
@@ -91,7 +98,7 @@ export default function PurchaseOrderDetailPage() {
     <div className="container mx-auto p-6 space-y-6">
       {/* Header with PDF Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
           {/* Status Dropdown */}
           <div>
             <span className="text-sm font-medium text-gray-600">Status: </span>
@@ -105,8 +112,13 @@ export default function PurchaseOrderDetailPage() {
                 {Object.values(PurchaseOrderStatus).map((option) => (
                   <DropdownMenuItem
                     key={option}
-                    onClick={() => handleStatusChange(option as PurchaseOrderStatus)}
-                    className={option === status ? 'font-bold text-blue-600' : ''}
+                    onClick={() => {
+                      if (option !== status) {
+                        setModalState({ isOpen: true, newStatus: option });
+                      }
+                    }}
+                    className={option === status ? "font-bold text-gray-400 cursor-not-allowed" : ""}
+                    disabled={option === status} // Disable the current status
                   >
                     {option.charAt(0).toUpperCase() + option.slice(1)} {/* Capitalize the option */}
                   </DropdownMenuItem>
@@ -122,6 +134,17 @@ export default function PurchaseOrderDetailPage() {
           />
         </div>
       </div>
+
+      {/* Status Change Modal */}
+      {modalState.isOpen && modalState.newStatus && (
+        <StatusChangeModal
+          currentStatus={status}
+          newStatus={modalState.newStatus}
+          isOpen={modalState.isOpen}
+          setIsOpen={(open) => setModalState({ isOpen: open, newStatus: modalState.newStatus })}
+          onConfirm={() => handleStatusChange(modalState.newStatus!)}
+        />
+      )}
 
       {/* Purchase Order Document */}
       <PurchaseOrderDocument purchaseOrder={purchaseOrder} />
