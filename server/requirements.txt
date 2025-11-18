@@ -28,3 +28,7 @@ psycopg2-binary==2.9.11
 
 pandas
 xgboost==2.0.3
+
+papermill 
+nbformat 
+nbclient
