@@ -10,9 +10,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt \
- && python -m ipykernel install --name python3 --display-name "Python 3"
- 
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
 # Copy the application code
 COPY . .
 
@@ -38,6 +37,6 @@ ENV PYTHONPATH=/app
 RUN chmod +x seed-scripts/seed.sh
 
 # Command to run the application
-CMD ["sh", "-c", "sh seed-scripts/seed.sh || echo 'Seed failed, starting server anyway'; uvicorn main:app --reload --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "sh seed-scripts/seed.sh || echo 'Seed failed, starting server anyway'; uvicorn main:app --host 0.0.0.0 --port 8000"]
 # CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # CMD ["sh", "-c", "python init-scripts/init-db.py && uvicorn main:app --host 0.0.0.0 --port 8000"]
