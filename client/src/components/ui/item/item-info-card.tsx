@@ -11,7 +11,7 @@ export function ItemInfoCard({ item, className, action }: ItemInfoCardProps) {
   return (
     <div
       className={cn(
-        "flex flex-col md:flex-row items-start md:items-center justify-between rounded-lg shadow p-6 md:p-8 bg-white dark:bg-gray-900 dark:text-gray-100",
+        "flex flex-col md:flex-row items-start md:items-center justify-between rounded-lg shadow p-6 md:p-8 bg-white dark:bg-gray-900 dark:text-gray-100 h-full",
         className
       )}
     >
