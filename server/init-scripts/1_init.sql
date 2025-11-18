@@ -85,9 +85,9 @@ CREATE TABLE "order" (
     order_date TIMESTAMP NOT NULL,
     status VARCHAR(32) NOT NULL,
     name VARCHAR(64) NOT NULL,
-    contact VARCHAR(16) NOT NULL,
+    contact VARCHAR(32) NOT NULL,
     street VARCHAR(254) NOT NULL,
-    unit VARCHAR(16),
+    unit VARCHAR(32),
     postal_code CHAR(6) NOT NULL
 );
 

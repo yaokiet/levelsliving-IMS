@@ -219,8 +219,7 @@ export function SalesPurchaseChart() {
   return (
     <Card className="w-full bg-background">
       <CardHeader className="flex items-start justify-between">
-        <div className="grid gap-1">
-          {/* Optional title/description */}
+        <div className="">
         </div>
         <SalesPurchaseChartControls
           timeRange={timeRange}
@@ -249,7 +248,7 @@ export function SalesPurchaseChart() {
             />
 
             <ChartTooltip
-              cursor={false}
+              // cursor={false}
               filterNull
               content={
                 <ChartTooltipContent

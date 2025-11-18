@@ -1,14 +1,14 @@
 SKU,tier
-SF50,solo::SF50
-CU-1,solo::CU-1
-SC5,solo::SC5
-DR50,solo::DR50
-SC15,solo::SC15
+SF50,highest
+CU-1,highest
+SC5,highest
+DR50,highest
+SC15,highest
+CU,highest
 SR7/OKW,highest
 T80,highest
 SC18,highest
 SC4,highest
-CU,highest
 SR6/OKW,highest
 TV18,highest
 SC5/WAL,highest
@@ -16,9 +16,9 @@ SR5/OKW,highest
 TV14,highest
 TV24/OKW1.6,highest
 SC4/WAL,highest
+SC15/WAL,highest
 TV13,highest
 TV24/OKW1.8,highest
-SC15/WAL,highest
 Basic/Single,highest
 DC1254/OK-WH,highest
 SC17,highest
@@ -33,64 +33,65 @@ DC12,highest
 CH-1,highest
 TV1634/OK,highest
 DC1254/OKWH,highest
+SC18/WAL,highest
 SB4301/OKWH,highest
 SI1885/OK,highest
 SC15-AD,highest
 SB4301-S/OK-WH,highest
 SC18/WAL-AD,highest
-SC4-AD,highest
-SS6020-S/OK-WH,highest
-SC19,highest
-TV1853/OK,highest
-SC11,highest
-SC12,highest
-SR7/OK,highest
-UPGRADE/SC,highest
-SC4/WAL-AD,highest
-SC6,highest
-SS8020-S/OK-WH,highest
-SC18/WAL,highest
-SC22,highest
-TV24/OK1.6,highest
-SC16,highest
-SC18-AD,highest
-SB9065/TW-WH,highest
-SC7,highest
-SB1279/OK,highest
-SB9065/TWWH,highest
-CH,highest
-DC1232/OKWH,highest
-SC15(X2)/WAL,highest
-SS6202/OK,highest
-SB6304/OK,highest
-SB8052/OK,highest
-SC4(X2)/WAL,highest
-T1032/OK,highest
-DC8064/OK,highest
-SB6019/OK-W,highest
-SC4(X2),highest
-SS1250/OK,highest
-SB4004/OK,highest
-SC15(X2),highest
-SI1593,highest
-Tranquil/Single,highest
-SB4301/TWWH,highest
-SC18/OAK-AD,highest
-TV1671/OK,highest
-SB6022/OK-MB,highest
-SI-1593,highest
-SC5(X2),highest
-T8000/OK,highest
-MSD003-NAD,highest
-SB1081/OK-NMB,highest
-SB1283/3075-AD,highest
-CD8010/OK,highest
-SB1283/3045WH-AD,highest
-SS6020/OKWH,highest
-CF5/OK,highest
-SB1269/OK,highest
-MSD003-AD,highest
-DC8064/WH,highest
+SC4-AD,medium
+SS6020-S/OK-WH,medium
+SC19,medium
+TV1853/OK,medium
+SC11,medium
+SC12,medium
+SR7/OK,medium
+UPGRADE/SC,medium
+SC4/WAL-AD,medium
+SC6,medium
+SS8020-S/OK-WH,medium
+SC22,medium
+TV24/OK1.6,medium
+SC16,medium
+SC18-AD,medium
+SB9065/TW-WH,medium
+SC7,medium
+SB1279/OK,medium
+SC15(X2)/WAL,medium
+CH,medium
+SB9065/TWWH,medium
+SC15(X2),medium
+DC1232/OKWH,medium
+SS6202/OK,medium
+SB6304/OK,medium
+SB8052/OK,medium
+SC4(X2)/WAL,medium
+SC4(X2),medium
+T1032/OK,medium
+DC8064/OK,medium
+SB6019/OK-W,medium
+SC5(X2),medium
+SS1250/OK,medium
+SB4004/OK,medium
+SI1593,medium
+Tranquil/Single,medium
+SB4301/TWWH,medium
+SC18/OAK-AD,medium
+TV1671/OK,medium
+SB6022/OK-MB,medium
+SI-1593,medium
+T8000/OK,medium
+MSD003-NAD,medium
+SB1081/OK-NMB,medium
+LOCK,medium
+SB1283/3075-AD,medium
+CD8010/OK,medium
+SB1283/3045WH-AD,medium
+SS6020/OKWH,medium
+CF5/OK,medium
+SB1269/OK,medium
+MSD003-AD,medium
+DC8064/WH,medium
 SC4(X2)/WAL-AD,medium
 TV1634/CN-AD,medium
 WD4021-AD,medium
@@ -100,7 +101,6 @@ SB6301/OK-AD,medium
 SC5(X2)-AD,medium
 SI1685/CN-AD,medium
 SS8202/OK-GP,medium
-LOCK,medium
 WD8003-AD,medium
 Dang Low Back Chair,medium
 H5/8-NC,medium
@@ -108,6 +108,7 @@ SB9085/OKBK,medium
 SC15(X2)/WAL-AD,medium
 SI1295-AD,medium
 TV1219/OK-GP,medium
+SC18/OAK,medium
 DC1254/TWWH-AD,medium
 TV1601/OKGP,medium
 DC6075/OKWH,medium
@@ -118,9 +119,10 @@ WD1233/OK,medium
 10176803,medium
 SB6304/3045-AD,medium
 SB6335/TW,medium
+SC5(X2)/WAL,medium
+SR4/3036,medium
 SB4311/3045WH-AD,medium
 SC15(X2)-AD,medium
-SC5(X2)/WAL,medium
 SR4/3075-AD,medium
 10149028,medium
 10411860,medium
@@ -136,10 +138,9 @@ WD8033/OK,medium
 10421635,medium
 DC1254/OKWH-AD,medium
 DT6000/OKGP,medium
+SB1048/3075,medium
 SB6012/OK,medium
 SC15-NAD,medium
-SC18/OAK,medium
-SR4/3036,medium
 SS8020/OKWH,medium
 TV1634/CN-NAD,medium
 TV1671/3045-AD,medium
@@ -147,6 +148,7 @@ TV1819/OK-GP,medium
 WD8005-AD,medium
 10121932,medium
 10411859,medium
+B16LD,medium
 DC1232/3045WH-AD,medium
 DSD150-33,medium
 MSD003,medium
@@ -171,22 +173,24 @@ WD4002-AD,medium
 C-DAM-LB-A100-M32-L4-F19-01,medium
 CF5/Walnut,medium
 OB048FL,medium
-SB1048/3075,medium
 SB1048/TW-AD,medium
 SB1081/OK-GP,medium
 SB1081/OKNMB,medium
 SB1283/607-AD,medium
 SB1283/OK,medium
 SB4301/3113WH-AD,medium
+SC18(X2)/WAL,medium
 SI1593/3045-AD,medium
 SR2/3036-AD,medium
 SR6/OK,medium
 SR7/WALNUT,medium
 Tranquil/Supersingle,medium
+WD8003/3036,medium
 10212798,medium
 ASD80-08,medium
 H2/8-NC,medium
-SB8083/3045,medium
+Miranda/Storage/Boucle/SuperSingle,medium
+SB1283/3075,medium
 SC5(X2)/WAL-AD,medium
 SC5/WAL-NAD,medium
 SI1295/3075-AD,medium
@@ -211,6 +215,7 @@ OE016DU,medium
 PHAT-014,medium
 SB6301/OK,medium
 SB6304/3027-AD,medium
+SB8083/3045,medium
 SB8322/3036,medium
 SC15/WAL-NAD,medium
 SI1295/3045-AD,medium
@@ -232,17 +237,18 @@ WD1415/RWH,medium
 ASD120-51,medium
 Basic-S,medium
 DC1606/OKWH,medium
+DC8036/3045WH,medium
 OC035FH,medium
 OC039FL,medium
 OE004DW,medium
 OE012EC,medium
-SB1283/3075,medium
 SB4311/3075-AD,medium
 SB4311/MapleWH,medium
 SB8083/3045-AD,medium
 SB9065/3113-AD,medium
 SI1685/Custom,medium
 SR2/3045-AD,medium
+SR2/3045WH,medium
 SR5/3113WH(Premium)-AD,medium
 SR7/OKW(Standard),medium
 SS6020/3045WH-AD,medium
@@ -266,9 +272,7 @@ DC1232/3113WH-AD,medium
 DC1254/TWWH-NAD,medium
 DC1408/3045WH,medium
 DC1606/OKBK,medium
-DC8036/3045WH,medium
 DC8064/CN-AD,medium
-Miranda/Storage/Boucle/SuperSingle,medium
 SB1283/Walnut,medium
 SB6001/3045WH-AD,medium
 SB6304/3036-AD,medium
@@ -293,7 +297,6 @@ TV1672/3045-AD,medium
 TV18/WAL-NAD,medium
 TV24/1.6/3113-AD,medium
 TV24/WAL1.6,medium
-WD8003/3036,medium
 WD8004-AD,medium
 X117042,medium
 10057207,medium
@@ -311,20 +314,22 @@ ASD120/WH,medium
 ASD150-07,medium
 DC1289/3075,medium
 DC8036/3021WH-AD-2,medium
+KHB,medium
+Leo/PU/Queen/1916,medium
+Miranda/Storage/Leather/Queen,medium
 OC039/WAL,medium
+Plus(w/eurotop)/SuperSingle,medium
 SB4301/607-AD,medium
 SB6001/3036-AD,medium
 SB8083/Pine,medium
 SB8311/3113WH-AD,medium
 SC18(X2)/OAK-AD,medium
-SC18(X2)/WAL,medium
 SI1295O/3036-AD,medium
 SI1295O/3075-AD,medium
 SI1593/3075,medium
 SI1685/3036-AD,medium
 SI1685/CN-NAD,medium
 SI1685/Pine,medium
-SR2/3045WH,medium
 SR4/Walnut,medium
 SR5/607(Premium)-AD,medium
 SR6/49,medium
@@ -354,6 +359,7 @@ BS-SC15/WAL,medium
 CTM10456,medium
 CTM10789A,medium
 CTM11655,medium
+CTM11751,medium
 DC1232/3045-AD,medium
 DC1232/MapleWH,medium
 DC1232/Walnut,medium
@@ -366,7 +372,6 @@ DC8064/WH-AD,medium
 Essential(noeurotop)/SuperSingle,medium
 Essential2/Single,medium
 HDL A395 224mm,medium
-Miranda/Storage/Leather/Queen,medium
 Miranda/Storage/SuperSingle,medium
 OB044FL,medium
 OC037FL,medium
@@ -427,9 +432,10 @@ Zara/Storage/Queen/ME002,medium
 36297DUE,medium
 79938-49UU,medium
 ASD120-11,medium
-B16LD,medium
 CTM10909,medium
+CTM11457B,medium
 CTM11467 (Assemble on-site),medium
+CTM11643,medium
 CTMSIZE,medium
 DC1232/607-AD,medium
 DC1606/3021WH-AD,medium
@@ -440,11 +446,12 @@ DC8022/OKWH-AD,medium
 DC8064/607-AD,medium
 Essential2/SuperSingle,medium
 Essential3/Single,medium
+Hotel/SuperSingle,medium
 Miranda/Beige/Queen,medium
 Miranda/Storage/Boucle/Queen,medium
 OC036FH,medium
 OC040FH,medium
-Plus(w/eurotop)/SuperSingle,medium
+SB1003/3018WH,medium
 SB1283/3113WH-AD,medium
 SB1283/Maple,medium
 SB4301/TWWH-NAD,medium
@@ -491,6 +498,7 @@ SS1236/OKWH,medium
 SS4001WD/3036,medium
 SS6020/WH-AD,medium
 SS6020/Walnut,medium
+SS6202/3045,medium
 SS8030/WH,medium
 T9015,medium
 T9021/3045,medium
@@ -516,6 +524,10 @@ X146088,medium
 Zara/Beige/SuperSingle,medium
 Zara/Divan/Leather/Queen/ML-00,medium
 Zara/Storage/Queen,medium
+*SB1283/3045WH-Metal Legs,medium
+*SB1283/3075-stack,medium
+*SB8083/3045-use blum hinges,medium
+*SB_EVI_16088T_3075 (SI1623T/3075)-Add 2 lock to first two drawer,medium
 10031400,medium
 10031737,medium
 10077190,medium
@@ -560,8 +572,10 @@ BS-Display SIngle Storage Bed,medium
 BS-SB6304/3064,medium
 BS-SB8311/OakWH,medium
 BS-SC5/WAL,medium
+BS-TV1853/3036,medium
 BT4550/3101,medium
 Basic/DivanSet/PU/Super Single,medium
+CH (KN-D822-BL),medium
 CTM10443,medium
 CTM10452B,medium
 CTM10485 (SI1885/3123),medium
@@ -570,144 +584,161 @@ CTM10503B,medium
 CTM10688 (SR4/Maple),medium
 CTM10732,medium
 CTM10791,medium
-CTM10909 (SB6001/3021) - Black plastic legs,medium
-CTM11457B,medium
-CTM11495,medium
-CTM11523 (SB8311/Espresso),medium
-CTM11612 (SB4311/3018WH)-WOOD LEGS,medium
-CTM11619,medium
-CTM11643,medium
-CTM11712A,medium
-DC1232/Custom,medium
-DC1254/3036WH,medium
-DC1254/PineWH,medium
-DC1289/3075-soft close sliders,medium
-DC1404/3045WH,medium
-DC7058/3045-AD,medium
-DC8022/3045WH-AD,medium
-DC8022/MapleWH,medium
-DC8036/3021WH-AD,medium
-DC8036/MapleWH,medium
-DC8036/OKWH-2,medium
-DC8064/3021WH-AD,medium
-DC8064/BA-AD,medium
-DC8064/WAL,medium
-Elite/DivanSet/PU/Queen,medium
-Elizabeth/Divan/Single (Custom width 89cm),medium
-Elizabeth/Grey/Single,medium
-Essential(noeurotop)/Single,medium
-Hotel/Queen,medium
-Hotel/SuperSingle,medium
-HotelStudio/King,medium
-HotelStudio/SuperSingle,medium
-Miranda Custom / Queen,medium
-Miranda/Beige/SuperSingle,medium
-Miranda/Divan/SuperSingle,medium
-Miranda/King/Giorletti 01,medium
-Miranda/Queen/Giorletti 01,medium
-Miranda/Storage/Single,medium
-Miranda/Storage/Single/Omi02,medium
-Miranda/Storage/SuperSingle/PL017,medium
-Miranda/SuperSingle/Giorletti 01,medium
-OB027FL,medium
-OB045FL,medium
-OC049DX,medium
-OD027FH,medium
-OD029FH,medium
-OD035FL,medium
-OE006DU,medium
-OE006DW,medium
-P4052/3101,medium
-Plus(w/eurotop)/Queen,medium
-SB1003/3018WH,medium
-SB1047/BA-AD,medium
-SB1050/3075,medium
-SB1283/3045,medium
-SB1283/3045WH,medium
-SB1283/3064-AD,medium
-"SB1283/3075-add ventilation caps, wood legs",medium
-SB1283/3075-stack,medium
-SB1283/OK-AD,medium
-SB1283/Walnut-metal legs,medium
-SB4301/Custom,medium
-SB4311/Walnut,medium
-SB6001/3027-AD,medium
-SB6001/3036,medium
-SB6001/3064-AD,medium
-SB6001/3101WH-AD,medium
-SB6304/3027,medium
-SB6304/3027-see remarks,medium
-SB6304/3045,medium
-SB6304/3064-AD,medium
-SB6304/Custom,medium
-SB6304/Espresso,medium
-SB7/SB6-NBG10 Pull-out Bedframe,medium
-SB8083/3036(X2),medium
-SB8083/3036-ADx2,medium
-SB8083/3045-use blum hinges,medium
-SB8083/3075,medium
-SB8083/3075-ADx2,medium
-SB8083/Walnut-KN-D822-BRS2,medium
-SB8311/OKW,medium
-SB8312/3045WH,medium
-SC15/WAL-Nail backboard,medium
-SC18(X2)-AD,medium
-SC18/WAL-Black 8cm legs (spray black),medium
-SC4/WAL-NAD,medium
-SC5(X2) (Take Back),medium
-SC5-NAD,medium
-SC5/OAK,medium
-SC5/WAL-Nail backboard,medium
-SI1295/3075-soft close slider,medium
-SI1295/3113-AD,medium
-SI1593/OK,medium
-SI1623/WAL,medium
-SI1623M/3045-AD,medium
-SI1623M/3045WH-AD,medium
-SI1623M/3113WH-AD,medium
-SI1623M/607-AD,medium
-SI1680/3101-AD,medium
-SI1685/3064,medium
-SI1685/3101,medium
-SI1685/3113WH-AD,medium
-SI1685/614-AD,medium
-SI1685/HW-AD,medium
-SI1685S/3065-AD,medium
-SI1685S/3075-AD,medium
-SI1685S/3075-NAD,medium
-SI1885/3018-AD,medium
-SI1885/3064-AD,medium
-SI1885/3113-AD,medium
-SI1885/Custom,medium
-SI1885/Oak,medium
-SR2/3045-Metal legs,medium
-SR2/WAL,medium
-SR5/OKW(Premium),medium
-SR5/PineWH(Premium),medium
-SR7/3075-NO LEGS,medium
-SR7/3113(Premium)-AD,medium
-SR7/WAL(Melamine),medium
-SS6020/Maple,medium
-SS6020/MapleWH,medium
-SS6020/WAL,medium
-SS6020C/3065-AD,medium
-SS6202/3045,medium
-SS6202/3064-AD,medium
-SS8202/OKGP,medium
-Single Storage Bed/Blue,medium
-Stella/Queen/Beige,medium
-Storage/Single/No Headboard/ME005,medium
-Studio/SuperSingle,medium
-TL4569K78204,medium
-TV1202/BAWH-NAD,medium
-TV1266/3075,medium
-TV1565/Pine,medium
-TV1634/3075,medium
-TV1634/MapleWH,medium
+CTM10909 (SB6001/3021) - Black plastic legs,rest
+CTM11495,rest
+CTM11523 (SB8311/Espresso),rest
+CTM11612 (SB4311/3018WH)-WOOD LEGS,rest
+CTM11619,rest
+CTM11712,rest
+CTM11712A,rest
+CTM11719,rest
+CTM11756,rest
+CTM12185,rest
+CTM12218,rest
+DC1232/3045WH,rest
+DC1232/Custom,rest
+DC1254/3036WH,rest
+DC1254/PineWH,rest
+DC1289/3075-soft close sliders,rest
+DC1404/3045WH,rest
+DC7058/3045-AD,rest
+DC8022/3045WH-AD,rest
+DC8022/MapleWH,rest
+DC8036/3021WH-AD,rest
+DC8036/MapleWH,rest
+DC8036/OKWH-2,rest
+DC8064/3021WH-AD,rest
+DC8064/3075,rest
+DC8064/BA-AD,rest
+DC8064/WAL,rest
+Elite/DivanSet/PU/Queen,rest
+Elite/StorageSet/Amber/King,rest
+Elizabeth/Divan/Single (Custom width 89cm),rest
+Elizabeth/Grey/Single,rest
+Essential(noeurotop)/Single,rest
+Hotel/Queen,rest
+HotelStudio/King,rest
+HotelStudio/SuperSingle,rest
+KHB / colour:1917-1,rest
+KI-DC8036/3021WH,rest
+Miranda Custom / Queen,rest
+Miranda/Beige/SuperSingle,rest
+Miranda/Divan/SuperSingle,rest
+Miranda/King/Giorletti 01,rest
+Miranda/Queen/Giorletti 01,rest
+Miranda/Storage/Single,rest
+Miranda/Storage/Single/Omi02,rest
+Miranda/Storage/SuperSingle/PL017,rest
+Miranda/SuperSingle/Giorletti 01,rest
+OB027FL,rest
+OB045FL,rest
+OC049DX,rest
+OD027FH,rest
+OD029FH,rest
+OD035FL,rest
+OE006DU,rest
+OE006DW,rest
+P4052/3101,rest
+Plus(w/eurotop)/Queen,rest
+SB10,rest
+SB1047/BA-AD,rest
+SB1048/3036,rest
+SB1050/3075,rest
+SB1204/3075-Metal Legs,rest
+SB1283/3045,rest
+SB1283/3045WH,rest
+SB1283/3064-AD,rest
+"SB1283/3075-add ventilation caps, wood legs",rest
+SB1283/OK-AD,rest
+SB1283/Walnut-metal legs,rest
+SB4301/Custom,rest
+SB4311/Walnut,rest
+SB6001/3027-AD,rest
+SB6001/3036,rest
+SB6001/3064-AD,rest
+SB6001/3101WH-AD,rest
+SB6304/3027,rest
+SB6304/3027-see remarks,rest
+SB6304/3036,rest
+SB6304/3045,rest
+SB6304/3064-AD,rest
+SB6304/Custom,rest
+SB6304/Espresso,rest
+SB7/SB6-NBG10 Pull-out Bedframe,rest
+SB8083/3036(X2),rest
+SB8083/3036-ADx2,rest
+SB8083/3075,rest
+SB8083/3075-ADx2,rest
+SB8083/Walnut-KN-D822-BRS2,rest
+SB8311/OKW,rest
+SB8312/3045WH,rest
+SC15/WAL-Nail backboard,rest
+SC18(X2)-AD,rest
+SC18/WAL-Black 8cm legs (spray black),rest
+SC4(X2)/WAL-black plastic legs (take note of skirting 25x70mm),rest
+SC4/WAL-NAD,rest
+SC5(X2) (Take Back),rest
+SC5-NAD,rest
+SC5/OAK,rest
+SC5/WAL-Nail backboard,rest
+SC_ED_43100_3045WH (SB4311/3045WH),rest
+SI1295/3075-soft close slider,rest
+SI1295/3113-AD,rest
+SI1593/OK,rest
+SI1623/WAL,rest
+SI1623M/3045-AD,rest
+SI1623M/3045WH-AD,rest
+SI1623M/3113WH-AD,rest
+SI1623M/607-AD,rest
+SI1680/3101-AD,rest
+SI1685/3064,rest
+SI1685/3075,rest
+SI1685/3101,rest
+SI1685/3113WH-AD,rest
+SI1685/614-AD,rest
+SI1685/HW-AD,rest
+SI1685S/3065-AD,rest
+SI1685S/3075-AD,rest
+SI1685S/3075-NAD,rest
+SI1885/3018-AD,rest
+SI1885/3064-AD,rest
+SI1885/3113-AD,rest
+SI1885/Custom,rest
+SI1885/Oak,rest
+SR2/3036,rest
+SR2/3045-Metal legs,rest
+SR2/WAL,rest
+SR5/OKW(Premium),rest
+SR5/PineWH(Premium),rest
+SR7/3075(Premium),rest
+SR7/3075-NO LEGS,rest
+SR7/3113(Premium)-AD,rest
+SR7/WAL(Melamine),rest
+SS6020/3075,rest
+SS6020/Maple,rest
+SS6020/MapleWH,rest
+SS6020/WAL,rest
+SS6020C/3065-AD,rest
+SS6202/3064-AD,rest
+SS8202/OKGP,rest
+Single Storage Bed/Blue,rest
+Spring/PU/super single/1918,rest
+Spring/Queen/Storage,rest
+Spring/SuperSingle/Custom,rest
+Stella/Queen/Beige,rest
+Storage/Single/No Headboard/ME005,rest
+Studio/SuperSingle,rest
+TL4569K78204,rest
+TV1202/BAWH-NAD,rest
+TV1266/3075,rest
+TV1565/Pine,rest
+TV1634/3075,rest
+TV1634/MapleWH,rest
 TV1634/OK-AD,rest
 TV1634/WH-AD,rest
 TV1650/3101-AD,rest
 TV1671/Maple,rest
+TV1672/3045,rest
 TV1672/3045-Wood Legs,rest
 TV1853/Custom,rest
 TV1865/PineBK-HDL C816-128-SS,rest
@@ -715,20 +746,41 @@ TV24 (1.6m)/49,rest
 TV24/1.6/PineWH,rest
 TV24/1.8/607-AD,rest
 TV24/Custom,rest
+TV_PA2_16050T_ 3045 (TV1650/3045),rest
+WD4002/3036,rest
 WD4021/3036+4025,rest
 WD4021/Pine,rest
 WD8003/3075,rest
 WD8003/Pine,rest
 WD8005/3036+4025,rest
 WD8005/3036-AD,rest
+WD8005/3075,rest
 WD8006/Oak,rest
 WD8007/3036-AD,rest
+WD8009/3036,rest
 X105843,rest
 Zara-Divan/Queen,rest
 Zara/Brown/Single,rest
 Zara/King/ME005,rest
 Zara/Storage/Single,rest
 Zara/Storage/SuperSingle,rest
+ SI1623T/MapleWH,rest
+**SB_MU_120135M_3036 (SR4/3036)-Add 4 shelves,rest
+*CTM11971/Soft close/Black pvc 10cm ,rest
+*CTM11975-soft close slider,rest
+"*DC1289/3045-NOLEGS, HDL172-128-SS",rest
+*KI-DC1606/3021WH-leg change toe kick,rest
+*P4052/3065-Metal legs,rest
+*SB1003/3045-no ventilation holes,rest
+*SB1283/3075/metal legs,rest
+*SB8083/3036-SILVER LEGS,rest
+*SB8322/3075-Add 2 ventilation holes,rest
+*SC18/OAK-Metal Legs,rest
+*SC_RIE_8087BP_3075 (SB8083/3075)-KN-D822-BL,rest
+"*SC_RI_120100_3045WH (SB1283/3045WH)-Add ventilation holes, add cap",rest
+*T9015/3045-Add leg stud,rest
+*TV24/1.6/3045-SEE REMARKS,rest
+*TV24/3075-Metal legs+Add 1 cable hole at left side,rest
 10061281,rest
 10178643,rest
 10208197,rest
@@ -757,6 +809,7 @@ Zara/Storage/SuperSingle,rest
 36221FEE,rest
 36221FLE,rest
 36297DWE,rest
+4 ventilation Holes,rest
 76231-UU,rest
 80460-49AK,rest
 ASD80-33,rest
@@ -764,12 +817,16 @@ Alpha Office Chair,rest
 B16LD-KHJ03/Storage/Amber/Queen,rest
 B16LD-NK23/Storage/Falcon/King,rest
 BC127,rest
+BCG80/WAL,rest
+BC_OX_60200_3045 (BCSS6020/3045),rest
 BE1561-A,rest
 BS-10097234,rest
 BS-10149028 Mirror,rest
 BS-10424340,rest
+BS-BT4550/3101,rest
 BS-BT4550/4045,rest
 BS-CTM10731,rest
+BS-DC1232/4045WH,rest
 BS-DC1232/MapleWH,rest
 BS-DC1232/Walnut,rest
 BS-DC1254/OKWH-showroom piece,rest
@@ -782,41 +839,56 @@ BS-DC7058/Maple,rest
 BS-DC7058/Pine-WOOD LEGS,rest
 BS-DC8036/MapleWH,rest
 BS-DC8036/RusticWH,rest
+BS-Display Desk,rest
 BS-Essential2/Single,rest
 BS-Levi Sideboard,rest
 BS-OC039/WAL,rest
 BS-Office Chair,rest
+BS-SB1003/3018WH-silver plastic legs,rest
+BS-SB1283/3064,rest
 BS-SB1283/MapleWH,rest
 BS-SB4311/3045WH,rest
 BS-SB6001/3027,rest
 BS-SB6001/Ash White,rest
 BS-SB6001/MapleWH,rest
 BS-SB6001/Pine,rest
+BS-SB6304/3018WH,rest
 BS-SB6304/Maple,rest
 BS-SB6304/OakWH,rest
+BS-SB6330/3064,rest
+BS-SB8083/4049-KN-D315-BLGD,rest
 BS-SB8083/Walnut,rest
 BS-SB9065/Oak,rest
 BS-SC4,rest
 BS-SC4(X2),rest
+BS-SC5,rest
 BS-SI1295O/3045MB,rest
 BS-SI1295O/MapleMB,rest
+BS-SI1593O/3045- customer pass us legs,rest
 BS-SI1623M/607-Metal legs,rest
 BS-SI1623M/OakWH,rest
 BS-SI1685-Showroom piece,rest
+BS-SI1685/3075,rest
 BS-SI1685/607,rest
 BS-SI1685/Walnut,rest
 BS-SI1685S/Pine,rest
+BS-SR2/3045WH,rest
 BS-SR2/MapleWH,rest
 BS-SR2/OakWH,rest
+BS-SR4/3075,rest
 BS-SR4/Walnut,rest
+BS-SR5/3036WH,rest
 BS-SR6/PineWH,rest
+BS-SR7/3036(Premium),rest
 BS-SS4001GD-LEFT/3045 (Door open to the left),rest
 BS-SS4001WD/3045,rest
+BS-SS6020/3018WH,rest
 BS-SS6020/MapleWH,rest
 BS-SS6020/WH,rest
 BS-SS6202/3064,rest
 BS-SS6202/Maple,rest
 BS-SS6202/Walnut,rest
+BS-Sensation/Single,rest
 BS-TV1565/3064GRYLINEN,rest
 BS-TV1565/PineBK,rest
 BS-TV1634/3075,rest
@@ -827,6 +899,7 @@ BS9001/3075,rest
 BT4545/3045-soft close slider,rest
 BT4545LEFT/3045-soft close slider,rest
 BT4550/3045,rest
+BT4550/3101- add lock to drawer,rest
 BT4550/4045,rest
 Boss Office Chair,rest
 C,rest
@@ -929,8 +1002,8 @@ CTM11504 (SS8030/Oak),rest
 CTM11512 (DC8036/Pine),rest
 CTM11519 (TV1650/1002)-Walnut wood legs,rest
 CTM11524,rest
-CTM11530(BT4545/3075),rest
-CTM11530(BT4545LEFT/3075),rest
+CTM11530(BT4545/3075)-soft close drawer,rest
+CTM11530(BT4545LEFT/3075)-soft close drawer,rest
 CTM11543,rest
 CTM11550 (TV1853/3045),rest
 CTM11576 (SB1283/1002),rest
@@ -943,32 +1016,55 @@ CTM11626,rest
 CTM11640,rest
 CTM11649 (SB8083/WH)-KN-D822-BRS2,rest
 CTM11656 (WD4021/3045),rest
-"CTM11679
--Silver Handle",rest
+CTM11679 -Silver Handle,rest
 CTM11683,rest
 CTM11705,rest
 CTM11712B,rest
 CTM11712C,rest
-CTM11719,rest
 CTM11720,rest
 CTM11720 (SI1885/3018)-Wood Legs,rest
 CTM11725,rest
 CTM11734,rest
 CTM11739 (SR8/3075 + metal legs),rest
 CTM11749A,rest
-CTM11749B,rest
-CTM11751,rest
-CTM11752,rest
+CTM11749B-make sure got 3 cable hole,rest
+CTM11752A,rest
 CTM11752C/NOLEGS,rest
-CTM11756,rest
 CTM11757,rest
+CTM11966,rest
+CTM11995,rest
+CTM11997,rest
+CTM12004A,rest
+CTM12004B,rest
+CTM12022 (SI1295/3045WH),rest
+CTM12049,rest
+CTM12062,rest
+CTM12068 (BS9010/3101),rest
+CTM12081 - SOFTCLOSE DOORS,rest
+CTM12084,rest
+CTM12092,rest
+CTM12093,rest
+CTM12109A,rest
+CTM12109B,rest
+CTM12111,rest
+CTM12130A,rest
+CTM12130B/no soft close,rest
+CTM12151,rest
+CTM12159,rest
+CTM12160,rest
+CTM12174,rest
+CTM12181,rest
+CTM12186,rest
+CTM12199,rest
+CTM12204,rest
 CU (WARDROBE),rest
 CU FOR SR6,rest
 CU-Drawer,rest
+Cable hole,rest
+"Classic 10""/Queen",rest
 DC1232,rest
 DC1232/3045,rest
-DC1232/3045WH,rest
-DC1232/3045WH-Add lock+soft close sliders,rest
+DC1232/3045WH-Add lock to all 3 drawers+soft close sliders,rest
 DC1232/3075,rest
 DC1232/3075-metal leg,rest
 DC1232/Maple-Metal Legs,rest
@@ -978,7 +1074,6 @@ DC1254/Custom,rest
 DC1254/OKWH-NAD,rest
 DC1254/PineWH-Add lock bottom drawer,rest
 DC1289/3045,rest
-"DC1289/3045-NOLEGS, HDL172-128-SS",rest
 DC1289/Walnut,rest
 DC1606/3075-soft close sliders,rest
 DC1606/RusticWH,rest
@@ -993,9 +1088,10 @@ DC8036/3021WH-NAD-2,rest
 DC8036/3045WH-silver handles,rest
 DC8036/RusticWH-Soft Close,rest
 DC8064/3045WH-AD,rest
-DC8064/3075,rest
 DC8064/CN-NAD,rest
 DC8064/MapleWH,rest
+DC_NO_60110BP_3036 (DC1289/3036),rest
+Elite/StorageSet/Amber/SuperSingle,rest
 Elizabeth/Beige/Queen,rest
 Elizabeth/Divan/Single,rest
 Elizabeth/Grey/SuperSingle,rest
@@ -1010,15 +1106,29 @@ Hexa Bookcase,rest
 Hotel/King,rest
 Hotel/Single,rest
 Hotelchoice/Queen,rest
-KHB,rest
 KHB-KHJ03/Divan/PU/SuperSingle,rest
 KI-DC1289/3018WH,rest
-KI-SB1283/3045/BLACK-PLASTIC-LEGS,rest
+KI-DC1408/3045WH/NO-SOFT-CLOSE,rest
+KI-SB1204/3045-add holes caps,rest
+KI-SB1204/3075-Metal Legs,rest
+KI-SB1283/3045/BLACK-PLASTIC-LEGS/,rest
+KI-SB8083/3045/Soft close,rest
+KI-SB_HA_12079W_3075 (SR5/3075),rest
+KI-SB_HA_16079W_3036 (SR7/3036(Premium),rest
+KI-SC5(X2),rest
+KI-SC_RIE_8087BP_3036(X2) (SB8083/3036(X2)),rest
+KI-SI1685/3101,rest
+KI-SR4/4045/no soft close,rest
+KI-SR6/3036WH,rest
 KI-SR7/3036WH(Premium),rest
+KI-SS4001WD/3045,rest
+KI-TV1650/3101,rest
+KI-TV1801/3075-Metallegs,rest
 KN-D822-BRS2,rest
-Leo/PU/Queen/1916,rest
+"Leo (KHD-NK09)/Storage 16"" (B16LD)/SS/1913",rest
 Lock,rest
 Luxe/DivanSet/PU/Super Single,rest
+Metal Legs,rest
 Miranda/Beige/King,rest
 Miranda/Divan/Queen,rest
 Miranda/Grey/Queen,rest
@@ -1043,7 +1153,7 @@ Office Chair,rest
 P4052,rest
 P4053,rest
 P4053/3036,rest
-SB1048/3036,rest
+PVC - metal legs,rest
 SB1048/3075-Orion13 cushion,rest
 SB1083/BAGP,rest
 SB1204/3075-AD,rest
@@ -1064,9 +1174,12 @@ SB1283/White,rest
 SB4301/3075-AD,rest
 SB4301/Walnut,rest
 SB4311/3036-AD,rest
+SB4311/3045WH,rest
+SB4311/3045WH (43cm),rest
 SB4311/3075,rest
 SB6001/3010-AD,rest
 SB6001/3027,rest
+SB6001/3101WH,rest
 SB6001/Ash White - SOFTCLOSE,rest
 SB6001/Pine,rest
 SB6001/SP Oak,rest
@@ -1087,6 +1200,7 @@ SB6335/Walnut-blackplastic legs,rest
 SB8083(X2)/3075,rest
 SB8083/3036,rest
 SB8083/3036-Dont instal legs but deliver them together,rest
+SB8083/3045(x2),rest
 SB8083/3064,rest
 SB8083/4046,rest
 SB8083/4049,rest
@@ -1097,13 +1211,27 @@ SB8083/Walnut-SC doors,rest
 SB8311/3018WH,rest
 SB8311/Walnut-Add planks below+Black plastic legs,rest
 SB8311/Walnut-Metal legs,rest
+SB8322-Pickup,rest
 SB8322/WH,rest
 SB8360/HWNB-AD,rest
 SB9065/3036-AD,rest
+SB_BE_120180_3036 (SR8/3036),rest
+SB_BE_120180_3075 (SR8/3075),rest
+SB_EVI_16088T_3045WH (SI1623T/3045WH),rest
+SB_EVI_16088T_3075 (SI1623T/3075)-Toe Kick,rest
+SB_EV_12088T_3045WH (DC1232/3045WH),rest
+SB_MAO_12095M_3045 (SI1295O/3045),rest
+SB_MAO_12095M_3075 (SI1295O/3075)/ soft close hinge and drawer,rest
+SB_MO_16085M_3045 (SI1680/3045),rest
+SB_MU_120135M_3036 (SR4/3036),rest
+SB_MU_120135M_3075 (SR4/3075),rest
+SB_RO_80134W/3075 (CTM11752D/3075),rest
+SC15(X2) - SOFTCLOSE,rest
 SC15(X2)/OAK,rest
 SC15(X2)/WAL-Add 1 lock (ask eileen),rest
 SC15(X2)/WAL-Add 4 Lock,rest
 SC15(X2)/WAL-Add Lock,rest
+SC15(X2)/WAL-Black legs ,rest
 SC15- no legs,rest
 SC15-no soft close,rest
 SC15/WAL - Softclose,rest
@@ -1117,37 +1245,55 @@ SC18/OAK-no soft close,rest
 SC18/WAL-Add Lock,rest
 SC18/WAL-Metal legs,rest
 SC18/WAL-Silver legs,rest
+SC18/WAL-Soft close,rest
 SC4(X2)-10cm black legs,rest
 SC4(X2)/OAK,rest
+SC4(X2)/WAL - SOFTCLOSE,rest
 SC4(X2)/WAL-NO SOFT CLOSE,rest
 "SC4(X2)/WAL-No legs, but provide legs and screws",rest
 SC4(X2)/WAL/soft closing,rest
 SC4-no soft close,rest
-SC4/WAL - stack,rest
+SC4/WAL -  stack,rest
+SC4/WAL-BLACK LEGS,rest
+SC4/WAL/soft closing,rest
+SC5 (Collect back send to shaw),rest
 "SC5(X2)-White legs, but pass the original legs to customer",rest
 SC5(X2)/WAL-Wheels,rest
+SC5(X2)/WAL-remove panel stickers,rest
 SC5-10cm black legs,rest
 SC5-Add 2 locks,rest
 SC5-NO SOFT CLOSE,rest
+SC5/Oak,rest
 SC5/WAL - stack,rest
 SC5/WAL-Add 2 Lock,rest
 SC5/WAL-Add lock,rest
+SC5/WAL-BLACK LEGS,rest
+SC5/WAL-BlackLegs,rest
 SC5/WAL-Wood legs,rest
 SC5/WAL/soft closing,rest
+SC_NA_60180_3036 (SB6304/3036),rest
+SC_RI_120100_3045WH (SB1283/3045WH),rest
+SC_RI_120100_3075 (SB1283/3075),rest
+SC_TO_60120_ 3045 (SB6330/3045),rest
 SI1283/WAL,rest
 SI1293/OKMB-AD,rest
 SI1295-NAD,rest
 SI1295/3021-AD,rest
+SI1295/3036,rest
 SI1295/3036-AD,rest
 SI1295/Maple,rest
 SI1295O/3045,rest
+SI1295O/3045 - check black sliders are smooth,rest
 SI1295O/3075,rest
 SI1295O/Maple,rest
 SI1295O/Pine,rest
 SI1295O/Walnut-Soft close drawers and doors,rest
 SI1593/Maple,rest
 SI1593/Walnut,rest
+SI1593O/3045-install legs,rest
 SI1623/MO-AD,rest
+SI1623/Pywood,rest
+SI1623M/3075 -  METAL LEGS/ 2 Bottom drawer add lock,rest
 "SI1623M/OakWH-1st Drawer soft close, Metal legs",rest
 SI1623M/Walnut,rest
 SI1623T/3036-AD,rest
@@ -1156,16 +1302,19 @@ SI1623T/3075,rest
 SI1623T/3113WH-AD,rest
 SI1623T/607,rest
 SI1623T/614-AD,rest
-SI1623T/MapleWH,rest
 SI1623T/OKWH-AD,rest
 SI1623T/WAL-AD,rest
 SI1680/3036,rest
 SI1680/3036-AD,rest
+SI1680/3045,rest
 SI1680/3064-AD,rest
+SI1680/3101,rest
 SI1680/3101-Oak wood Legs,rest
 SI1680/Maple,rest
 SI1680/Walnut,rest
+SI1685/3045 - SOFTCLOSE/ dont install legs but deliver the legs + screws to customer,rest
 SI1685/3064-AD,rest
+SI1685/3075-Do not install legs but pass the legs to customer,rest
 SI1685/3101-AD,rest
 SI1685/3113,rest
 SI1685/3113-AD,rest
@@ -1189,7 +1338,6 @@ SI1885/3113,rest
 SI1885/Pine-Slant metal leg,rest
 SI1885/WAL,rest
 SR2/3018WH,rest
-SR2/3036,rest
 SR2/3045WH-NO SOFT CLOSE,rest
 SR2/3064-AD,rest
 SR2/3075,rest
@@ -1206,17 +1354,26 @@ SR4/3036-Wood Legs,rest
 SR4/Pine-soft close,rest
 SR4/WAL,rest
 SR5/3036-AD,rest
+SR5/3036WH,rest
+SR5/3036WH(Premium),rest
+"SR5/3075 - don't install legs but deliver to customer, sticker up the hole",rest
+SR5/3075(Premium),rest
 SR5/3075(Premium)-AD,rest
 SR5/OKW(Standard),rest
 SR6/Custom,rest
 SR6/OKW-NAD,rest
 SR6/Walnut-HDL-D200+Soft close door,rest
+SR7/3036,rest
+SR7/3036WH(Premium),rest
+SR7/3045WH(Premium),rest
 SR7/3045WH(Premium)-AD,rest
 SR7/49,rest
 SR7/MapleWH(Premium),rest
 SR7/Pine(Premium)-Remove legs but send the legs to customer,rest
 SR7/WAL(Premium),rest
 SR7V1/OKW,rest
+SR8/3036,rest
+SS1236/3075,rest
 SS4001/3045-AD,rest
 SS4001/WH-WD,rest
 SS4001GD/3045,rest
@@ -1234,13 +1391,13 @@ SS6202/Espresso,rest
 SS6202/Maple,rest
 SS6202/Walnut,rest
 SS8052/Custom,rest
+ST_PI1DR1DRW_9075_3075 (T9015/3075),rest
 Sensation/SuperSingle,rest
 Single Divan Bedframe,rest
-Spring/PU/super single/1918,rest
-Spring/Queen/Storage,rest
-Spring/SuperSingle/Custom,rest
+"Spring (KHJ03)/Storage 16"" (B16LD)/Q/1933",rest
 Stella/Wenge/SuperSingle,rest
 Studio/Single,rest
+T1013,rest
 T1211,rest
 T1211/3045,rest
 T1221LEFT,rest
@@ -1253,6 +1410,7 @@ TV1565/3064-AD,rest
 TV1565/3064GRYLINEN-AD,rest
 TV1565/PineBK-HDL-D177-128-BL+wire cover CG Y7060 x1,rest
 TV1565/PineGRYLINEN,rest
+TV1634/3018-Remove toekick,rest
 TV1634/3045,rest
 TV1634/3045WH,rest
 TV1634/614+4046-Metal legs,rest
@@ -1267,9 +1425,10 @@ TV1671/Maple-Add cable caps,rest
 TV1671/Maple-Collect back,rest
 TV1671/Pine,rest
 TV1671/Walnut,rest
-TV1672/3045,rest
 TV1672/3075,rest
+TV1672/3075-NOSOFTCLOSE,rest
 TV1672/3075-Wood legs,rest
+TV1672/3075/Woodlegs,rest
 TV1672/Walnut,rest
 TV1853/3036,rest
 TV1853/3036-AD,rest
@@ -1278,7 +1437,9 @@ TV1865/3036-AD,rest
 TV1865/PineBK,rest
 TV24/1.2/3113WH-AD,rest
 TV24/1.6/3036WH,rest
-TV24/1.6/3075/add 2more cable hole,rest
+TV24/1.6/3045,rest
+TV24/1.6/3075 - SOFTCLOSE / don't install middle backboard but deliver together,rest
+TV24/1.6/3075/add  2more  cable hole,rest
 TV24/1.6/Maple,rest
 TV24/1.6/MapleWH,rest
 TV24/1.6/Oak,rest
@@ -1294,10 +1455,13 @@ TV25/3075-AD,rest
 TV25/3075-no handles,rest
 TV25/Walnut,rest
 TV25/Walnut-NO SOFT CLOSE,rest
+TV_HA_16054W_3075 (TV24/1.6/3075),rest
+TV_HA_18054W_3036WH (TV25/3036WH),rest
+TV_LI_16069M_3075 (TV1672/3075) /Dont install the legs/no soft close hinge and drawer,rest
+TV_PA_16050T_3075 (TV1634/3075),rest
 Tranquil/Super Single,rest
 "Vigor 13""/SuperSingle",rest
 Vigor/King,rest
-WD4002/3036,rest
 WD4002/3036+4025,rest
 WD4002/3036-AD,rest
 WD4002/3045-silver handles,rest
@@ -1309,6 +1473,7 @@ WD4021/3075,rest
 WD4021/Oak,rest
 WD4021/WH-SOFT CLOSE DOOR,rest
 WD4021/WH-Silver handle,rest
+WD80 + WD40,rest
 WD8003/1002T,rest
 WD8003/3036/SOFT-CLOSE,rest
 WD8003/Pine-Mirror on right door,rest
@@ -1316,7 +1481,6 @@ WD8003/Pine-Mirror on right door,rest
 WD8003/WH-SOFT CLOSE DOOR,rest
 WD8003/Walnut-Mirror,rest
 "WD8003/Walnut-Mirror (right door), sc slider",rest
-WD8005/3075,rest
 WD8005/Oak,rest
 WD8005/Walnut,rest
 WD8006/3036-AD,rest
@@ -1324,7 +1488,7 @@ WD8006/3036-AD,rest
 WD8007,rest
 WD8008-AD,rest
 WD8008/3036,rest
-WD8009/3036,rest
+WD8009/3075,rest
 WD8030/OKGP,rest
 WD8033/Custom,rest
 Zara-Storage/Queen,rest
@@ -1338,3 +1502,5 @@ Zara/Grey/Queen,rest
 Zara/Storage/Queen/ML07,rest
 Zara/Storage/Queen/PL-012,rest
 c,rest
+metal legs,rest
+metal- wood legs,rest
