@@ -9,19 +9,18 @@ from llm.history_manager import ChatHistoryManager
 from llm.tool_manager import ToolManager
 from llm.tools.get_view_schema import GetViewSchemaTool
 from llm.tools.execute_sql_query_on_view import ExecuteSqlQuery
-from llm.prompts import BASE_PROMPT
+from llm.prompts import INVENTORY_MANAGEMENT_BASE_PROMPT
 
-# --- Router Setup ---
+from database.services.chat_service import ChatService
+
 router = APIRouter(prefix="/llm", tags=["LLM"])
 
-# --- Agent Initialization ---
-# This setup is done once when the application starts.
 inventory_tools = [
-    GetViewSchemaTool(database_name="inventory_management"),
+    GetViewSchemaTool("inventory_management"),
     ExecuteSqlQuery(),
 ]
 inventory_tool_manager = ToolManager(tools=inventory_tools)
-inventory_prompt_manager = PromptManager(base_prompt=BASE_PROMPT)
+inventory_prompt_manager = PromptManager(base_prompt=INVENTORY_MANAGEMENT_BASE_PROMPT)
 main_prompt_manager = PromptManager()
 
 
@@ -31,10 +30,10 @@ async def websocket_endpoint(websocket: WebSocket):
     Handles the AI chat session over a WebSocket connection.
     Each connection gets a new, isolated agent instance.
     """
+    
     await websocket.accept()
     logger.info("WebSocket connection accepted.")
-    
-    # Create Per-Connection Agent Instances for conversation isolation
+
     main_chat_history_manager = ChatHistoryManager()
     inventory_chat_history_manager = ChatHistoryManager()
 
@@ -59,15 +58,12 @@ async def websocket_endpoint(websocket: WebSocket):
             logger.info(f"Received query: {query}")
 
             async for event in agent_instance.generate_content(query):
-                # --- FIX IS HERE ---
                 await websocket.send_json(event.model_dump())
-                # --- END FIX ---
 
     except WebSocketDisconnect:
         logger.info("Client disconnected.")
     except Exception as e:
         logger.error(f"An error occurred in the WebSocket: {e}", exc_info=True)
-        # Use .model_dump() here as well if you construct an Event object for errors
         await websocket.send_json({"type": "error", "data": str(e)})
         await websocket.close()
 

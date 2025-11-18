@@ -199,9 +199,9 @@ export const createMainPageColumns = (
               <DropdownMenuItem onClick={() => { setEditOpen(true); setDropdownOpen(false); }}>
                 Edit item
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => { (true); setDropdownOpen(false); }} className="text-red-600">
+              {/* <DropdownMenuItem onClick={() => { (true); setDropdownOpen(false); }} className="text-red-600">
                 Delete item
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
 

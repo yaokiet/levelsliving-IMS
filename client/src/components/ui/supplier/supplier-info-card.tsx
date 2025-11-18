@@ -5,17 +5,37 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Phone, Building2, FileText, Copy, Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { SupplierDeleteModal } from "./supplier-delete-modal";
+import { useState } from "react";
+import { SupplierEditModal } from "./supplier-edit-modal";
 
 interface SupplierInfoCardProps {
   supplier: Supplier;
   className?: string;
+  onUpdated?: () => void | Promise<void>;
 }
 
 export function SupplierInfoCard({
   supplier,
   className = "",
+  onUpdated,
 }: SupplierInfoCardProps) {
   const router = useRouter();
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
+  const handleEditClick = () => {
+    setEditModalOpen(true); // Open the edit modal
+  };
+
+  const handleUpdated = () => {
+    // Perform any additional actions after updating, e.g., refresh the page
+    onUpdated?.();
+  };
+
+  const handleDeleteClick = () => {
+    setDeleteModalOpen(true); // Open the delete modal
+  };
 
   const handleCopyEmail = () => {
     if (supplier.email) {
@@ -29,14 +49,9 @@ export function SupplierInfoCard({
     }
   };
 
-  const handleEdit = () => {
-    // Navigate to edit page (you can implement this later)
-    console.log("Edit supplier:", supplier.id);
-  };
-
-  const handleDelete = () => {
-    // Handle delete action (you can implement this later)
-    console.log("Delete supplier:", supplier.id);
+  const handleDeleted = () => {
+    // Perform any additional actions after deletion, e.g., refresh the page
+    router.push("/suppliers");
   };
 
   return (
@@ -57,14 +72,14 @@ export function SupplierInfoCard({
                 Active Supplier
               </Badge>
             </div>
-            
+
             {/* Action Buttons */}
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={handleEdit}>
+              <Button variant="outline" size="sm" onClick={handleEditClick}>
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </Button>
-              <Button variant="outline" size="sm" onClick={handleDelete}>
+              <Button variant="outline" size="sm" onClick={handleDeleteClick} className="text-red-600 border-red-600 hover:bg-red-600/10">
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </Button>
@@ -138,6 +153,23 @@ export function SupplierInfoCard({
             )}
           </CardContent>
         </Card>
+
+        {/* Edit Modal */}
+        <SupplierEditModal
+          supplier={supplier}
+          isOpen={isEditModalOpen}
+          setIsOpen={setEditModalOpen}
+          onUpdated={handleUpdated}
+        />
+
+        {/* Delete Modal */}
+        <SupplierDeleteModal
+          supplierId={supplier.id}
+          supplierName={supplier.name}
+          isOpen={isDeleteModalOpen}
+          setIsOpen={setDeleteModalOpen}
+          onDeleted={handleDeleted}
+        />
       </div>
     </div>
   );

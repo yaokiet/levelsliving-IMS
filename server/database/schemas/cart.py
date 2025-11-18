@@ -34,6 +34,6 @@ class CartItemRead(BaseModel):
     item_name: str
     variant: Optional[str] = None
 
-    class Config:
+    class ConfigDict:
         from_attributes = True # Changed from orm_mode = True
 

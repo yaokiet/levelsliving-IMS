@@ -1,13 +1,19 @@
 import { Supplier } from './supplier';
 import { PageMeta } from './pagination';
 
+export enum PurchaseOrderStatus {
+  Pending = 'pending',
+  Confirmed = 'confirmed',
+  Rejected = 'rejected',
+}
+
 // Basic Purchase Order from API
 export interface PurchaseOrder {
   id: number;
   supplier_id: number;
   user_id: number;
   order_date: string;
-  status?: 'pending' | 'ordered' | 'received' | 'cancelled';
+  status?: PurchaseOrderStatus;
 }
 
 // Purchase Order Item Detail as returned by API
@@ -86,5 +92,5 @@ export interface PurchaseOrderTableRow {
   user_name: string;
   total_items: number;
   total_cost: number;
-  status: 'pending' | 'ordered' | 'received' | 'cancelled';
+  status: PurchaseOrderStatus;
 }

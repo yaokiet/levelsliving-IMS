@@ -21,7 +21,7 @@ class PurchaseOrderItemUpdate(BaseModel):
     supplier_item_id: Optional[int] = None
 
 class PurchaseOrderItemRead(PurchaseOrderItemBase):
-    class Config:
+    class ConfigDict:
         orm_mode = True
 
 #custom schema for Purchase Order Details read, including supplier_item_id
@@ -32,5 +32,5 @@ class PurchaseOrderItemReadCustom(BaseModel):
     variant: Optional[str] = None
     ordered_qty: int 
     supplier_item_id: Optional[int] = None   
-    class Config:
+    class ConfigDict:
         orm_mode = True

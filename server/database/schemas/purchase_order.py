@@ -23,7 +23,7 @@ class PurchaseOrderUpdate(BaseModel):
 class PurchaseOrderRead(PurchaseOrderBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
 
 class PurchaseOrderDetails(BaseModel):
@@ -38,7 +38,7 @@ class PurchaseOrderDetails(BaseModel):
     supplier_description: Optional[str] = None
     po_items: List[PurchaseOrderItemReadCustom] = Field(default_factory=list)
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
 
 class PurchaseOrderCreateWithItems(BaseModel):

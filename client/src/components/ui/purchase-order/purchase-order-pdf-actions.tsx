@@ -20,7 +20,7 @@ export function PurchaseOrderPdfActions({
   purchaseOrder,
   variant = 'outline',
   size = 'sm',
-  showPrint = true,
+  showPrint = false,
   showDownload = true,
   className = '',
   onError

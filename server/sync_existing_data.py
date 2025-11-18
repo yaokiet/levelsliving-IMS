@@ -4,13 +4,16 @@ Run this after Docker startup to sync all existing suppliers and items.
 """
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
 
 from database.database import SessionLocal
 from database.models.supplier import Supplier
 from database.models.item import Item
 from config import settings
+
+# Singapore timezone (UTC+8)
+SGT = timezone(timedelta(hours=8))
 
 # Configure logging
 logging.basicConfig(
@@ -63,8 +66,8 @@ def sync_all_suppliers(db: Session):
                     'description': supplier.description or '',
                     'email': supplier.email,
                     'contact_number': supplier.contact_number or '',
-                    'created_at': getattr(supplier, 'created_at', datetime.now()),
-                    'updated_at': getattr(supplier, 'updated_at', datetime.now())
+                    'created_at': getattr(supplier, 'created_at', datetime.now(SGT)),
+                    'updated_at': getattr(supplier, 'updated_at', datetime.now(SGT))
                 }
                 
                 # Sync to Google Sheets
@@ -124,8 +127,8 @@ def sync_all_items(db: Session):
                     'variant': item.variant or '',
                     'qty': item.qty,
                     'threshold_qty': item.threshold_qty,
-                    'created_at': getattr(item, 'created_at', datetime.now()),
-                    'updated_at': getattr(item, 'updated_at', datetime.now())
+                    'created_at': getattr(item, 'created_at', datetime.now(SGT)),
+                    'updated_at': getattr(item, 'updated_at', datetime.now(SGT))
                 }
                 
                 # Sync to Google Sheets

@@ -6,7 +6,10 @@ from sqlalchemy import func
 from database.models.supplier_item import SupplierItem
 import logging
 from config import settings
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
+
+# Singapore timezone (UTC+8)
+SGT = timezone(timedelta(hours=8))
 
 # Import Google Sheets client
 try:
@@ -28,7 +31,7 @@ def get_all_suppliers(db: Session):
     return db.query(Supplier).all()
 
 def create_supplier(db: Session, supplier: SupplierCreate):
-    db_supplier = Supplier(**supplier.dict())
+    db_supplier = Supplier(**supplier.model_dump())
     db.add(db_supplier)
     db.commit()
     db.refresh(db_supplier)
@@ -49,10 +52,10 @@ def create_supplier(db: Session, supplier: SupplierCreate):
                 'id': db_supplier.id,
                 'name': db_supplier.name,
                 'description': db_supplier.description or '',
-                'email': db_supplier.email or '',
+                'email': db_supplier.email,
                 'contact_number': db_supplier.contact_number or '',
-                'created_at': getattr(db_supplier, 'created_at', datetime.now()),
-                'updated_at': getattr(db_supplier, 'updated_at', datetime.now())
+                'created_at': getattr(db_supplier, 'created_at', datetime.now(SGT)),
+                'updated_at': getattr(db_supplier, 'updated_at', datetime.now(SGT))
             }
             success = sheets_client.sync_supplier_create(supplier_data)
             if success:
@@ -74,7 +77,7 @@ def create_supplier(db: Session, supplier: SupplierCreate):
 def update_supplier(db: Session, supplier_id: int, supplier: SupplierUpdate):
     db_supplier = db.query(Supplier).filter(Supplier.id == supplier_id).first()
     if db_supplier:
-        update_data = supplier.dict(exclude_unset=True)
+        update_data = supplier.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_supplier, key, value)
         db.commit()
@@ -93,10 +96,10 @@ def update_supplier(db: Session, supplier_id: int, supplier: SupplierUpdate):
                     'id': db_supplier.id,
                     'name': db_supplier.name,
                     'description': db_supplier.description or '',
-                    'email': db_supplier.email or '',
+                    'email': db_supplier.email,
                     'contact_number': db_supplier.contact_number or '',
-                    'created_at': getattr(db_supplier, 'created_at', datetime.now()),
-                    'updated_at': getattr(db_supplier, 'updated_at', datetime.now())
+                    'created_at': getattr(db_supplier, 'created_at', datetime.now(SGT)),
+                    'updated_at': getattr(db_supplier, 'updated_at', datetime.now(SGT))
                 }
                 success = sheets_client.sync_supplier_update(supplier_data)
                 if success:

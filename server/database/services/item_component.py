@@ -34,7 +34,7 @@ def update_item_component(db: Session, parent_id: int, child_id: int, payload: I
     db_row = get_item_component(db, parent_id, child_id)
     if not db_row:
         return None
-    update_data = payload.dict(exclude_unset=True)
+    update_data = payload.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_row, key, value)
     db.commit()

@@ -97,7 +97,7 @@ def create_supplier_item(db: Session, supplier_item: SupplierItemCreate):
         raise HTTPException(status_code=404, detail=f"Supplier with id {supplier_item.supplier_id} not found")
 
     # 3. If parents exist, create the new relationship
-    db_supplier_item = SupplierItem(**supplier_item.dict())
+    db_supplier_item = SupplierItem(**supplier_item.model_dump())
     db.add(db_supplier_item)
     try:
         db.commit()
@@ -113,7 +113,7 @@ def create_supplier_item(db: Session, supplier_item: SupplierItemCreate):
 def update_supplier_item(db: Session, supplier_item_id: int, supplier_item: SupplierItemUpdate):
     db_supplier_item = get_supplier_item(db, supplier_item_id)
     if db_supplier_item:
-        update_data = supplier_item.dict(exclude_unset=True)
+        update_data = supplier_item.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_supplier_item, key, value)
         try:

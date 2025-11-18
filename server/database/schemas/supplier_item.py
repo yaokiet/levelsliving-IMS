@@ -16,5 +16,5 @@ class SupplierItemUpdate(BaseModel):
 class SupplierItemRead(SupplierItemBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True

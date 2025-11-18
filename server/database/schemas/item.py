@@ -23,7 +23,7 @@ class ItemUpdate(BaseModel):
 class ItemRead(ItemBase):
     id: int
 
-    class Config:
+    class ConfigDict:
         orm_mode = True
         
 class ItemComponentRead(BaseModel):
@@ -31,7 +31,7 @@ class ItemComponentRead(BaseModel):
     child_id: int
     qty_required: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
     
 class ComponentDetail(ItemRead):
