@@ -58,11 +58,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      # # Step 8: Run Playwright tests
-      # - name: Run Playwright tests
-      #   run: |
-      #     npx playwright install --with-deps
-      #     npx playwright test     
-      #   env:
-      #     CI: true  # Required for Playwright to run in CI environments
+      # Step 8: Run Playwright tests
+      - name: Run Playwright tests
+        run: |
+          npx playwright install --with-deps
+          npx playwright test     
+        env:
+          CI: true  # Required for Playwright to run in CI environments
   
