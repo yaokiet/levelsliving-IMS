@@ -51,8 +51,7 @@ export default function ChatbotPage() {
       return;
     }
 
-    const WEBSOCKET_URL =
-      "ws://localhost:8000/levelsliving/app/api/v1/llm/query";
+    const WEBSOCKET_URL = `${process.env.NEXT_PUBLIC_WEBSOCKET_DOMAIN}/levelsliving/app/api/v1/llm/query`;
     ws.current = new WebSocket(WEBSOCKET_URL);
 
     ws.current.onopen = () => {
