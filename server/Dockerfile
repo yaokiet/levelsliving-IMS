@@ -6,12 +6,21 @@ FROM python:3.9-slim AS builder
 # Set the working directory
 WORKDIR /app
 
+# Install system dependencies required for some python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libffi-dev \
+    libssl-dev \
+    libpq-dev \
+    gcc \
+    && apt-get clean
+
 # Copy only the requirements file to leverage Docker's caching
 COPY requirements.txt .
 
-# Install dependencies
+# Install dependencies and set PYTHONPATH for the ipykernel command
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt \
- && python -m ipykernel install --name python3 --display-name "Python 3"
+ && PYTHONPATH=/install/lib/python3.9/site-packages python -m ipykernel install --user --name python3 --display-name "Python 3"
  
 # Copy the application code
 COPY . .
@@ -24,6 +33,8 @@ WORKDIR /app
 
 # Copy dependencies from the builder stage
 COPY --from=builder /install /usr/local
+# Copy the kernel spec from the builder stage
+COPY --from=builder /root/.local/share/jupyter/kernels/python3 /root/.local/share/jupyter/kernels/python3
 
 # Copy the application code
 COPY . .
