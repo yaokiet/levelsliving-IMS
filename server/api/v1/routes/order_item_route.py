@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database.database import get_db
-from database.schemas.order_item import OrderItemCreate, OrderItemUpdate, OrderItemRead
+from database.schemas.order_item import OrderItemCreate, OrderItemUpdate, OrderItemRead, MonthlyQuantity
 from database.services.order_item import (
     get_order_item, get_all_order_items,
-    create_order_item, update_order_item, delete_order_item
+    create_order_item, update_order_item, delete_order_item,
+    get_monthly_order_item_quantities,
 )
 
 router = APIRouter(prefix="/order-item", tags=["order-item"])
@@ -15,6 +16,20 @@ def read_order_items(db: Session = Depends(get_db)):
     Retrieve all order items.
     """
     return get_all_order_items(db)
+
+@router.get("/monthly/quantity", response_model=list[MonthlyQuantity])
+def read_monthly_order_item_quantities(db: Session = Depends(get_db)):
+    """
+    Return aggregated monthly quantities based on order item delivery_date.
+
+    Shape:
+    [
+      { "date": "2022-04-30", "quantity": 91 },
+      { "date": "2022-05-31", "quantity": 280 },
+      ...
+    ]
+    """
+    return get_monthly_order_item_quantities(db)
 
 @router.get("/{order_id}/{item_id}", response_model=OrderItemRead)
 def read_order_item(order_id: int, item_id: int, db: Session = Depends(get_db)):
@@ -52,3 +67,4 @@ def delete_existing_order_item(order_id: int, item_id: int, db: Session = Depend
     if not deleted:
         raise HTTPException(status_code=404, detail="Order item not found")
     return deleted
+

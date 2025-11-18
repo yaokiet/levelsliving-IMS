@@ -31,5 +31,9 @@ class OrderItemUpdate(BaseModel):
     value: Optional[Decimal] = None
 
 class OrderItemRead(OrderItemBase):
-    class ConfigDict:
+    class Config:
         orm_mode = True
+
+class MonthlyQuantity(BaseModel):
+    date: date        # will be serialized as "YYYY-MM-DD"
+    quantity: int

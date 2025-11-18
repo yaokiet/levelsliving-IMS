@@ -80,7 +80,7 @@
     "notes": "Inventory overall level forecaster."
   },
   "_training_context": {
-    "created_at": "2025-11-03T07:55:37.955599Z",
+    "created_at": "2025-11-18T08:42:28.039228Z",
     "xgboost_version": "2.0.3"
   }
 }
