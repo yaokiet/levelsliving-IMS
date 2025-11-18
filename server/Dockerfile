@@ -18,10 +18,9 @@ RUN apt-get update && apt-get install -y \
 # Copy only the requirements file to leverage Docker's caching
 COPY requirements.txt .
 
-# Install dependencies and set PYTHONPATH for the ipykernel command
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt \
- && PYTHONPATH=/install/lib/python3.9/site-packages python -m ipykernel install --user --name python3 --display-name "Python 3"
- 
+# Install dependencies
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
 # Copy the application code
 COPY . .
 
@@ -49,6 +48,6 @@ ENV PYTHONPATH=/app
 RUN chmod +x seed-scripts/seed.sh
 
 # Command to run the application
-CMD ["sh", "-c", "sh seed-scripts/seed.sh || echo 'Seed failed, starting server anyway'; uvicorn main:app --reload --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "sh seed-scripts/seed.sh || echo 'Seed failed, starting server anyway'; uvicorn main:app --host 0.0.0.0 --port 8000"]
 # CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 # CMD ["sh", "-c", "python init-scripts/init-db.py && uvicorn main:app --host 0.0.0.0 --port 8000"]
