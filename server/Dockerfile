@@ -10,8 +10,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
-
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt \
+ && python -m ipykernel install --name python3 --display-name "Python 3"
+ 
 # Copy the application code
 COPY . .
 
