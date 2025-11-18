@@ -1,21 +1,21 @@
 -- =======================
 -- USERS
 -- =======================
-INSERT INTO "user" (name, role, email, password_hash) VALUES
-('admintest', 'admin', 'admin@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest', 'user', 'user@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest2', 'admin', 'admin2@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest3', 'admin', 'admin3@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest2', 'user', 'user2@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest3', 'user', 'user3@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest4', 'user', 'user4@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest5', 'user', 'user5@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('usertest6', 'user', 'user6@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest4', 'admin', 'admin4@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest5', 'admin', 'admin5@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest6', 'admin', 'admin6@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest7', 'admin', 'admin7@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
-('admintest8', 'admin', 'admin8@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
+-- INSERT INTO "user" (name, role, email, password_hash) VALUES
+-- ('admintest', 'admin', 'admin@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('usertest', 'user', 'user@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest2', 'admin', 'admin2@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest3', 'admin', 'admin3@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('usertest2', 'user', 'user2@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('usertest3', 'user', 'user3@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('usertest4', 'user', 'user4@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('usertest5', 'user', 'user5@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('usertest6', 'user', 'user6@user.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest4', 'admin', 'admin4@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest5', 'admin', 'admin5@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest6', 'admin', 'admin6@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest7', 'admin', 'admin7@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO'),
+-- ('admintest8', 'admin', 'admin8@admin.com', '$2b$12$ZJBiZryNQ9vjT6D3JjjIyORvbTubY7/J4Dk.2BhjLb6NcxRwmYwSO');
 
 -- =======================
 -- SUPPLIERS
@@ -28,151 +28,151 @@ INSERT INTO "user" (name, role, email, password_hash) VALUES
 -- =======================
 -- ITEMS
 -- =======================
-INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
-('CHAIR-001', 'Furniture', 'Office Chair', 'Black', 15, 10),
-('DESK-001', 'Furniture', 'Standing Desk', 'Oak', 8, 5),
-('MONITOR-001', 'Electronics', '27-inch Monitor', 'Silver', 3, 5),
-('KEYBOARD-001', 'Electronics', 'Mechanical Keyboard', NULL, 12, 8),
-('MOUSE-001', 'Electronics', 'Wireless Mouse', 'Black', 7, 10),
-('LAMP-001', 'Lighting', 'Desk Lamp', 'White', 20, 15),
-('LEG-STL-01', 'Component', 'Chair Leg', 'Steel', 100, 20),
-('SEAT-PAD-01', 'Component', 'Seat Cushion', 'Foam', 50, 10),
-('BACK-RST-01', 'Component', 'Backrest Frame', 'Plastic', 50, 10),
-('SCRW-PK-01', 'Component', 'Screw Pack', 'M6', 200, 50),
-('DESK-TOP-01', 'Component', 'Desk Tabletop', 'Oak Veneer', 20, 5),
-('DESK-LEG-01', 'Component', 'Desk Leg Set', 'Motorized', 20, 5),
--- Additional items
-('CHAIR-002', 'Furniture', 'Office Chair', 'Grey', 14, 8),
-('CHAIR-003', 'Furniture', 'Office Chair', 'Blue', 10, 6),
-('CHAIR-004', 'Furniture', 'Ergonomic Chair', 'Mesh Black', 9, 5),
-('CHAIR-005', 'Furniture', 'Gaming Chair', 'Red', 6, 4),
-('CHAIR-006', 'Furniture', 'Conference Chair', 'Black', 18, 8),
-('CHAIR-007', 'Furniture', 'Visitor Chair', 'Fabric Grey', 12, 6),
-('CHAIR-008', 'Furniture', 'Bar Stool', 'Wood', 16, 8),
-('CHAIR-009', 'Furniture', 'Drafting Chair', 'Adjustable', 7, 4),
-('CHAIR-010', 'Furniture', 'Lounge Chair', 'Leather Brown', 5, 3),
-('DESK-002', 'Furniture', 'Standing Desk', 'Walnut', 7, 5),
-('DESK-003', 'Furniture', 'Writing Desk', 'Pine', 11, 5),
-('DESK-004', 'Furniture', 'Corner Desk', 'White', 6, 3),
-('DESK-005', 'Furniture', 'Executive Desk', 'Dark Oak', 4, 2),
-('TABLE-001', 'Furniture', 'Coffee Table', 'Glass', 8, 3),
-('TABLE-002', 'Furniture', 'Dining Table', '6-Seater', 5, 2),
-('TABLE-003', 'Furniture', 'Side Table', 'Round', 10, 4),
-('SHELF-001', 'Furniture', 'Bookshelf', '5-Tier', 9, 4),
-('SHELF-002', 'Furniture', 'Bookshelf', '3-Tier', 12, 5),
-('CABINET-001', 'Furniture', 'Filing Cabinet', '3-Drawer', 7, 3),
-('CABINET-002', 'Furniture', 'Storage Cabinet', 'Metal', 6, 3),
-('SOFA-001', 'Furniture', 'Two-Seater Sofa', 'Grey', 3, 2),
-('SOFA-002', 'Furniture', 'Three-Seater Sofa', 'Blue', 2, 1),
-('BED-001', 'Furniture', 'Bed Frame', 'Queen - Oak', 4, 2),
-('BED-002', 'Furniture', 'Bed Frame', 'King - Walnut', 3, 2),
-('MONITOR-002', 'Electronics', '24-inch Monitor', 'Black', 8, 5),
-('MONITOR-003', 'Electronics', '32-inch Monitor', '4K', 5, 5),
-('MONITOR-004', 'Electronics', 'Ultrawide Monitor', '34-inch', 3, 3),
-('KEYBOARD-002', 'Electronics', 'Mechanical Keyboard', 'TKL', 10, 6),
-('KEYBOARD-003', 'Electronics', 'Wireless Keyboard', 'Silver', 9, 6),
-('MOUSE-002', 'Electronics', 'Wireless Mouse', 'White', 10, 8),
-('MOUSE-003', 'Electronics', 'Ergonomic Mouse', 'Right-Hand', 7, 5),
-('DOCK-001', 'Electronics', 'USB-C Docking Station', '12-in-1', 6, 3),
-('HUB-001', 'Electronics', 'USB 3.0 Hub', '4-Port', 15, 8),
-('WEBCAM-001', 'Electronics', '1080p Webcam', 'Autofocus', 10, 5),
-('SPEAKER-001', 'Electronics', 'Bluetooth Speaker', 'Compact', 12, 6),
-('SPEAKER-002', 'Electronics', 'Desktop Speakers', '2.1', 7, 4),
-('HEADSET-001', 'Electronics', 'Wireless Headset', 'Noise-Canceling', 8, 4),
-('UPS-001', 'Electronics', 'UPS', '1000VA', 4, 2),
-('CABLE-HDMI-01', 'Electronics', 'HDMI Cable', '2m', 50, 20),
-('CABLE-USB-C-01', 'Electronics', 'USB-C Cable', '1m', 60, 25),
-('MOUSEPAD-001', 'Electronics', 'Mouse Pad', 'XL', 30, 10),
-('MONITOR-ARM-01', 'Electronics', 'Monitor Arm', 'Single', 14, 6),
-('MONITOR-ARM-02', 'Electronics', 'Monitor Arm', 'Dual', 10, 5),
-('SURGE-PRT-01', 'Electronics', 'Surge Protector', '6-Outlet', 18, 8),
-('LAMP-002', 'Lighting', 'Floor Lamp', 'Black', 12, 6),
-('LAMP-003', 'Lighting', 'Desk Lamp', 'Black', 15, 10),
-('LAMP-004', 'Lighting', 'LED Strip', 'RGB', 30, 12),
-('LAMP-005', 'Lighting', 'Pendant Lamp', 'Brass', 6, 3),
-('LED-BULB-001', 'Lighting', 'LED Bulb', 'Warm White', 100, 30),
-('LED-BULB-002', 'Lighting', 'LED Bulb', 'Daylight', 90, 30),
-('LED-BULB-003', 'Lighting', 'Smart LED Bulb', 'RGB', 40, 12),
-('LEG-STL-02', 'Component', 'Chair Leg', 'Aluminum', 120, 25),
-('SEAT-PAD-02', 'Component', 'Seat Cushion', 'Memory Foam', 40, 10),
-('BACK-RST-02', 'Component', 'Backrest Frame', 'Steel', 40, 10),
-('ARM-REST-01', 'Component', 'Armrest Pair', 'PU', 60, 15),
-('GAS-LIFT-01', 'Component', 'Gas Lift Cylinder', 'Class 4', 45, 10),
-('CASTER-SET-01', 'Component', 'Caster Wheel Set', '60mm', 80, 20),
-('SCRW-PK-02', 'Component', 'Screw Pack', 'M4', 180, 50),
-('SCRW-PK-03', 'Component', 'Screw Pack', 'Wood', 160, 40),
-('DESK-TOP-02', 'Component', 'Desk Tabletop', 'Walnut Veneer', 15, 5),
-('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6),
-('DESK-LEG-02-2', 'Component', 'Desk Leg Set 2', 'Fixed', 25, 6),('DESK-FRM-03', 'Component', 'Desk Frame', 'Adjustable', 20, 5),
-('CABLE-ETH-01', 'Electronics', 'Ethernet Cable', 'Cat6 2m', 50, 20),
-('CABLE-ETH-02', 'Electronics', 'Ethernet Cable', 'Cat6 5m', 40, 15),
-('ADAPTER-001', 'Electronics', 'USB-C to HDMI Adapter', NULL, 25, 10),
-('ADAPTER-002', 'Electronics', 'USB-C to Ethernet Adapter', NULL, 20, 8),
-('SWITCH-001', 'Electronics', 'Network Switch', '8-Port Gigabit', 10, 5),
-('ROUTER-001', 'Electronics', 'Wi-Fi Router', 'AX3000', 8, 4),
-('CAMERA-001', 'Electronics', 'Security Camera', 'Indoor 1080p', 12, 6),
-('CAMERA-002', 'Electronics', 'Security Camera', 'Outdoor 4K', 6, 3),
-('MIC-001', 'Electronics', 'USB Microphone', 'Condenser', 10, 5),
-('STAND-MIC-01', 'Component', 'Microphone Stand', 'Adjustable', 25, 10),
-('STAND-MON-01', 'Component', 'Monitor Stand', 'Wood', 15, 5),
-('STAND-LAP-01', 'Component', 'Laptop Stand', 'Aluminum', 20, 8),
-('EXT-CORD-01', 'Electronics', 'Extension Cord', '3m', 30, 10),
-('EXT-CORD-02', 'Electronics', 'Extension Cord', '5m', 25, 10),
-('PLANT-001', 'Furniture', 'Artificial Plant', 'Medium', 15, 5),
-('PLANT-002', 'Furniture', 'Artificial Plant', 'Large', 10, 5),
-('CLOCK-001', 'Decor', 'Wall Clock', 'Round White', 10, 4),
-('RUG-001', 'Decor', 'Office Rug', 'Grey', 8, 3),
-('PAINT-001', 'Decor', 'Wall Art', 'Abstract', 6, 2),
-('CABINET-003', 'Furniture', 'Storage Cabinet', 'Wood', 6, 3),
-('CABINET-004', 'Furniture', 'Filing Cabinet', 'Metal', 5, 2),
-('CUSHION-001', 'Decor', 'Throw Cushion', 'Blue', 20, 10),
-('TRAY-001', 'Office Supply', 'Desk Organizer Tray', 'Plastic', 25, 10),
-('BIND-001', 'Office Supply', 'File Binder', 'A4', 40, 15),
-('PAPER-001', 'Office Supply', 'Printing Paper', 'A4 Ream', 60, 20),
-('WHITEBOARD-001', 'Office Supply', 'Whiteboard', 'Magnetic 90x60cm', 8, 4);
+-- INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
+-- ('CHAIR-001', 'Furniture', 'Office Chair', 'Black', 15, 10),
+-- ('DESK-001', 'Furniture', 'Standing Desk', 'Oak', 8, 5),
+-- ('MONITOR-001', 'Electronics', '27-inch Monitor', 'Silver', 3, 5),
+-- ('KEYBOARD-001', 'Electronics', 'Mechanical Keyboard', NULL, 12, 8),
+-- ('MOUSE-001', 'Electronics', 'Wireless Mouse', 'Black', 7, 10),
+-- ('LAMP-001', 'Lighting', 'Desk Lamp', 'White', 20, 15),
+-- ('LEG-STL-01', 'Component', 'Chair Leg', 'Steel', 100, 20),
+-- ('SEAT-PAD-01', 'Component', 'Seat Cushion', 'Foam', 50, 10),
+-- ('BACK-RST-01', 'Component', 'Backrest Frame', 'Plastic', 50, 10),
+-- ('SCRW-PK-01', 'Component', 'Screw Pack', 'M6', 200, 50),
+-- ('DESK-TOP-01', 'Component', 'Desk Tabletop', 'Oak Veneer', 20, 5),
+-- ('DESK-LEG-01', 'Component', 'Desk Leg Set', 'Motorized', 20, 5),
+-- -- Additional items
+-- ('CHAIR-002', 'Furniture', 'Office Chair', 'Grey', 14, 8),
+-- ('CHAIR-003', 'Furniture', 'Office Chair', 'Blue', 10, 6),
+-- ('CHAIR-004', 'Furniture', 'Ergonomic Chair', 'Mesh Black', 9, 5),
+-- ('CHAIR-005', 'Furniture', 'Gaming Chair', 'Red', 6, 4),
+-- ('CHAIR-006', 'Furniture', 'Conference Chair', 'Black', 18, 8),
+-- ('CHAIR-007', 'Furniture', 'Visitor Chair', 'Fabric Grey', 12, 6),
+-- ('CHAIR-008', 'Furniture', 'Bar Stool', 'Wood', 16, 8),
+-- ('CHAIR-009', 'Furniture', 'Drafting Chair', 'Adjustable', 7, 4),
+-- ('CHAIR-010', 'Furniture', 'Lounge Chair', 'Leather Brown', 5, 3),
+-- ('DESK-002', 'Furniture', 'Standing Desk', 'Walnut', 7, 5),
+-- ('DESK-003', 'Furniture', 'Writing Desk', 'Pine', 11, 5),
+-- ('DESK-004', 'Furniture', 'Corner Desk', 'White', 6, 3),
+-- ('DESK-005', 'Furniture', 'Executive Desk', 'Dark Oak', 4, 2),
+-- ('TABLE-001', 'Furniture', 'Coffee Table', 'Glass', 8, 3),
+-- ('TABLE-002', 'Furniture', 'Dining Table', '6-Seater', 5, 2),
+-- ('TABLE-003', 'Furniture', 'Side Table', 'Round', 10, 4),
+-- ('SHELF-001', 'Furniture', 'Bookshelf', '5-Tier', 9, 4),
+-- ('SHELF-002', 'Furniture', 'Bookshelf', '3-Tier', 12, 5),
+-- ('CABINET-001', 'Furniture', 'Filing Cabinet', '3-Drawer', 7, 3),
+-- ('CABINET-002', 'Furniture', 'Storage Cabinet', 'Metal', 6, 3),
+-- ('SOFA-001', 'Furniture', 'Two-Seater Sofa', 'Grey', 3, 2),
+-- ('SOFA-002', 'Furniture', 'Three-Seater Sofa', 'Blue', 2, 1),
+-- ('BED-001', 'Furniture', 'Bed Frame', 'Queen - Oak', 4, 2),
+-- ('BED-002', 'Furniture', 'Bed Frame', 'King - Walnut', 3, 2),
+-- ('MONITOR-002', 'Electronics', '24-inch Monitor', 'Black', 8, 5),
+-- ('MONITOR-003', 'Electronics', '32-inch Monitor', '4K', 5, 5),
+-- ('MONITOR-004', 'Electronics', 'Ultrawide Monitor', '34-inch', 3, 3),
+-- ('KEYBOARD-002', 'Electronics', 'Mechanical Keyboard', 'TKL', 10, 6),
+-- ('KEYBOARD-003', 'Electronics', 'Wireless Keyboard', 'Silver', 9, 6),
+-- ('MOUSE-002', 'Electronics', 'Wireless Mouse', 'White', 10, 8),
+-- ('MOUSE-003', 'Electronics', 'Ergonomic Mouse', 'Right-Hand', 7, 5),
+-- ('DOCK-001', 'Electronics', 'USB-C Docking Station', '12-in-1', 6, 3),
+-- ('HUB-001', 'Electronics', 'USB 3.0 Hub', '4-Port', 15, 8),
+-- ('WEBCAM-001', 'Electronics', '1080p Webcam', 'Autofocus', 10, 5),
+-- ('SPEAKER-001', 'Electronics', 'Bluetooth Speaker', 'Compact', 12, 6),
+-- ('SPEAKER-002', 'Electronics', 'Desktop Speakers', '2.1', 7, 4),
+-- ('HEADSET-001', 'Electronics', 'Wireless Headset', 'Noise-Canceling', 8, 4),
+-- ('UPS-001', 'Electronics', 'UPS', '1000VA', 4, 2),
+-- ('CABLE-HDMI-01', 'Electronics', 'HDMI Cable', '2m', 50, 20),
+-- ('CABLE-USB-C-01', 'Electronics', 'USB-C Cable', '1m', 60, 25),
+-- ('MOUSEPAD-001', 'Electronics', 'Mouse Pad', 'XL', 30, 10),
+-- ('MONITOR-ARM-01', 'Electronics', 'Monitor Arm', 'Single', 14, 6),
+-- ('MONITOR-ARM-02', 'Electronics', 'Monitor Arm', 'Dual', 10, 5),
+-- ('SURGE-PRT-01', 'Electronics', 'Surge Protector', '6-Outlet', 18, 8),
+-- ('LAMP-002', 'Lighting', 'Floor Lamp', 'Black', 12, 6),
+-- ('LAMP-003', 'Lighting', 'Desk Lamp', 'Black', 15, 10),
+-- ('LAMP-004', 'Lighting', 'LED Strip', 'RGB', 30, 12),
+-- ('LAMP-005', 'Lighting', 'Pendant Lamp', 'Brass', 6, 3),
+-- ('LED-BULB-001', 'Lighting', 'LED Bulb', 'Warm White', 100, 30),
+-- ('LED-BULB-002', 'Lighting', 'LED Bulb', 'Daylight', 90, 30),
+-- ('LED-BULB-003', 'Lighting', 'Smart LED Bulb', 'RGB', 40, 12),
+-- ('LEG-STL-02', 'Component', 'Chair Leg', 'Aluminum', 120, 25),
+-- ('SEAT-PAD-02', 'Component', 'Seat Cushion', 'Memory Foam', 40, 10),
+-- ('BACK-RST-02', 'Component', 'Backrest Frame', 'Steel', 40, 10),
+-- ('ARM-REST-01', 'Component', 'Armrest Pair', 'PU', 60, 15),
+-- ('GAS-LIFT-01', 'Component', 'Gas Lift Cylinder', 'Class 4', 45, 10),
+-- ('CASTER-SET-01', 'Component', 'Caster Wheel Set', '60mm', 80, 20),
+-- ('SCRW-PK-02', 'Component', 'Screw Pack', 'M4', 180, 50),
+-- ('SCRW-PK-03', 'Component', 'Screw Pack', 'Wood', 160, 40),
+-- ('DESK-TOP-02', 'Component', 'Desk Tabletop', 'Walnut Veneer', 15, 5),
+-- ('DESK-LEG-02', 'Component', 'Desk Leg Set', 'Fixed', 25, 6),
+-- ('DESK-LEG-02-2', 'Component', 'Desk Leg Set 2', 'Fixed', 25, 6),('DESK-FRM-03', 'Component', 'Desk Frame', 'Adjustable', 20, 5),
+-- ('CABLE-ETH-01', 'Electronics', 'Ethernet Cable', 'Cat6 2m', 50, 20),
+-- ('CABLE-ETH-02', 'Electronics', 'Ethernet Cable', 'Cat6 5m', 40, 15),
+-- ('ADAPTER-001', 'Electronics', 'USB-C to HDMI Adapter', NULL, 25, 10),
+-- ('ADAPTER-002', 'Electronics', 'USB-C to Ethernet Adapter', NULL, 20, 8),
+-- ('SWITCH-001', 'Electronics', 'Network Switch', '8-Port Gigabit', 10, 5),
+-- ('ROUTER-001', 'Electronics', 'Wi-Fi Router', 'AX3000', 8, 4),
+-- ('CAMERA-001', 'Electronics', 'Security Camera', 'Indoor 1080p', 12, 6),
+-- ('CAMERA-002', 'Electronics', 'Security Camera', 'Outdoor 4K', 6, 3),
+-- ('MIC-001', 'Electronics', 'USB Microphone', 'Condenser', 10, 5),
+-- ('STAND-MIC-01', 'Component', 'Microphone Stand', 'Adjustable', 25, 10),
+-- ('STAND-MON-01', 'Component', 'Monitor Stand', 'Wood', 15, 5),
+-- ('STAND-LAP-01', 'Component', 'Laptop Stand', 'Aluminum', 20, 8),
+-- ('EXT-CORD-01', 'Electronics', 'Extension Cord', '3m', 30, 10),
+-- ('EXT-CORD-02', 'Electronics', 'Extension Cord', '5m', 25, 10),
+-- ('PLANT-001', 'Furniture', 'Artificial Plant', 'Medium', 15, 5),
+-- ('PLANT-002', 'Furniture', 'Artificial Plant', 'Large', 10, 5),
+-- ('CLOCK-001', 'Decor', 'Wall Clock', 'Round White', 10, 4),
+-- ('RUG-001', 'Decor', 'Office Rug', 'Grey', 8, 3),
+-- ('PAINT-001', 'Decor', 'Wall Art', 'Abstract', 6, 2),
+-- ('CABINET-003', 'Furniture', 'Storage Cabinet', 'Wood', 6, 3),
+-- ('CABINET-004', 'Furniture', 'Filing Cabinet', 'Metal', 5, 2),
+-- ('CUSHION-001', 'Decor', 'Throw Cushion', 'Blue', 20, 10),
+-- ('TRAY-001', 'Office Supply', 'Desk Organizer Tray', 'Plastic', 25, 10),
+-- ('BIND-001', 'Office Supply', 'File Binder', 'A4', 40, 15),
+-- ('PAPER-001', 'Office Supply', 'Printing Paper', 'A4 Ream', 60, 20),
+-- ('WHITEBOARD-001', 'Office Supply', 'Whiteboard', 'Magnetic 90x60cm', 8, 4);
 
--- =======================
--- SUPPLIER_ITEM
--- =======================
-INSERT INTO supplier_item (item_id, supplier_id, si_sku) VALUES
--- Component Solutions Inc. supplies all components
-(7, 1, NULL), (8, 1, NULL), (9, 1, NULL), (10, 1, NULL), (11, 1, NULL), (12, 1, NULL),
--- Fine Finish Furnishings supplies assembled furniture
-(1, 2, NULL), (2, 2, NULL),
--- TechSource Electronics supplies peripherals
-(3, 3, NULL), (4, 3, NULL), (5, 3, NULL),
--- Desk Lamps are also supplied by TechSource
-(6, 3, NULL);
+-- -- =======================
+-- -- SUPPLIER_ITEM
+-- -- =======================
+-- INSERT INTO supplier_item (item_id, supplier_id, si_sku) VALUES
+-- -- Component Solutions Inc. supplies all components
+-- (7, 1, NULL), (8, 1, NULL), (9, 1, NULL), (10, 1, NULL), (11, 1, NULL), (12, 1, NULL),
+-- -- Fine Finish Furnishings supplies assembled furniture
+-- (1, 2, NULL), (2, 2, NULL),
+-- -- TechSource Electronics supplies peripherals
+-- (3, 3, NULL), (4, 3, NULL), (5, 3, NULL),
+-- -- Desk Lamps are also supplied by TechSource
+-- (6, 3, NULL);
 
--- =======================
--- ITEM_COMPONENT (Bill of Materials)
--- =======================
-INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
--- Office Chair components
-(1, 7, 4), (1, 8, 1), (1, 9, 1), (1, 10, 1),
--- Standing Desk components
-(2, 11, 1), (2, 12, 1);
+-- -- =======================
+-- -- ITEM_COMPONENT (Bill of Materials)
+-- -- =======================
+-- INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
+-- -- Office Chair components
+-- (1, 7, 4), (1, 8, 1), (1, 9, 1), (1, 10, 1),
+-- -- Standing Desk components
+-- (2, 11, 1), (2, 12, 1);
 
--- =======================
--- PURCHASE ORDER
--- =======================
-INSERT INTO purchase_order (supplier_id, user_id, order_date, status) VALUES
--- PO to restock components, placed by the admin user
-(1, 1, '2025-08-15 11:30:00', 'pending'),
--- PO to restock electronics, placed by a regular user
-(3, 2, '2025-08-22 16:00:00', 'pending');
+-- -- =======================
+-- -- PURCHASE ORDER
+-- -- =======================
+-- INSERT INTO purchase_order (supplier_id, user_id, order_date, status) VALUES
+-- -- PO to restock components, placed by the admin user
+-- (1, 1, '2025-08-15 11:30:00', 'pending'),
+-- -- PO to restock electronics, placed by a regular user
+-- (3, 2, '2025-08-22 16:00:00', 'pending');
 
--- =======================
--- PURCHASE ORDER ITEM
--- =======================
-INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_id) VALUES
--- Items for PO #1 (from Component Solutions Inc.)
-(1, 7, 50, 1),  -- 50 Chair Legs
-(1, 10, 100, 4), -- 100 Screw Packs
-(1, 12, 10, 6),   -- 10 Desk Leg Sets
--- Items for PO #2 (from TechSource Electronics)
-(2, 3, 10, 9),   -- 10 Monitors
-(2, 5, 15, 11);  -- 15 Wireless Mice
+-- -- =======================
+-- -- PURCHASE ORDER ITEM
+-- -- =======================
+-- INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_id) VALUES
+-- -- Items for PO #1 (from Component Solutions Inc.)
+-- (1, 7, 50, 1),  -- 50 Chair Legs
+-- (1, 10, 100, 4), -- 100 Screw Packs
+-- (1, 12, 10, 6),   -- 10 Desk Leg Sets
+-- -- Items for PO #2 (from TechSource Electronics)
+-- (2, 3, 10, 9),   -- 10 Monitors
+-- (2, 5, 15, 11);  -- 15 Wireless Mice
 
 -- -- =======================
 -- -- CUSTOMER ORDER
@@ -412,37 +412,37 @@ INSERT INTO purchase_order_item (purchase_order_id, item_id, qty, supplier_item_
 
 -- STEP 1: Define ALL necessary items with explicit IDs to guarantee they exist.
 
-INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
--- Level 1: Final Product
-('CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
+-- INSERT INTO "item" (sku, type, item_name, variant, qty, threshold_qty) VALUES
+-- -- Level 1: Final Product
+-- ('CHAIR-PREM-101', 'Furniture', 'Premium Ergonomic Chair', 'Test Model', 5, 2),
 
--- Level 2: Sub-Assemblies
-('ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
-('ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
+-- -- Level 2: Sub-Assemblies
+-- ('ASSY-SEAT-102', 'Component', 'Premium Seat Assembly', 'Test Model', 10, 5),
+-- ('ASSY-BASE-103', 'Component', 'Premium Base Assembly', 'Test Model', 10, 5),
 
--- Level 3: All Raw Components for this specific test item
-('SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
-('BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
-('FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
-('GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
-('CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
-('BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
+-- -- Level 3: All Raw Components for this specific test item
+-- ('SEAT-PAD-104', 'Component', 'Premium Seat Cushion', 'Test Model', 50, 10),
+-- ('BACK-RST-105', 'Component', 'Premium Backrest Frame', 'Test Model', 50, 10),
+-- ('FABRIC-BLK-106', 'Component', 'Premium Upholstery Fabric', 'Test Model', 100, 20),
+-- ('GAS-LIFT-107', 'Component', 'Premium Gas Lift Cylinder', 'Test Model', 45, 10),
+-- ('CASTER-SET-108', 'Component', 'Premium Caster Wheel Set', 'Test Model', 80, 20),
+-- ('BASE-STAR-109', 'Component', 'Premium Chair Base Star', 'Test Model', 30, 10);
 
 
 -- STEP 2: Define the relationships using these new, guaranteed-to-exist IDs.
 
-INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
--- Level 1 -> Level 2 relationships
-(101, 102, 1), -- Premium Chair (101) -> Seat Assembly (102)
-(101, 103, 1), -- Premium Chair (101) -> Base Assembly (103)
+-- INSERT INTO "item_component" (parent_id, child_id, qty_required) VALUES
+-- -- Level 1 -> Level 2 relationships
+-- (101, 102, 1), -- Premium Chair (101) -> Seat Assembly (102)
+-- (101, 103, 1), -- Premium Chair (101) -> Base Assembly (103)
 
--- Level 2 -> Level 3 relationships
--- Seat Assembly (102) requires:
-(102, 104, 1), -- -> Premium Seat Cushion (104)
-(102, 105, 1), -- -> Premium Backrest Frame (105)
-(102, 106, 2), -- -> Premium Upholstery Fabric (106)
+-- -- Level 2 -> Level 3 relationships
+-- -- Seat Assembly (102) requires:
+-- (102, 104, 1), -- -> Premium Seat Cushion (104)
+-- (102, 105, 1), -- -> Premium Backrest Frame (105)
+-- (102, 106, 2), -- -> Premium Upholstery Fabric (106)
 
--- Base Assembly (103) requires:
-(103, 107, 1), -- -> Premium Gas Lift (107)
-(103, 108, 1), -- -> Premium Casters (108)
-(103, 109, 1); -- -> Premium Base Star (109)
+-- -- Base Assembly (103) requires:
+-- (103, 107, 1), -- -> Premium Gas Lift (107)
+-- (103, 108, 1), -- -> Premium Casters (108)
+-- (103, 109, 1); -- -> Premium Base Star (109)

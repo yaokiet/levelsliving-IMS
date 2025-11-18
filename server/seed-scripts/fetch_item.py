@@ -9,10 +9,10 @@ from seeder_config.shared import (
     DATABASE_URL
 )
 
-from seeder_config.schemas.order import (
-    ORDER_TARGET_COLUMNS,
-    ORDER_SHEET_TO_TARGET,
-    ORDER_COL_MAP
+from seeder_config.schemas.item import (
+    ITEM_TARGET_COLUMNS,
+    ITEM_SHEET_TO_TARGET,
+    ITEM_COL_MAP
 )
 
 from utils.google_sheets_load import fetch_sheet_to_raw_csv
@@ -27,8 +27,8 @@ from utils.validation_functions import (
 
 # # ----------------- Config & Paths -----------------
 
-SHEET_NAME = "Orders"
-TABLE_NAME = "order"
+SHEET_NAME = "Inventory"
+TABLE_NAME = "item"
 
 # ----------------- Validation → CLEAN / ERRORS CSV -----------------
 
@@ -38,63 +38,50 @@ def validate_raw_to_clean_and_error(raw_path, clean_path, errors_path) -> Tuple[
     df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
 
     # Extract only the columns we need and rename to target column names
-    df_t = df[list(ORDER_SHEET_TO_TARGET)].rename(columns=ORDER_SHEET_TO_TARGET)
+    df_t = df[list(ITEM_SHEET_TO_TARGET)].rename(columns=ITEM_SHEET_TO_TARGET)
 
     clean_rows: List[List] = []
     errors_rows: List[Dict] = []
-    seen_keys = set()
 
     for idx, row in df_t.iterrows():
         out: Dict[str, object] = {}
         errs: List[str] = []
 
-        val, err = coerce_bigint_nullable(row["shopify_order_id"])
-        out["shopify_order_id"] = val
+        # sku, type, item_name required
+        val, err = check_len_not_null(row["sku"], "sku", 64)
+        out["sku"] = val if err is None else row["sku"]
         if err: errs.append(err)
 
-        val, err = coerce_timestamp_not_null(row["order_date"])
-        out["order_date"] = val
+        val, err = check_len_not_null(row["type"], "type", 64)
+        out["type"] = val if err is None else row["type"]
         if err: errs.append(err)
 
-        val, err = check_len_not_null(row["status"], "status", 32)
-        out["status"] = val if err is None else row["status"]
+        val, err = check_len_not_null(row["item_name"], "item_name", 128)
+        out["item_name"] = val if err is None else row["item_name"]
         if err: errs.append(err)
 
-        val, err = check_len_not_null(row["name"], "name", 64)
-        out["name"] = val if err is None else row["name"]
+        # variant can be nullable / empty
+        val, err = check_len_nullable(row["variant"], "variant", 128)
+        out["variant"] = val if err is None else row["variant"]
         if err: errs.append(err)
 
-        val, err = check_len_not_null(row["contact"], "contact", 32)
-        out["contact"] = val if err is None else row["contact"]
-        if err: errs.append(err)
+        # qty and threshold_qty must be integers
+        try:
+            out["qty"] = int(row["qty"]) if row["qty"] != "" else 0
+        except ValueError:
+            errs.append(f"Invalid qty: {row['qty']}")
 
-        val, err = check_len_not_null(row["street"], "street", 254)
-        out["street"] = val if err is None else row["street"]
-        if err: errs.append(err)
-
-        val, err = check_len_nullable(row["unit"], "unit", 32)
-        out["unit"] = val if err is None else row["unit"]
-        if err: errs.append(err)
-
-        val, err = coerce_postal_code(row["postal_code"])
-        out["postal_code"] = val if err is None else row["postal_code"]
-        if err: errs.append(err)
-
-        # Drop duplicates on (shopify_order_id, order_date) silently (not errors)
-        if not errs and out["shopify_order_id"] is not None and out["order_date"] is not None:
-            key = (out["shopify_order_id"], out["order_date"])
-            if key in seen_keys:
-                # duplicate -> skip this row entirely (no error, no clean record)
-                continue
-            else:
-                seen_keys.add(key)
+        try:
+            out["threshold_qty"] = int(row["threshold_qty"]) if row["threshold_qty"] != "" else 0
+        except ValueError:
+            errs.append(f"Invalid threshold_qty: {row['threshold_qty']}")
 
         if errs:
             errors_rows.append({**row.to_dict(), "errors": "; ".join(errs), "source_index": idx})
         else:
-            clean_rows.append([out[c] for c in ORDER_TARGET_COLUMNS])
+            clean_rows.append([out[c] for c in ITEM_TARGET_COLUMNS])
 
-    clean_df = pd.DataFrame(clean_rows, columns=ORDER_TARGET_COLUMNS)
+    clean_df = pd.DataFrame(clean_rows, columns=ITEM_TARGET_COLUMNS)
     errors_df = pd.DataFrame(errors_rows)
 
     clean_df.to_csv(clean_path, index=False)
@@ -110,7 +97,7 @@ def main():
     RAW_PATH, CLEAN_PATH, ERRORS_PATH = fetch_sheet_to_raw_csv(
         settings, 
         SHEET_NAME, 
-        ORDER_COL_MAP, 
+        ITEM_COL_MAP, 
         TEMP_DIR
         )
     # 2. Validate and clean data
@@ -118,7 +105,7 @@ def main():
     
     if clean_count > 0:
         # 3. Load cleaned data into pgsql container
-        load_clean_into_db(TABLE_NAME, CLEAN_PATH, ORDER_TARGET_COLUMNS, DATABASE_URL)
+        load_clean_into_db(TABLE_NAME, CLEAN_PATH, ITEM_TARGET_COLUMNS, DATABASE_URL)
     else:
         print("No clean rows to load into the database; skipping COPY.")
 
