@@ -142,7 +142,6 @@ def forecast_inventory(req: ForecastRequest) -> InventoryForecastResponse:
         pred = float(np.expm1(pred_log))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error forecasting: {e}")
-    print(row['month_num'], pred)
 
     return InventoryForecastResponse(
         model = MODEL_NAME,
