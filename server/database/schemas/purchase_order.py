@@ -1,9 +1,16 @@
-from datetime import datetime
+from datetime import datetime, date
+from enum import Enum
 from typing import List, Optional
+
 from pydantic import BaseModel, Field
-from datetime import date
 
 from database.schemas.purchase_order_item import PurchaseOrderItemReadCustom, PurchaseOrderItemInput
+
+
+class PurchaseOrderStatus(str, Enum):
+    PENDING = "Pending"
+    REJECTED = "Rejected"
+    CONFIRMED = "Confirmed"
 
 class PurchaseOrderBase(BaseModel):
     supplier_id: Optional[int] = None
@@ -45,10 +52,13 @@ class PurchaseOrderCreateWithItems(BaseModel):
     supplier_id: int
     user_id: Optional[int] = None
     order_date: Optional[datetime] = None
-    status: str = "pending"
+    status: PurchaseOrderStatus = PurchaseOrderStatus.PENDING
     po_items: List[PurchaseOrderItemInput] = Field(default_factory=list)
 
 class PurchaseOrderCreateFromCart(BaseModel):
     supplier_id: int = Field(..., gt=0)
-    status: Optional[str] = "Pending"
+    status: Optional[PurchaseOrderStatus] = PurchaseOrderStatus.PENDING
     order_date: date = Field(default_factory=date.today)
+
+class PurchaseOrderStatusUpdate(BaseModel):
+    status: PurchaseOrderStatus

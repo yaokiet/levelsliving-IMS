@@ -143,3 +143,23 @@ export async function createPurchaseOrder(
     }),
   });
 }
+
+//  Update the status of a purchase order
+export async function updatePOStatus(poId: number, status: PurchaseOrderStatus): Promise<PurchaseOrderWithDetails> {
+  try {
+    const result = await apiFetch<PurchaseOrderWithDetails>(
+      API_PATHS.purchase_order_status(poId), // Use the correct API path
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
+    return result;
+  } catch (error) {
+    console.error("❌ updatePOStatus - Failed to update status:", error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+}

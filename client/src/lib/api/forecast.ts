@@ -4,7 +4,7 @@ import { apiFetch } from "./apiClient";
 
 
 export function postInventoryForecast(body: InventoryForecastRequest) {
-    return apiFetch<InventoryForecastResponse>(`${API_PATHS.forecast_inventory}/`, {
+    return apiFetch<InventoryForecastResponse>(`${API_PATHS.forecast_inventory}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

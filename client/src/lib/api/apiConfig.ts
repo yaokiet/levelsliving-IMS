@@ -17,12 +17,13 @@ export const API_PATHS = {
     // Purchase Order endpoints
     purchase_order: `${API_PREFIX}/purchase-order`,
     purchase_order_by_id: (purchaseOrderId: number | string) => `${API_PREFIX}/purchase-order/${purchaseOrderId}`,
+    purchase_order_status: (purchaseOrderId: number | string) => `${API_PREFIX}/purchase-order/${purchaseOrderId}/status`,
 
     // Supplier endpoints
     supplier: `${API_PREFIX}/supplier`,
     supplier_by_id: (supplierId: number | string) => `${API_PREFIX}/supplier/${supplierId}`,
     supplier_search_by_items: `${API_PREFIX}/supplier/by-items`,
-    
+
     //supplier-item endpoints
     supplier_item: `${API_PREFIX}/supplier-item`,
 
