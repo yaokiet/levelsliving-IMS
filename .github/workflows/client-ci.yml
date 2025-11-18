@@ -65,4 +65,5 @@ jobs:
           npx playwright test     
         env:
           CI: true  # Required for Playwright to run in CI environments
+          RUN_SEED: "false"   
   

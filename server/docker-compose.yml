@@ -24,6 +24,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      RUN_SEED: ${RUN_SEED:-true}
       DATABASE_URL: postgresql://postgres:password@db:5432/levelsliving
       SECRET_KEY: ${SECRET_KEY}
       # --- ADD OR UPDATE THESE LINES ---

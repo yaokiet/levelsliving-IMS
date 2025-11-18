@@ -29,6 +29,7 @@ services:
       - /root/.env
     environment:
       # --- ADD OR UPDATE THESE LINES ---
+      RUN_SEED: ${RUN_SEED:-true}
       GOOGLE_GENAI_PROJECT_ID: "levelslivingai"
       GOOGLE_GENAI_USE_VERTEXAI: "False" # Make sure this is False
       GOOGLE_GENAI_LOCATION: "global"
