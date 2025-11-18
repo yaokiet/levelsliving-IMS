@@ -21,7 +21,8 @@ from database.schemas.purchase_order import (
     PurchaseOrderUpdate, 
     PurchaseOrderItemReadCustom, 
     PurchaseOrderCreateWithItems,
-    PurchaseOrderCreateFromCart
+    PurchaseOrderCreateFromCart,
+    PurchaseOrderStatus,
 )
 
 from database.services.pagination import (
@@ -204,11 +205,12 @@ def create_purchase_order_from_cart_service(
         # --------------------------------------------------------------------
 
         # 2. Create the PurchaseOrder header
+        status_value = (payload.status.value if payload.status else PurchaseOrderStatus.PENDING.value)
         po = PurchaseOrder(
             supplier_id=payload.supplier_id,
             user_id=user_id,
             order_date=payload.order_date,
-            status=payload.status,
+            status=status_value,
         )
         db.add(po)
         
@@ -260,6 +262,78 @@ def delete_purchase_order(db: Session, po_id: int) -> Optional[PurchaseOrder]:
     db.delete(po)
     db.commit()
     return po
+
+
+def update_purchase_order_status(db: Session, po_id: int, new_status: str | PurchaseOrderStatus) -> Optional[dict]:
+    """
+    Update the status of a purchase order. If transitioning to 'Confirmed'
+    (and it wasn't already confirmed), increment stock levels of the items
+    present in the purchase order.
+    Allowed statuses: 'Pending', 'Rejected', 'Confirmed'
+    Allowed transitions:
+      - Pending -> Rejected | Confirmed
+      - Rejected -> Confirmed
+      - Confirmed -> (no transitions allowed)
+    """
+    try:
+        target_status = PurchaseOrderStatus(new_status)
+    except ValueError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid status value")
+
+    po = (
+        db.query(PurchaseOrder)
+          .options(selectinload(PurchaseOrder.po_items))
+          .filter(PurchaseOrder.id == po_id)
+          .first()
+    )
+    if not po:
+        return None
+
+    try:
+        current_status = PurchaseOrderStatus(po.status) if po.status else PurchaseOrderStatus.PENDING
+    except ValueError:
+        current_status = PurchaseOrderStatus.PENDING
+
+    if current_status == PurchaseOrderStatus.CONFIRMED:
+        # Do not allow moving away from Confirmed to avoid stock inconsistencies
+        if target_status != PurchaseOrderStatus.CONFIRMED:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot change status from Confirmed")
+        # If already confirmed and setting confirmed again, noop
+        return get_purchase_order_details(db, po_id)
+
+    allowed_transitions = {
+        PurchaseOrderStatus.PENDING: {PurchaseOrderStatus.REJECTED, PurchaseOrderStatus.CONFIRMED},
+        PurchaseOrderStatus.REJECTED: {PurchaseOrderStatus.CONFIRMED},
+    }
+    if target_status == current_status:
+        return get_purchase_order_details(db, po_id)
+    if target_status not in allowed_transitions.get(current_status, set()):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid transition from {current_status.value}",
+        )
+
+    # Apply status update, and if moving to Confirmed, adjust stocks, then commit
+    if target_status == PurchaseOrderStatus.CONFIRMED and current_status != PurchaseOrderStatus.CONFIRMED:
+        # For each PO item, increase Item.qty by the ordered qty
+        line_items: list[PurchaseOrderItem] = (
+            db.query(PurchaseOrderItem).filter(PurchaseOrderItem.purchase_order_id == po.id).all()
+        )
+        if line_items:
+            # Fetch items in one go
+            item_ids = [li.item_id for li in line_items]
+            items_by_id = {
+                it.id: it for it in db.query(Item).filter(Item.id.in_(item_ids)).all()
+            }
+            for li in line_items:
+                item = items_by_id.get(li.item_id)
+                if item:
+                    item.qty = (item.qty or 0) + (li.qty or 0)
+    po.status = target_status.value
+    db.add(po)
+    db.commit()
+    db.refresh(po)
+    return get_purchase_order_details(db, po_id)
 
 
 

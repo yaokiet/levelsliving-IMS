@@ -10,7 +10,8 @@ from database.schemas.purchase_order import (
     PurchaseOrderUpdate, 
     PurchaseOrderRead, 
     PurchaseOrderItemReadCustom,
-    PurchaseOrderCreateFromCart
+    PurchaseOrderCreateFromCart,
+    PurchaseOrderStatusUpdate,
 )
 
 from database.schemas.pagination import Paginated
@@ -21,6 +22,7 @@ from database.services.purchase_order import (
     update_purchase_order, 
     delete_purchase_order,
     get_purchase_order_details,
+    update_purchase_order_status,
 )
 
 from database.services.email_service import send_purchase_order_email
@@ -133,3 +135,18 @@ def delete_existing_purchase_order(po_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Purchase order not found")
     return deleted
+
+@router.patch("/{po_id}/status", response_model=PurchaseOrderDetails)
+def set_purchase_order_status(
+    po_id: int,
+    payload: PurchaseOrderStatusUpdate,
+    db: Session = Depends(get_db),
+):
+    """
+    Update the status of a purchase order. If status becomes 'Confirmed',
+    stock levels of items in the PO are incremented accordingly.
+    """
+    updated = update_purchase_order_status(db, po_id, payload.status)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Purchase order not found")
+    return updated
