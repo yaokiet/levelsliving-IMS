@@ -18,6 +18,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { Loader2, ArrowLeft } from "lucide-react";
+import { PurchaseOrderStatus } from "@/types/purchase-order";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function CheckoutPage() {
       // Prepare the payload for the API call
       const payload = {
         supplierId: selectedSupplier.id,
-        status: "Submitted",
+        status: PurchaseOrderStatus.Pending,
         // Get today's date in YYYY-MM-DD format
         order_date: new Date(),
       };

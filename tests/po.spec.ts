@@ -284,7 +284,7 @@ test.describe.serial('purchase order flow', () => {
         await expect(page.getByRole('button', { name: 'Print' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Download PDF' })).toBeVisible();
 
-        await expect(page.locator('div.flex.justify-between', { hasText: 'Status:' })).toContainText('Submitted');
+        await expect(page.locator('div.flex.justify-between', { hasText: 'Status:' })).toContainText('Pending');
 
         await expect(page.getByText(supplier.name)).toBeVisible();
         await expect(page.getByText(supplier.description)).toBeVisible();
