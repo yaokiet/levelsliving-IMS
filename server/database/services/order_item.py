@@ -82,3 +82,38 @@ def get_monthly_order_item_quantities(db: Session):
         })
 
     return results
+
+def get_monthly_order_item_quantities_by_sku(db: Session, item_id: int):
+    """
+    Aggregate total qty_requested per month for a specific SKU (item_id).
+
+    Returns a list of dicts: [{ "date": date, "quantity": int }, ...]
+    where date is the LAST day of each month.
+    """
+    rows = (
+        db.query(
+            func.date_trunc("month", OrderItem.delivery_date).label("month"),
+            func.sum(OrderItem.qty_requested).label("quantity"),
+        )
+        .filter(OrderItem.item_id == item_id)     # 👈 filter by SKU
+        .group_by(func.date_trunc("month", OrderItem.delivery_date))
+        .order_by(func.date_trunc("month", OrderItem.delivery_date))
+        .all()
+    )
+
+    results = []
+    for month_ts, qty in rows:
+        if month_ts is None:
+            continue
+
+        year = month_ts.year
+        month = month_ts.month
+        last_day = calendar.monthrange(year, month)[1]
+        month_end = date(year, month, last_day)
+
+        results.append({
+            "date": month_end,
+            "quantity": int(qty or 0),
+        })
+
+    return results

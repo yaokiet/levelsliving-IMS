@@ -8,6 +8,9 @@ import { ItemEditModal } from "@/components/ui/item/item-edit-modal";
 import { useRouter } from "next/navigation";
 import { ItemAddChildItem } from "@/components/ui/item/item-add-child-item";
 import { ItemAddModal } from "@/components/ui/item/item-add-modal";
+import { ItemSkuForecastChart } from "@/components/chart/item-sku-chart";
+
+const chartDataBase = [];
 
 // This is the inner component that will have access to the context
 function ItemDetailsContent() {
@@ -30,18 +33,26 @@ function ItemDetailsContent() {
 
   return (
     <div className="container mx-auto py-10 px-6">
-      <ItemInfoCard
-        item={item}
-        action={
-          <ItemEditModal
+      <div className="grid grid-cols-4 space-x-2">
+        <div className="col-span-2 ">
+          <ItemInfoCard
             item={item}
-            onUpdated={async () => {
-              // fetch latest details into context
-              await refetch();
-            }}
+            action={
+              <ItemEditModal
+                item={item}
+                onUpdated={async () => {
+                  // fetch latest details into context
+                  await refetch();
+                }}
+              />
+            }
           />
-        }
-      />
+        </div>
+        <div className="col-span-2">
+          <ItemSkuForecastChart itemId={item.id} skuId={item.sku} />
+
+        </div>
+      </div>
       <div className="flex gap-2 mb-4">
         <ItemAddChildItem
           item={item}

@@ -10,3 +10,10 @@ export type InventoryForecastRequest = {
     forecast_month: string
     predicted_quantity: number
   }
+
+  export interface SkuForecastResponse {
+    sku: string;
+    model: string;
+    forecast_month: string;     // "YYYY-MM-DD"
+    predicted_quantity: number;
+  }

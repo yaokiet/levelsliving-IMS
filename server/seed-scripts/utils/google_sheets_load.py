@@ -46,8 +46,6 @@ def fetch_sheet_to_raw_csv(settings, sheet_name, col_map, temp_dir):
     # Transpose columns → rows (each row is now a plain list of strings)
     rows = list(zip(*cols_data))
 
-    print(f"Fetched {len(rows)} rows x {len(col_map)} cols from Google Sheets")
-
     headers = list(col_map.keys())
 
     # Skip the first sheet row (assumed header) when writing RAW
@@ -55,7 +53,5 @@ def fetch_sheet_to_raw_csv(settings, sheet_name, col_map, temp_dir):
         writer = csv.writer(f)
         writer.writerow(headers)
         writer.writerows(rows[1:])
-
-    print(f"Saved {len(rows) - 1} data rows × {len(headers)} cols to {raw_path}")
 
     return raw_path, clean_path, errors_path

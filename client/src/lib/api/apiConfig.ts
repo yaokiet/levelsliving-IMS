@@ -45,4 +45,7 @@ export const API_PATHS = {
 
     // Forecast endpoints
     forecast_inventory: `${API_PREFIX}/forecast`,
+
+    // Order item endpoints
+    order_item: `${API_PREFIX}/order-item`
 };
