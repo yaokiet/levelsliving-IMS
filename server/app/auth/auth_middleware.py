@@ -11,7 +11,9 @@ EXEMPT_PATHS = [
     "/levelsliving/app/api/v1/logout",
     "/docs",
     "/openapi.json",
-    "/redoc"
+    "/redoc",
+    "/levelsliving/app/api/v1/supplier"
+    
 ]
 
 class AuthMiddleware(BaseHTTPMiddleware):
